@@ -6,10 +6,10 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
+const users = [];
+
 // Слушаем сообщения
 bot.on('message', (msg) => {
-    const users = [];
-
     // Если пользователь отправил "Привет"
     if (msg.text.toLowerCase() === 'приффки') {
         // Отправляем ответное сообщение
