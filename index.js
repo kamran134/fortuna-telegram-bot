@@ -32,7 +32,7 @@ bot.on('message', (msg) => {
     }
 
     if (msg.text.toLowerCase() === '+' || msg.text.toLowerCase() === 'плюс' || msg.text.toLowerCase() === 'plus') {
-        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id, chat_id, user_id) ' +
+        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) ' +
         'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
             .then(res => {
                 console.log('User inserted successfully');
@@ -40,19 +40,11 @@ bot.on('message', (msg) => {
             .catch(err => {
                 console.error('Error inserting user', err);
             });
-        
-        // if (!users.some(user => user.id === msg.from.id)) {
-        //     users.push({id: msg.from.id, fullname: msg.from.first_name + ' ' + msg.from.last_name});
-        // }
-        // bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
     }
 
     if (msg.text === '-' || msg.text.toLowerCase() === 'минус' || msg.text.toLowerCase() === 'minus') {
-        // bot.sendMessage(msg.chat.id, 'Это будет сложно, но как-нибудь выживем без тебя, ' + msg.from.first_name);
-        // users = users.filter(user => user.id !== msg.from.id);
-        // bot.sendMessage(msg.chat.id, users.filter(user => user.id !== msg.from.id).map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
         const userId = msg.from.id;
-        pool.query('DELETE FROM users WHERE user_id = $1', [userId], (err, result) => {
+        pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = ', [userId, msg.chat.id], (err, result) => {
             if (err) {
                 console.error('Error deleting user from the database', err);
                 bot.sendMessage(msg.chat.id, 'Произошла ошибка при удалении пользователя из базы данных');
@@ -62,10 +54,6 @@ bot.on('message', (msg) => {
             }
         });
     }
-
-    // if (msg.text.toLowerCase() === '\/список') {
-    //     bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
-    // }
 
     if (msg.text === '/список') {
         pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
