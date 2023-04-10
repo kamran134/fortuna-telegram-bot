@@ -1,0 +1,25 @@
+{
+  "name": "fortuna-telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for Fortuna Volleyball Group",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamran134/fortuna-telegram-bot.git"
+  },
+  "keywords": [
+    "fortuna",
+    "volleyball",
+    "telegram",
+    "bot"
+  ],
+  "author": "Kamran Kazimi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamran134/fortuna-telegram-bot/issues"
+  },
+  "homepage": "https://github.com/kamran134/fortuna-telegram-bot#readme"
+}
