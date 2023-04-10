@@ -11,9 +11,9 @@ const bot = new TelegramBot(token, { polling: true });
 const pool = new Pool({
     user: 'postgres',
     host: 'db',
-    database: 'mydatabase',
-    password: 'mysecretpassword',
-    port: 5432,
+    database: 'fortuna',
+    password: 'kamran134',
+    port: 5433,
 });
 
 const users = [];
