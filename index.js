@@ -13,7 +13,7 @@ const pool = new Pool({
     host: 'db',
     database: 'fortuna',
     password: 'kamran134',
-    port: 5433,
+    port: 5432,
 });
 
 const users = [];
