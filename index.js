@@ -38,6 +38,11 @@ bot.on('message', (msg) => {
         bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
     }
 
+    if (msg.text.toLowerCase() === '\/очистить' && msg.from.id === 112254199) {
+        users = new Array();
+        bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
+    }
+
     // Если пользователь отправил "Пока"
     if (msg.text === 'Пока') {
         // Отправляем ответное сообщение
