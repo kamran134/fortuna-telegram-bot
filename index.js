@@ -32,7 +32,8 @@ bot.on('message', (msg) => {
     }
 
     if (msg.text.toLowerCase() === '+' || msg.text.toLowerCase() === 'плюс' || msg.text.toLowerCase() === 'plus') {
-        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
+        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id, chat_id, user_id) ' +
+        'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
             .then(res => {
                 console.log('User inserted successfully');
             })
@@ -67,14 +68,14 @@ bot.on('message', (msg) => {
     // }
 
     if (msg.text === '/список') {
-        pool.query('SELECT * FROM users', (err, res) => {
+        pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
             if (err) {
                 console.error(err);
                 bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
                 return;
             }
             
-            const users = res.rows.map(row => `${row.fullname} (${row.id})`);
+            const users = res.rows.map((row, index) => `${(index + 1)}. ${row.fullname}`);
             
             if (users.length === 0) {
                 bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
