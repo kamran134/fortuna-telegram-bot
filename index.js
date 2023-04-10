@@ -70,7 +70,7 @@ bot.on('message', (msg) => {
         pool.query('SELECT * FROM users', (err, res) => {
             if (err) {
                 console.error(err);
-                bot.sendMessage(msg.chat.id, 'Произошла ошибка');
+                bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
                 return;
             }
             
