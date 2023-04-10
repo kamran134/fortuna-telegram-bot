@@ -20,6 +20,13 @@ const users = [];
 
 // Слушаем сообщения
 bot.on('message', (msg) => {
+    if (msg.text.toLowerCase() === '/регистрация' || msg.text.toLowerCase() === '/register') {
+        pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
+        [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
+            .then(res => console.log('Successful', res))
+            .catch(err => console.error('Inserting error', err));
+    }
+    
     // Если пользователь отправил "Привет"
     if (msg.text.toLowerCase() === 'приффки') {
         // Отправляем ответное сообщение
@@ -55,7 +62,7 @@ bot.on('message', (msg) => {
         });
     }
 
-    if (msg.text === '/список') {
+    if (msg.text === '/список' || msg.text === '/list') {
         pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
             if (err) {
                 console.error(err);
@@ -74,7 +81,7 @@ bot.on('message', (msg) => {
     }
       
 
-    if (msg.text.toLowerCase() === '\/очистить' && msg.from.id === 112254199) {
+    if (msg.text.toLowerCase() === '/очистить' && msg.from.id === 112254199) {
         users.length = 0;
         bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
     }
