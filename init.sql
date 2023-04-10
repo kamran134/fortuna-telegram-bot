@@ -1,5 +1,5 @@
 CREATE DATABASE fortuna;
-CREATE USER postgres WITH PASSWORD 'kamran134';
+CREATE USER postgres WITH PASSWORD 'postgres';
 GRANT ALL PRIVILEGES ON DATABASE fortuna TO postgres;
 
 \connect fortuna
