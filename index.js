@@ -31,7 +31,7 @@ bot.on('message', (msg) => {
     if (msg.text === '-' || msg.text.toLowerCase() === 'минус' || msg.text.toLowerCase() === 'minus') {
         bot.sendMessage(msg.chat.id, 'Это будет сложно, но как-нибудь выживем без тебя, ' + msg.from.first_name);
         users = users.filter(user => user.id !== msg.from.id);
-        // bot.sendMessage(msg.chat.id, users.map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
+        bot.sendMessage(msg.chat.id, users.filter(user => user.id !== msg.from.id).map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
     }
 
     if (msg.text.toLowerCase() === '\/список') {
