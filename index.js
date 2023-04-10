@@ -32,7 +32,7 @@ bot.on('message', (msg) => {
     }
 
     if (msg.text.toLowerCase() === '+' || msg.text.toLowerCase() === 'плюс' || msg.text.toLowerCase() === 'plus') {
-        pool.query('INSERT INTO users (telegram_id, fullname) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name])
+        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
             .then(res => {
                 console.log('User inserted successfully');
             })
@@ -51,7 +51,7 @@ bot.on('message', (msg) => {
         // users = users.filter(user => user.id !== msg.from.id);
         // bot.sendMessage(msg.chat.id, users.filter(user => user.id !== msg.from.id).map((user, index) => (index+1) + ". " + user.fullname).join('\n'));
         const userId = msg.from.id;
-        pool.query('DELETE FROM users WHERE telegram_id = $1', [userId], (err, result) => {
+        pool.query('DELETE FROM users WHERE user_id = $1', [userId], (err, result) => {
             if (err) {
                 console.error('Error deleting user from the database', err);
                 bot.sendMessage(msg.chat.id, 'Произошла ошибка при удалении пользователя из базы данных');
