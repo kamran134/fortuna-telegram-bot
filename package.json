@@ -4,7 +4,8 @@
   "description": "Telegram bot for Fortuna Volleyball Group",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
