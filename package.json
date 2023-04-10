@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/kamran134/fortuna-telegram-bot/issues"
   },
-  "homepage": "https://github.com/kamran134/fortuna-telegram-bot#readme"
+  "homepage": "https://github.com/kamran134/fortuna-telegram-bot#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.61.0"
+  }
 }
