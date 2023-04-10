@@ -6,8 +6,8 @@ services:
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: mydatabase
+      POSTGRES_PASSWORD: kamran134
+      POSTGRES_DB: fortuna
     volumes:
       - db-data:/var/lib/postgresql/data
   web:

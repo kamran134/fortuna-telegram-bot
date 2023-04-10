@@ -32,7 +32,7 @@ bot.on('message', (msg) => {
     }
 
     if (msg.text.toLowerCase() === '+' || msg.text.toLowerCase() === 'плюс' || msg.text.toLowerCase() === 'plus') {
-        pool.query('INSERT INTO users (id, fullname) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name])
+        pool.query('INSERT INTO users (telegram_id, fullname) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name])
             .then(res => {
                 console.log('User inserted successfully');
             })
