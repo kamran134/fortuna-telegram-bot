@@ -187,11 +187,11 @@ bot.on('message', async (msg) => {
         pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date FROM game_users ` +
             `LEFT JOIN users ON users.id = game_users.user_id ` +
             `LEFT JOIN games ON games.id = game_users.game_id ` +
-            `WHERE games.chat_id = ${msg.chat.id} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
+            `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
             
             if (err) {
                 console.error(err);
-                bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
+                bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
                 return;
             }
 
@@ -201,10 +201,10 @@ bot.on('message', async (msg) => {
                 i = 1;
                 if (!usersByGame[row.game_id]) {
                     i = 1;
-                    usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username}]
+                    usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
                     i++;
                 } else {
-                    usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username}];
+                    usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
                     i++;
                 }
             });
@@ -216,7 +216,7 @@ bot.on('message', async (msg) => {
             } else {
                 for (const game_id in usersByGame) {
                     const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
-                    const message = `Игра №${game_id}\n` +
+                    const message = `Игра на ${moment(user.game_date).format("DD.MM.YYYY")}\n` +
                                     `Участники:\n${users}`;
                     bot.sendMessage(chatId, message);
                   }
