@@ -96,8 +96,8 @@ bot.on('message', async (msg) => {
             }
             else {
                 const games = res.rows.map((row, index) => 
-                    `**Игра №${(index + 1)}**\n**Дата:** ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
-                    `**Время:** с ${moment(row.game_starts, 'hh:mm')} по ${moment(row.game_ends, 'hh:mm')}\n**Место:** ${row.place}`);
+                    `*Игра №${(index + 1)}*\n*Дата:* ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
+                    `*Время:* с ${moment(row.game_starts).format('hh:mm')} по ${moment(row.game_ends).format('hh:mm')}\n*Место:* ${row.place}`, {parse_mode: 'MarkdownV2'});
 
                 if (games.length === 0) {
                     bot.sendMessage(chatId, 'А игр ещё нет :(');
