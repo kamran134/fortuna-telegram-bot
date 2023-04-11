@@ -187,7 +187,7 @@ bot.on('message', async (msg) => {
         pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date FROM game_users ` +
             `LEFT JOIN users ON users.id = game_users.user_id ` +
             `LEFT JOIN games ON games.id = game_users.game_id ` +
-            `WHERE chat_id = ${msg.chat.id} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
+            `WHERE user_games.chat_id = ${msg.chat.id} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
             
             if (err) {
                 console.error(err);
