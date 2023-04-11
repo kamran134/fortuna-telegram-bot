@@ -70,41 +70,50 @@ bot.on('message', async (msg) => {
             [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, location, chatId, true])
                 .then(res => {
                     console.log('Successful', res);
-                    bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime} в ${location}`);
+                    bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime}. Место: ${location}`, {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: 'appointment'},
+                                    // {text: 'Время начала игры', callback_data: 'gamestart'}
+                                ]
+                            ]
+                        }});
                 })
                 .catch(err => console.error('Inserting error', err));
         } else {
             // Иначе запрашиваем недостающую информацию
-            await bot.sendMessage(chatId, 'Введите дату, время начала, время окончания и место проведения игры в формате: /startgame - дд.мм.гггг - hh:mm - hh:mm - место', {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {text: 'День игры', callback_data: 'gameday'},
-                            {text: 'Время начала игры', callback_data: 'gamestart'}
-                        ]
-                    ]
-                }
-            });
+            await bot.sendMessage(chatId, 'Введите дату, время начала, время окончания и место проведения игры в формате: /startgame - дд.мм.гггг - hh:mm - hh:mm - место');
         }
     }
 
     if (messageText.startsWith('/showgames')) {
+
+        const gameButtons = [];
+
         pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
             if (err) {
                 console.log(err);
                 bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
             }
             else {
-                const games = res.rows.map((row, index) => 
+                const games = res.rows.map((row, index) => {
+                    gameButtons.push({text: `Запись на ${moment(row.game_data).format('DD.MM.YYYY')}`, callback_data: `game_${row.id}`})
+                    return (
                     `Игра №${(index + 1)}\n` +
                     `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
                     `    Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                    `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'});
+                    `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'})
+                });
 
                 if (games.length === 0) {
                     bot.sendMessage(chatId, 'А игр ещё нет :(');
                 } else {
-                    bot.sendMessage(chatId, games.join('\n----------------------------------\n'));
+                    bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
+                        reply_markup: [
+                            [...gameButtons]
+                        ]
+                    });
                 }
             }
         });
