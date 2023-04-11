@@ -18,14 +18,48 @@ const pool = new Pool({
 
 const users = [];
 
+bot.getChatMembersCount(chatId).then((count) => {
+    for (let i = 0; i < count; i++) {
+      bot.getChatMember(chatId, i).then((member) => {
+        const firstName = member.user.first_name;
+        const lastName = member.user.last_name || '';
+        const fullName = `${firstName} ${lastName}`;
+        const mention = `@${member.user.username}`;
+        
+        // здесь вы можете использовать переменную `mention` для упоминания участника в сообщении
+      });
+    }
+});
+
 // Слушаем сообщения
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
     if (msg.text.toLowerCase() === '/регистрация' || msg.text.toLowerCase() === '/register') {
         pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
             .then(res => console.log('Successful', res))
             .catch(err => console.error('Inserting error', err));
     }
+
+    if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
+        const chatId = msg.chat.id;
+    
+        // Получаем количество участников в группе
+        const chatMembersCount = await bot.getChatMembersCount(chatId);
+    
+        // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
+        let taggedMembers = '';
+        for (let i = 0; i < chatMembersCount; i++) {
+          const chatMember = await bot.getChatMember(chatId, i);
+          if (chatMember.user.username) {
+            taggedMembers += `@${chatMember.user.username} `;
+          } else {
+            taggedMembers += `[${chatMember.user.first_name}](tg://user?id=${chatMember.user.id}) `;
+          }
+        }
+    
+        // Отправляем сообщение с упоминаниями всех участников группы
+        bot.sendMessage(chatId, taggedMembers, {parse_mode: 'MarkdownV2'});
+      }
     
     // Если пользователь отправил "Привет"
     if (msg.text.toLowerCase() === 'приффки') {
