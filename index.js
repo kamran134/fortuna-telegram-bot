@@ -25,14 +25,14 @@ const users = [];
 bot.on('message', async (msg) => {
     command = msg.text.toLowerCase();
     
-    if (command === '/регистрация' || command === '/register') {
+    if (command === '/регистрация' || command === '/register' || command === '/register@fortunavolleybalbot') {
         pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
             .then(res => console.log('Successful', res))
             .catch(err => console.error('Inserting error', err));
     }
 
-    if (command === '/tagregistered') {
+    if (command === '/tagregistered' || command === '/tagregistered@fortunavolleybalbot') {
         pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
             if (err) {
                 console.error(err);
