@@ -7,6 +7,9 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
+const chatId = msg.chat.id;
+const chatMembersCount = await bot.getChatMembersCount(chatId);
+
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
     user: 'postgres',
@@ -28,10 +31,10 @@ bot.on('message', async (msg) => {
     }
 
     if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
-        const chatId = msg.chat.id;
+        // const chatId = msg.chat.id;
     
         // Получаем количество участников в группе
-        const chatMembersCount = await bot.telegram.getChatMembersCount(chatId);
+        // const chatMembersCount = await bot.getChatMembersCount(chatId);
     
         // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
         let taggedMembers = '';
