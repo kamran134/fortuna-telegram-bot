@@ -23,11 +23,31 @@ const users = [];
 
 // Слушаем сообщения
 bot.on('message', async (msg) => {
-    if (msg.text.toLowerCase() === '/регистрация' || msg.text.toLowerCase() === '/register') {
+    command = msg.text.toLowerCase();
+    
+    if (command === '/регистрация' || command === '/register') {
         pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
             .then(res => console.log('Successful', res))
             .catch(err => console.error('Inserting error', err));
+    }
+
+    if (command === '/tagregistered') {
+        pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
+            if (err) {
+                console.error(err);
+                bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
+                return;
+            }
+            
+            const users = res.rows.map(row => `@${row.username}`);
+            
+            if (users.length === 0) {
+                bot.sendMessage(msg.chat.id, 'Никто не зарегистрировался в боте? Капец.');
+            } else {
+                bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + users.join('\n'));
+            }
+        });
     }
 
     // if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
@@ -68,7 +88,7 @@ bot.on('message', async (msg) => {
         bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
     }
 
-    if (msg.text.toLowerCase() === '+' || msg.text.toLowerCase() === 'плюс' || msg.text.toLowerCase() === 'plus') {
+    if (command === '+' || command === 'плюс' || command === 'plus' || command === '/plus') {
         pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) ' +
         'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
             .then(res => {
@@ -79,7 +99,7 @@ bot.on('message', async (msg) => {
             });
     }
 
-    if (msg.text === '-' || msg.text.toLowerCase() === 'минус' || msg.text.toLowerCase() === 'minus') {
+    if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') {
         const userId = msg.from.id;
         pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = ', [userId, msg.chat.id], (err, result) => {
             if (err) {
