@@ -8,7 +8,7 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 const bot = new TelegramBot(token, { polling: true });
 
 const chatId = msg.chat.id;
-const chatMembersCount = await bot.getChatMembersCount(chatId);
+// const chatMembersCount = await bot.getChatMembersCount(chatId);
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -34,7 +34,7 @@ bot.on('message', async (msg) => {
         // const chatId = msg.chat.id;
     
         // Получаем количество участников в группе
-        // const chatMembersCount = await bot.getChatMembersCount(chatId);
+        const chatMembersCount = await bot.chatMembersCount(chatId);
     
         // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
         let taggedMembers = '';
