@@ -20,13 +20,13 @@ CREATE TABLE games (
     game_ends TIME,
     place TEXT,
     quote INT,
-    chat_id INT NOT NULL,
-    status BOOLEAN;
+    chat_id BIGINT NOT NULL,
+    status BOOLEAN
 );
 
 CREATE TABLE game_users (
-    user_id INTEGER REFERENCES users(id),
-    game_id INTEGER REFERENCES games(id),
+    user_id BIGINT REFERENCES users(id),
+    game_id BIGINT REFERENCES games(id),
     participate_time TIMESTAMP,
     exactly BOOLEAN,
     PRIMARY KEY(user_id, game_id)

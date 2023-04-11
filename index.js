@@ -1,6 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
-const momnet = require('moment');
+const moment = require('moment');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -67,7 +67,7 @@ bot.on('message', async (msg) => {
             gameData = {date, startTime, endTime, location};
     
             pool.query('INSERT INTO games (game_date, game_starts, game_ends, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6)', 
-            [momnet(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, location, chatId, true])
+            [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, location, chatId, true])
                 .then(res => {
                     console.log('Successful', res);
                     bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime} в ${location}`);
