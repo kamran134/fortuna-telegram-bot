@@ -31,7 +31,7 @@ bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
     
         // Получаем количество участников в группе
-        const chatMembersCount = await bot.getChatMembersCount(chatId);
+        const chatMembersCount = await bot.telegram.getChatMembersCount(chatId);
     
         // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
         let taggedMembers = '';
