@@ -32,24 +32,30 @@ bot.on('message', async (msg) => {
 
     if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
         const chatId = msg.chat.id;
-      
-        // Получаем количество участников в группе
-        const chatMemberCount = await bot.getChatMemberCount(chatId);
-      
-        // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
-        let taggedMembers = '';
-        for (let i = 0; i < chatMemberCount; i++) {
-          const chatMember = await bot.getChatMember(chatId, i);
-          if (chatMember.user.username) {
-            taggedMembers += `@${chatMember.user.username} `;
-          } else {
-            taggedMembers += `[${chatMember.user.first_name}](tg://user?id=${chatMember.user.id}) `;
-          }
+        
+        try {
+            // Получаем количество участников в группе
+            const chatMemberCount = await bot.getChatMemberCount(chatId);
+        
+            // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
+            let taggedMembers = '';
+            for (let i = 0; i < chatMemberCount; i++) {
+            const chatMember = await bot.getChatMember(chatId, i);
+            if (chatMember.user.username) {
+                taggedMembers += `@${chatMember.user.username} `;
+            } else {
+                taggedMembers += `[${chatMember.user.first_name}](tg://user?id=${chatMember.user.id}) `;
+            }
+            }
+        
+            // Отправляем сообщение с упоминаниями всех участников группы
+            bot.sendMessage(chatId, taggedMembers, {parse_mode: 'MarkdownV2'});
         }
-      
-        // Отправляем сообщение с упоминаниями всех участников группы
-        bot.sendMessage(chatId, taggedMembers, {parse_mode: 'MarkdownV2'});
-      }
+        catch (error) {
+            console.error(error);
+            bot.sendMessage(chatId, error);
+        }
+    }
     
     // Если пользователь отправил "Привет"
     if (msg.text.toLowerCase() === 'приффки') {
