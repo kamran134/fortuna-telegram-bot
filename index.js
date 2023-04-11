@@ -110,9 +110,9 @@ bot.on('message', async (msg) => {
                     bot.sendMessage(chatId, 'А игр ещё нет :(');
                 } else {
                     bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
-                        reply_markup: [
-                            [...gameButtons]
-                        ]
+                        reply_markup: {
+                            inline_keyboard: [gameButtons]
+                        }
                     });
                 }
             }
