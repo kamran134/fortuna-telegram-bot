@@ -172,7 +172,7 @@ bot.on('message', async (msg) => {
 
     if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') {
         const userId = msg.from.id;
-        pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = ', [userId, msg.chat.id], (err, result) => {
+        pool.query('DELETE FROM game_users WHERE user_id = $1 AND chat_id = ', [userId, msg.chat.id], (err, result) => {
             if (err) {
                 console.error('Error deleting user from the database', err);
                 bot.sendMessage(msg.chat.id, 'Произошла ошибка при удалении пользователя из базы данных');
@@ -247,6 +247,7 @@ bot.on('callback_query', (query) => {
     } else if (query.data === 'sunday') {
         response = `@${username}, вы записаны на воскресенье`;
     } else if (query.data.contains('game_')) {
+        console.log('user clicked, user id: ' + query.from.id);
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, $2, $3, $4)`, 
         [query.data.substring(4), query.from.id, moment(new Date()).toISOString(), true]);
     }
