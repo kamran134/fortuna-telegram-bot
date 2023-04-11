@@ -98,7 +98,7 @@ bot.on('message', async (msg) => {
             }
             else {
                 const games = res.rows.map((row, index) => {
-                    gameButtons.push({text: `Запись на ${moment(row.game_data).format('DD.MM.YYYY')}`, callback_data: `game_${row.id}`})
+                    gameButtons.push({text: `Запись на ${moment(row.game_data).format('DD.MM.YYYY')}`, callback_data: `game_${row.id}`});
                     return (
                     `Игра №${(index + 1)}\n` +
                     `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
