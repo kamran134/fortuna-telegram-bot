@@ -88,7 +88,7 @@ bot.on('message', async (msg) => {
         }
     }
 
-    if (messageText.startsWith('/startgame')) {
+    if (messageText.startsWith('/showgames')) {
         pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
             if (err) {
                 console.log(err);
