@@ -248,7 +248,7 @@ bot.on('callback_query', (query) => {
         response = `@${username}, вы записаны на воскресенье`;
     } else if (query.data.startsWith('game_')) {
         console.log('user clicked, user id: ' + query.from.id);
-        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, $2, $3, $4)`, 
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.user_id = $2), $3, $4)`, 
         [query.data.substring(5), query.from.id, moment(new Date()).toISOString(), true])
             .then(res => console.log(res))
             .catch(err => console.log('insert error: ', err));
