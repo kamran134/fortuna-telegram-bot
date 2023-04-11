@@ -34,17 +34,17 @@ bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
     
         // Получаем количество участников в группе
-        const chatMembersCount = await bot.chatMembersCount(chatId);
+        const chatMembers = await bot.getChatMemberCount(chatId);
     
         // Получаем информацию о каждом участнике группы и формируем строку с упоминаниями
         let taggedMembers = '';
-        for (let i = 0; i < chatMembersCount; i++) {
-          const chatMember = await bot.getChatMember(chatId, i);
-          if (chatMember.user.username) {
-            taggedMembers += `@${chatMember.user.username} `;
-          } else {
-            taggedMembers += `[${chatMember.user.first_name}](tg://user?id=${chatMember.user.id}) `;
-          }
+        for (let i = 0; i < chatMembers.length; i++) {
+            const chatMember = await bot.getChatMember(chatId, i);
+            if (chatMember.user.username) {
+                taggedMembers += `@${chatMember.user.username} `;
+            } else {
+                taggedMembers += `[${chatMember.user.first_name}](tg://user?id=${chatMember.user.id}) `;
+            }
         }
     
         // Отправляем сообщение с упоминаниями всех участников группы
