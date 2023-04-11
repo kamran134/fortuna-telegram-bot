@@ -21,6 +21,17 @@ const pool = new Pool({
 
 const users = [];
 
+bot.command('/start', (ctx) => {
+    const keyboard = Markup.keyboard(['Привет']);
+    ctx.reply('Нажмите на кнопку "Привет"', keyboard);
+});
+
+bot.on('text', (ctx) => {
+    if (ctx.message.text === 'Привет') {
+      ctx.reply(`Привет, ${ctx.from.first_name}!`);
+    }
+});
+
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     command = msg.text.toLowerCase();
@@ -48,6 +59,10 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + users.join('\n'));
             }
         });
+    }
+
+    if (command === '/startgame' && msg.from.id === 112254199) {
+        pool.query('INSERT INTO games')
     }
 
     // if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
