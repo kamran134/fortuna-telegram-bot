@@ -246,10 +246,12 @@ bot.on('callback_query', (query) => {
         response = `@${username}, вы записаны на четверг`;
     } else if (query.data === 'sunday') {
         response = `@${username}, вы записаны на воскресенье`;
-    } else if (query.data.contains('game_')) {
+    } else if (query.data.startsWith('game_')) {
         console.log('user clicked, user id: ' + query.from.id);
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, $2, $3, $4)`, 
-        [query.data.substring(4), query.from.id, moment(new Date()).toISOString(), true]);
+        [query.data.substring(4), query.from.id, moment(new Date()).toISOString(), true])
+            .then(res => console.log(res))
+            .catch(err => console.log('insert error: ', err));
     }
   
     bot.sendMessage(chatId, response);
