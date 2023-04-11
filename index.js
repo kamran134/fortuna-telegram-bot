@@ -88,7 +88,7 @@ bot.on('message', async (msg) => {
         }
     }
 
-    if (command === '/showgames') {
+    if (messageText.startsWith('/startgame')) {
         pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
             if (err) {
                 console.log(err);
@@ -96,14 +96,15 @@ bot.on('message', async (msg) => {
             }
             else {
                 const games = res.rows.map((row, index) => 
-                    `Игра №${(index + 1)}\n Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
-                    ` Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                    ` Место: ${row.place}`, {parse_mode: 'MarkdownV2'});
+                    `Игра №${(index + 1)}\n` +
+                    `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
+                    `    Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
+                    `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'});
 
                 if (games.length === 0) {
                     bot.sendMessage(chatId, 'А игр ещё нет :(');
                 } else {
-                    bot.sendMessage(chatId, games.join('\n--------------------\n'));
+                    bot.sendMessage(chatId, games.join('\n----------------------------------\n'));
                 }
             }
         });
