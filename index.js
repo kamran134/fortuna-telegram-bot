@@ -1,5 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
+const momnet = require('moment');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -66,7 +67,7 @@ bot.on('message', async (msg) => {
             gameData = {date, startTime, endTime, location};
     
             pool.query('INSERT INTO games (game_date, game_starts, game_ends, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6)', 
-            [date, startTime, endTime, location, chatId, true])
+            [momnet(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, location, chatId, true])
                 .then(res => {
                     console.log('Successful', res);
                     bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime} в ${location}`);
@@ -94,7 +95,7 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
             }
             else {
-                const games = res.rows.map((row, index) => `Игра №${(index + 1)}\nДата: ${row.game_data}\nВремя: с ${row.game_starts} по ${row.game_ends}\nМесто: ${row.location}`);
+                const games = res.rows.map((row, index) => `Игра №${(index + 1)}\nДата: ${moment(row.game_data).format('DD.MM.YYYY')}\nВремя: с ${row.game_starts} по ${row.game_ends}\nМесто: ${row.location}`);
 
                 if (games.length === 0) {
                     bot.sendMessage(chatId, 'А игр ещё нет :(');
