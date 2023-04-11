@@ -97,13 +97,12 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
             }
             else {
-                const games = res.rows.map((row, index) => {
-                    gameButtons.push({text: `Запись на ${moment(row.game_data).format('DD.MM.YYYY')}`, callback_data: `game_${row.id}`});
-                    return (
+                res.rows.map((row, index) => gameButtons.push({text: `Запись на игру №${(index + 1)}`, callback_data: `game_${row.id}`}));
+                const games = res.rows.map((row, index) =>
                     `Игра №${(index + 1)}\n` +
                     `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
                     `    Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                    `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'})
+                    `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'
                 });
 
                 if (games.length === 0) {
@@ -171,17 +170,6 @@ bot.on('message', async (msg) => {
         });
     }
 
-    // if (command === '+' || command === 'плюс' || command === 'plus' || command === '/plus') {
-    //     pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) ' +
-    //     'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
-    //         .then(res => {
-    //             console.log('User inserted successfully');
-    //         })
-    //         .catch(err => {
-    //             console.error('Error inserting user', err);
-    //         });
-    // }
-
     if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') {
         const userId = msg.from.id;
         pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = ', [userId, msg.chat.id], (err, result) => {
@@ -196,23 +184,46 @@ bot.on('message', async (msg) => {
     }
 
     if (msg.text === '/список' || msg.text === '/list') {
-        pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
+        pool.query(`SELECT users.[last_name], users.[first_name], users.[username], games.[game_date] FROM game_users ` +
+            `LEFT JOIN users ON users.[id] = game_users.[user_id] ` +
+            `LEFT JOIN games ON games.[id] = game_users.[game_id] ` +
+            `WHERE chat_id = ${msg.chat.id} ORDER BY game_users.[game_id], game_users.[participate_time]`, (err, res) => {
+            
             if (err) {
                 console.error(err);
                 bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
                 return;
             }
+
+            const usersByGame = {};
             
-            const users = res.rows.map((row, index) => `${(index + 1)}. ${row.fullname}`);
+            res.rows.map(row => {
+                i = 1;
+                if (!usersByGame[row.game_id]) {
+                    i = 1;
+                    usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username}]
+                    i++;
+                } else {
+                    usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username}];
+                    i++;
+                }
+            });
+
+            // const users = res.rows.map((row, index) => `${(index + 1)}. ${row.first_name} ${row.last_name}`);
             
-            if (users.length === 0) {
+            if (res.rows.length === 0) {
                 bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
             } else {
-                bot.sendMessage(msg.chat.id, 'Записавшиеся:\n' + users.join('\n'));
+                for (const game_id in usersByGame) {
+                    const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
+                    const message = `Игра №${game_id}\n` +
+                                    `Участники:\n${users}`;
+                    bot.sendMessage(chatId, message);
+                  }
+                // bot.sendMessage(msg.chat.id, 'Записавшиеся:\n' + users.join('\n'));
             }
         });
     }
-      
 
     if (msg.text.toLowerCase() === '/очистить' && msg.from.id === 112254199) {
         users.length = 0;
@@ -235,6 +246,9 @@ bot.on('callback_query', (query) => {
         response = `@${username}, вы записаны на четверг`;
     } else if (query.data === 'sunday') {
         response = `@${username}, вы записаны на воскресенье`;
+    } else if (query.data.contains('game_')) {
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, $2, $3, $4)`, 
+        [query.data.substring(4), query.from.id, moment(new Date()).toISOString(), true]);
     }
   
     bot.sendMessage(chatId, response);
