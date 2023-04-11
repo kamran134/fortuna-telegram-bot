@@ -19,7 +19,9 @@ CREATE TABLE games (
     game_starts TIME,
     game_ends TIME,
     place TEXT,
-    quote INT
+    quote INT,
+    chat_id INT NOT NULL,
+    status BOOLEAN;
 );
 
 CREATE TABLE game_users (

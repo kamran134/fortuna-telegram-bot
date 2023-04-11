@@ -21,20 +21,11 @@ const pool = new Pool({
 
 const users = [];
 
-bot.command('/start', (ctx) => {
-    const keyboard = Markup.keyboard(['Привет']);
-    ctx.reply('Нажмите на кнопку "Привет"', keyboard);
-});
-
-bot.on('text', (ctx) => {
-    if (ctx.message.text === 'Привет') {
-      ctx.reply(`Привет, ${ctx.from.first_name}!`);
-    }
-});
-
 // Слушаем сообщения
 bot.on('message', async (msg) => {
-    command = msg.text.toLowerCase();
+    const command = msg.text.toLowerCase();
+    const messageText = msg.text;
+    const chatId = msg.chat.id;
     
     if (command === '/регистрация' || command === '/register' || command === '/register@fortunavolleybalbot') {
         pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
@@ -61,8 +52,57 @@ bot.on('message', async (msg) => {
         });
     }
 
-    if (command === '/startgame' && msg.from.id === 112254199) {
-        pool.query('INSERT INTO games')
+    if (messageText.startsWith('/startgame')) {
+        // Разбиваем текст команды на части
+        const parts = messageText.split(' - ');
+    
+        // Если указаны все данные, сохраняем их
+        if (parts.length === 5) {
+            const date = parts[1];
+            const startTime = parts[2];
+            const endTime = parts[3];
+            const location = parts[4];
+    
+            gameData = {date, startTime, endTime, location};
+    
+            pool.query('INSERT INTO games (game_date, game_starts, game_ends, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6)', 
+            [date, startTime, endTime, location, chatId, true])
+                .then(res => {
+                    console.log('Successful', res);
+                    bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime} в ${location}`);
+                })
+                .catch(err => console.error('Inserting error', err));
+        } else {
+            // Иначе запрашиваем недостающую информацию
+            await bot.sendMessage(chatId, 'Введите дату, время начала, время окончания и место проведения игры в формате: /startgame - дд.мм.гггг - hh:mm - hh:mm - место', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {text: 'День игры', callback_data: 'gameday'},
+                            {text: 'Время начала игры', callback_data: 'gamestart'}
+                        ]
+                    ]
+                }
+            });
+        }
+    }
+
+    if (command === '/showgames') {
+        pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
+            if (err) {
+                console.log(err);
+                bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
+            }
+            else {
+                const games = res.rows.map((row, index) => `Игра №${(index + 1)}\nДата: ${row.game_data}\nВремя: с ${row.game_starts} по ${row.game_ends}\nМесто: ${row.location}`);
+
+                if (games.length === 0) {
+                    bot.sendMessage(chatId, 'А игр ещё нет :(');
+                } else {
+                    bot.sendMessage(chatId, games.join('\n--------------------\n'));
+                }
+            }
+        });
     }
 
     // if (msg.text.toLowerCase() === '/tagall' || msg.text.toLowerCase() === '/отметитьвсех') {
@@ -103,16 +143,30 @@ bot.on('message', async (msg) => {
         bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
     }
 
-    if (command === '+' || command === 'плюс' || command === 'plus' || command === '/plus') {
-        pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) ' +
-        'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
-            .then(res => {
-                console.log('User inserted successfully');
-            })
-            .catch(err => {
-                console.error('Error inserting user', err);
-            });
+    if (msg.text === '+') {
+        const chatId = msg.chat.id;
+        bot.sendMessage(chatId, 'Выберите день:', {
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: 'На четверг', callback_data: 'thursday' },
+                        { text: 'На воскресенье', callback_data: 'sunday' },
+                    ]
+                ]
+            }
+        });
     }
+
+    // if (command === '+' || command === 'плюс' || command === 'plus' || command === '/plus') {
+    //     pool.query('INSERT INTO users (user_id, fullname, chat_id) VALUES ($1, $2, $3) ON CONFLICT (id) ' +
+    //     'DO NOTHING', [msg.from.id, msg.from.first_name + ' ' + msg.from.last_name, msg.chat.id])
+    //         .then(res => {
+    //             console.log('User inserted successfully');
+    //         })
+    //         .catch(err => {
+    //             console.error('Error inserting user', err);
+    //         });
+    // }
 
     if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') {
         const userId = msg.from.id;
@@ -156,4 +210,18 @@ bot.on('message', async (msg) => {
         // Отправляем ответное сообщение
         bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
     }
+});
+
+bot.on('callback_query', (query) => {
+    const chatId = query.message.chat.id;
+    const username = query.from.username;
+  
+    let response;
+    if (query.data === 'thursday') {
+        response = `@${username}, вы записаны на четверг`;
+    } else if (query.data === 'sunday') {
+        response = `@${username}, вы записаны на воскресенье`;
+    }
+  
+    bot.sendMessage(chatId, response);
 });
