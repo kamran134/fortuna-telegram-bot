@@ -18,19 +18,6 @@ const pool = new Pool({
 
 const users = [];
 
-bot.getChatMembersCount(chatId).then((count) => {
-    for (let i = 0; i < count; i++) {
-      bot.getChatMember(chatId, i).then((member) => {
-        const firstName = member.user.first_name;
-        const lastName = member.user.last_name || '';
-        const fullName = `${firstName} ${lastName}`;
-        const mention = `@${member.user.username}`;
-        
-        // здесь вы можете использовать переменную `mention` для упоминания участника в сообщении
-      });
-    }
-});
-
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     if (msg.text.toLowerCase() === '/регистрация' || msg.text.toLowerCase() === '/register') {
