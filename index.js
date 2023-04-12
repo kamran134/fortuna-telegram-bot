@@ -27,7 +27,7 @@ const users = [];
 
 // Слушаем сообщения
 bot.on('message', async (msg) => {
-    const command = msg.text.toLowerCase();
+    const command = (msg.text | '').toLowerCase();
     const messageText = msg.text;
     
     if (command === '/регистрация' || command === '/register' || command === '/register@fortunavolleybalbot') commands.register(pool, msg, bot);
