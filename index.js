@@ -35,7 +35,7 @@ bot.on('message', async (msg) => {
     if (messageText.startsWith('/startgame')) commands.startgame(pool, msg, bot);
     if (messageText.startsWith('/showgames')) commands.showgames(pool, msg, bot);
     if (command === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
-    if (msg.text.toLowerCase() === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
+    if (command === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
     if (msg.text === '+') commands.plus(pool, msg, bot);
     if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') commands.minus(pool, msg, bot);
     if (msg.text === '/список' || msg.text === '/list') commands.getList(pool, msg, bot);
