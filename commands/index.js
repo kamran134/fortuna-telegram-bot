@@ -29,19 +29,20 @@ async function startgame(pool, msg, bot) {
     const chatId = msg.chat.id;
     
     // Разбиваем текст команды на части
-    const parts = messageText.split(' - ');
+    const parts = messageText.split('/');
     
     // Если указаны все данные, сохраняем их
     if (parts.length === 5) {
-        const date = parts[1];
-        const startTime = parts[2];
-        const endTime = parts[3];
-        const location = parts[4];
+        const date = parts[0];
+        const startTime = parts[1];
+        const endTime = parts[2];
+        const location = parts[3];
+        const quote = parts[4];
 
-        gameData = {date, startTime, endTime, location};
+        // gameData = {date, startTime, endTime, location};
 
-        pool.query('INSERT INTO games (game_date, game_starts, game_ends, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6)', 
-        [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, location, chatId, true])
+        pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6, $7)', 
+        [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, true])
             .then(res => {
                 console.log('Successful', res);
                 bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime}. Место: ${location}`, {
@@ -49,6 +50,7 @@ async function startgame(pool, msg, bot) {
                         inline_keyboard: [
                             [
                                 {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: 'appointment'},
+                                {text: 'Dəqiq deyil / Не точно', callback_data: 'notexactly'}
                                 // {text: 'Время начала игры', callback_data: 'gamestart'}
                             ]
                         ]
