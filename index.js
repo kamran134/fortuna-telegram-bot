@@ -28,7 +28,7 @@ const users = [];
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     const command = msg.text ? msg.text.toLowerCase() : '';
-    const messageText = msg.text;
+    const messageText = msg.text ? msg.text : '';
     
     if (command === '/регистрация' || command === '/register' || command === '/register@fortunavolleybalbot') commands.register(pool, msg, bot);
     if (command === '/tagregistered' || command === '/tagregistered@fortunavolleybalbot') commands.tagregistered(pool, msg, bot);
