@@ -213,6 +213,8 @@ bot.on('message', async (msg) => {
                 for (const game_id in usersByGame) {
 
                     console.log('GAME ID: ', game_id);
+                    
+                    if (!game_id) return;
 
                     const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
                     const message = `Игра на ${moment(user.game_date).format("DD.MM.YYYY")}\n` +
