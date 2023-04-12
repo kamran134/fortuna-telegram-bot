@@ -119,14 +119,13 @@ function getList(pool, msg, bot) {
             } else usersByGame[row.game_date] = [...usersByGame[row.game_date], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
             i++;
         });
+
+        bot.sendMessage(chatId, usersByGame);
         
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
         } else {
             for (const game_date of Object.keys(usersByGame)) {
-
-                console.log('GAME ID: ', game_date);
-                
                 if (!game_date) return;
 
                 const users = usersByGame[game_date].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
