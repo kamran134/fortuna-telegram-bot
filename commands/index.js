@@ -108,7 +108,7 @@ function getList(pool, msg, bot) {
         }
 
         const usersByGame = {};
-        const resultMessage = "";
+        const resultMessage = [];
 
         res.rows.map(row => {
             i = 1;
@@ -130,13 +130,14 @@ function getList(pool, msg, bot) {
                 if (!game_date) return;
 
                 const users = usersByGame[game_date].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
-                resultMessage += `Игра на ${moment(game_date).format("DD.MM.YYYY")}:\n` +
-                                `Участники:\n${users}\n` +
-                                `------------------------------------------------------`;
+                const message = `Игра на ${moment(game_date).format("DD.MM.YYYY")}:\n` +
+                                `Участники:\n${users}`;
+
+                resultMessage.push(message)
                 // bot.sendMessage(chatId, message);
             }
             
-            bot.sendMessage(msg.chat.id, resultMessage);
+            bot.sendMessage(msg.chat.id, resultMessage.join('\n--------------------------------\n'));
         }
     });
 }
