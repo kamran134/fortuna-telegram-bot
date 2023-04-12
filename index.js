@@ -239,7 +239,9 @@ bot.on('message', async (msg) => {
 bot.on('callback_query', (query) => {
     const chatId = query.message.chat.id;
     const username = query.from.username;
-  
+
+    console.log('callback_query: ', query);
+
     let response;
     if (query.data === 'thursday') {
         response = `@${username}, вы записаны на четверг`;
