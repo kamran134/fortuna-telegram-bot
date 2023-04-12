@@ -4,7 +4,8 @@ function register(pool, msg, bot) {
     pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
             .then(res => console.log('Successful', res))
-            .catch(err => console.error('Inserting error', err));
+            .catch(err => console.error('Inserting error', err))
+            .finally(() => pool.end());
 }
 
 function tagregistered(pool, msg, bot) {
@@ -22,6 +23,8 @@ function tagregistered(pool, msg, bot) {
         } else {
             bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + users.join('\n'));
         }
+
+        pool.end();
     });
 }
 
@@ -54,7 +57,8 @@ async function startgame(pool, msg, bot) {
                         ]
                     }});
             })
-            .catch(err => console.error('Inserting error', err));
+            .catch(err => console.error('Inserting error', err))
+            .finally(() => pool.end());
     } else {
         // Иначе запрашиваем недостающую информацию
         await bot.sendMessage(chatId, 'Введите дату, время начала, время окончания и место проведения игры в формате: /startgame - дд.мм.гггг - hh:mm - hh:mm - место');
@@ -90,6 +94,8 @@ function showgames(pool, msg, bot) {
                 });
             }
         }
+
+        pool.end();
     });
 }
 
@@ -139,6 +145,8 @@ function getList(pool, msg, bot) {
             
             bot.sendMessage(msg.chat.id, resultMessage.join('\n--------------------------------\n'));
         }
+
+        pool.end();
     });
 }
 
@@ -167,6 +175,8 @@ function minus(pool, msg, bot) {
             console.log(`Deleted ${result.rowCount} row(s) from the database`);
             bot.sendMessage(msg.chat.id, `Вы были удалены из списка игроков, ${msg.from.first_name}`);
         }
+
+        pool.end();
     });
 }
 
