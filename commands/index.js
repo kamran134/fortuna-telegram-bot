@@ -174,8 +174,7 @@ function agilliol(pool, msg, bot) {
             return;
         }
         
-        const agilliolMessage = `@${res.rows[0].username}, ağıllı ol!`;
-        bot.sendMessage(msg.chat.id, agilliolMessage);
+        if (res.rows && res.rows[0] && res.rows[0].username) bot.sendMessage(msg.chat.id, `@${res.rows[0].username}, ağıllı ol!`);
     });
 }
 
