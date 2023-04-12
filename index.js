@@ -202,19 +202,18 @@ bot.on('message', async (msg) => {
                 if (!usersByGame[row.game_id]) {
                     i = 1;
                     usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
-                    i++;
-                } else {
-                    usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
-                    i++;
-                }
+                    
+                } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+                i++;
             });
-
-            // const users = res.rows.map((row, index) => `${(index + 1)}. ${row.first_name} ${row.last_name}`);
             
             if (res.rows.length === 0) {
                 bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
             } else {
                 for (const game_id in usersByGame) {
+
+                    console.log('GAME ID: ', game_id);
+
                     const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
                     const message = `Игра на ${moment(user.game_date).format("DD.MM.YYYY")}\n` +
                                     `Участники:\n${users}`;
@@ -247,11 +246,11 @@ bot.on('callback_query', (query) => {
     } else if (query.data === 'sunday') {
         response = `@${username}, вы записаны на воскресенье`;
     } else if (query.data.startsWith('game_')) {
-        console.log('user clicked, user id: ' + query.from.id);
-        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.user_id = $2), $3, $4)`, 
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.user_id = $2), $3, $4) ` +
+            `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
         [query.data.substring(5), query.from.id, moment(new Date()).toISOString(), true])
             .then(res => console.log(res))
-            .catch(err => console.log('insert error: ', err));
+            .catch(err => console.log('INSERT ERROR___: ', err));
     }
   
     bot.sendMessage(chatId, response);
