@@ -27,19 +27,19 @@ const users = [];
 
 // Слушаем сообщения
 bot.on('message', async (msg) => {
-    const messageText = msg.text && msg.text.startsWith('/') ? `${msg.text.toLowerCase()}@fortunavolleybalbot` : msg.text ? msg.text.toLowerCase() : '';
+    const messageText = msg.text && msg.text.startsWith('/') ? `${msg.text.toLowerCase()}@fortunaVolleybalBot` : msg.text ? msg.text.toLowerCase() : '';
     
-    if (messageText === '/register@fortunavolleybalbot') commands.register(pool, msg, bot);
-    if (messageText === '/tagregistered@fortunavolleybalbot') commands.tagregistered(pool, msg, bot);
-    if (messageText === '/startgame@fortunavolleybalbot') commands.startgame(pool, msg, bot);
-    if (messageText === '/showgames@fortunavolleybalbot') commands.showgames(pool, msg, bot);
+    if (messageText === '/register@fortunaVolleybalBot') commands.register(pool, msg, bot);
+    if (messageText === '/tagregistered@fortunaVolleybalBot') commands.tagregistered(pool, msg, bot);
+    if (messageText === '/startgame@fortunaVolleybalBot') commands.startgame(pool, msg, bot);
+    if (messageText === '/showgames@fortunaVolleybalBot') commands.showgames(pool, msg, bot);
     if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
     if (messageText === '+') commands.plus(pool, msg, bot);
-    if (messageText === '-' || messageText === 'минус' || messageText === 'minus' || messageText === '/minus@fortunavolleybalbot') commands.minus(pool, msg, bot);
-    if (messageText === '/список@fortunavolleybalbot' || messageText === '/list@fortunavolleybalbot') commands.getList(pool, msg, bot);
+    if (messageText === '-' || messageText === 'минус' || messageText === 'minus' || messageText === '/minus@fortunaVolleybalBot') commands.minus(pool, msg, bot);
+    if (messageText === '/список@fortunaVolleybalBot' || messageText === '/list@fortunaVolleybalBot') commands.getList(pool, msg, bot);
     if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
-    if (messageText === '/agilliol@fortunavolleybalbot' || messageText === '/ağıllı ol@fortunavolleybalbot') commands.agilliol(pool, msg, bot);
+    if (messageText === '/agilliol@fortunaVolleybalBot' || messageText === '/ağıllı ol@fortunaVolleybalBot') commands.agilliol(pool, msg, bot);
 });
 
 bot.on('callback_query', (query) => {
