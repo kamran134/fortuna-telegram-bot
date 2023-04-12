@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 function register(pool, msg, bot) {
     pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
@@ -131,7 +133,8 @@ function getList(pool, msg, bot) {
                                 `Участники:\n${users}`;
                 // bot.sendMessage(chatId, message);
             }
-            // bot.sendMessage(msg.chat.id, 'Записавшиеся:\n' + users.join('\n'));
+            
+            bot.sendMessage(msg.chat.id, 'Записавшиеся:\n' + users.join('\n'));
         }
     });
 }
