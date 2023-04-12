@@ -96,7 +96,7 @@ function showgames(pool, msg, bot) {
 function getList(pool, msg, bot) {
     const chatId = msg.chat.id;
 
-    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date FROM game_users ` +
+    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id FROM game_users ` +
         `LEFT JOIN users ON users.id = game_users.user_id ` +
         `LEFT JOIN games ON games.id = game_users.game_id ` +
         `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
@@ -112,11 +112,11 @@ function getList(pool, msg, bot) {
 
         res.rows.map(row => {
             i = 1;
-            if (!usersByGame[row.game_date]) {
+            if (!usersByGame[row.game_id]) {
                 i = 1;
-                usersByGame[row.game_date] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
+                usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
                 
-            } else usersByGame[row.game_date] = [...usersByGame[row.game_date], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
             i++;
         });
 
@@ -125,11 +125,11 @@ function getList(pool, msg, bot) {
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
         } else {
-            for (const game_date of Object.keys(usersByGame)) {
-                if (!game_date) return;
+            for (const game_id of Object.keys(usersByGame)) {
+                if (!game_id) return;
 
                 const users = usersByGame[game_date].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
-                const message = `Игра на ${moment(game_date).format("DD.MM.YYYY")}:\n` +
+                const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
                                 `Участники:\n${users}`;
 
                 resultMessage.push(message)
