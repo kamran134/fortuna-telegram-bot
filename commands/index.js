@@ -3,7 +3,7 @@ const moment = require('moment');
 function register(pool, msg, bot) {
     pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
-            .then(res => console.log('Successful', res))
+            .then(res => bot.sendMessage(msg.chat.id, "Siz uğurla botda qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в боте"))
             .catch(err => console.error('Inserting error', err));
 }
 
@@ -119,8 +119,6 @@ function getList(pool, msg, bot) {
             } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
             i++;
         });
-
-        bot.sendMessage(chatId, JSON.stringify(usersByGame));
         
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
@@ -168,6 +166,19 @@ function minus(pool, msg, bot) {
     });
 }
 
+function agilliol(pool, msg, bot) {
+    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
+        if (err) {
+            console.error(err);
+            bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
+            return;
+        }
+        
+        const agilliolMessage = `@${res.rows[0].username}, ağıllı ol!`;
+        bot.sendMessage(msg.chat.id, agilliolMessage);
+    });
+}
+
 module.exports = {
     register,
     tagregistered,
@@ -175,5 +186,6 @@ module.exports = {
     showgames,
     plus,
     minus,
-    getList
+    getList,
+    agilliol
 }

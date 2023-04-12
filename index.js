@@ -40,6 +40,7 @@ bot.on('message', async (msg) => {
     if (command === '-' || command === 'минус' || command === 'minus' || command === '/minus') commands.minus(pool, msg, bot);
     if (msg.text === '/список' || msg.text === '/list') commands.getList(pool, msg, bot);
     if (msg.text === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
+    if (command === '/agilliol' || command === '/ağıllı ol') commands.agilliol(pool, msg, bot);
 });
 
 bot.on('callback_query', (query) => {
