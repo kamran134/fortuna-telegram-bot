@@ -29,7 +29,6 @@ const users = [];
 bot.on('message', async (msg) => {
     const command = msg.text.toLowerCase();
     const messageText = msg.text;
-    const chatId = msg.chat.id;
     
     if (command === '/регистрация' || command === '/register' || command === '/register@fortunavolleybalbot') commands.register(pool, msg, bot);
     if (command === '/tagregistered' || command === '/tagregistered@fortunavolleybalbot') commands.tagregistered(pool, msg, bot);
