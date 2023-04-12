@@ -126,7 +126,7 @@ function getList(pool, msg, bot) {
                 
                 if (!game_date) return;
 
-                const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
+                const users = usersByGame[game_date].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
                 const message = `Игра на ${moment(game_date).format("DD.MM.YYYY")}\n` +
                                 `Участники:\n${users}`;
                 // bot.sendMessage(chatId, message);
