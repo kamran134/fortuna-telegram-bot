@@ -8,9 +8,10 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT,
-    user_id BIGINT UNIQUE NOT NULL,
+    user_id BIGINT NOT NULL,
     chat_id BIGINT NOT NULL,
-    username TEXT
+    username TEXT,
+    UNIQUE(user_id, chat_id)
 );
 
 CREATE TABLE games (
