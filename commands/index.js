@@ -111,15 +111,12 @@ function getList(pool, msg, bot) {
         const resultMessage = [];
 
         res.rows.map(row => {
-            i = 1;
+            let i = 1;
             if (!usersByGame[row.game_id]) {
                 i = 1;
                 usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
-                i++;
-            } else {
-                usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
-                i++;
-            }
+            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+            i++;
         });
 
         bot.sendMessage(chatId, JSON.stringify(usersByGame));
