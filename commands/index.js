@@ -123,7 +123,7 @@ function getList(pool, msg, bot) {
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
         } else {
-            for (const game_date in usersByGame) {
+            for (const game_date of Object.keys(usersByGame)) {
 
                 console.log('GAME ID: ', game_date);
                 
