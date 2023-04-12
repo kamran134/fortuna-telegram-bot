@@ -116,7 +116,7 @@ function getList(pool, msg, bot) {
                 i = 1;
                 usersByGame[row.game_date] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
                 
-            } else usersByGame[row.game_date] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+            } else usersByGame[row.game_date] = [...usersByGame[row.game_date], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
             i++;
         });
         
