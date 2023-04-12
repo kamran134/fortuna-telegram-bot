@@ -109,9 +109,10 @@ function getList(pool, msg, bot) {
 
         const usersByGame = {};
         const resultMessage = [];
+        
+        let i = 1;
 
-        res.rows.map(row => {
-            let i = 1;
+        res.rows.forEach(row => {    
             if (!usersByGame[row.game_id]) {
                 i = 1;
                 usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
