@@ -120,7 +120,7 @@ function getList(pool, msg, bot) {
             i++;
         });
 
-        bot.sendMessage(chatId, usersByGame);
+        bot.sendMessage(chatId, JSON.stringify(usersByGame));
         
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
