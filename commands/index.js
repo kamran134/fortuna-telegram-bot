@@ -114,10 +114,12 @@ function getList(pool, msg, bot) {
             i = 1;
             if (!usersByGame[row.game_id]) {
                 i = 1;
-                usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}]
-                
-            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
-            i++;
+                usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+                i++;
+            } else {
+                usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+                i++;
+            }
         });
 
         bot.sendMessage(chatId, JSON.stringify(usersByGame));
@@ -132,8 +134,7 @@ function getList(pool, msg, bot) {
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
                                 `Участники:\n${users}`;
 
-                resultMessage.push(message)
-                // bot.sendMessage(chatId, message);
+                resultMessage.push(message);
             }
             
             bot.sendMessage(msg.chat.id, resultMessage.join('\n--------------------------------\n'));
