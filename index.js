@@ -31,7 +31,7 @@ bot.on('message', async (msg) => {
 
     if (messageText === '/register') commands.register(pool, msg, bot);
     if (messageText === '/tagregistered') commands.tagregistered(pool, msg, bot);
-    if (messageText === '/startgame' || isAdmin) {
+    if (messageText === '/startgame' && isAdmin) {
         bot.sendMessage(msg.chat.id, 'Введите дату проведения игры, время начала, время конца, количество мест и место проведения игры в формате:\n' +
         'ДД.ММ.ГГГГ/чч:мм/чч:мм/количество мест/место проведения', {reply_to_message_id: msg.message_id});
         
@@ -42,6 +42,7 @@ bot.on('message', async (msg) => {
                 return;
             } else {
                 commands.startgame(pool, msgOnce, bot);
+                return;
             }
         });
         // commands.startgame(pool, msg, bot);
