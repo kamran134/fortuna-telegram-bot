@@ -41,7 +41,7 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(msg.chat.id, "Неверный формат");
                 return;
             } else {
-                commands.startgame(pool, msgOnce.text, bot);
+                commands.startgame(pool, msgOnce, bot);
             }
         });
         // commands.startgame(pool, msg, bot);
