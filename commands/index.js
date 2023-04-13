@@ -36,8 +36,8 @@ async function startgame(pool, msg, bot) {
         const date = parts[0];
         const startTime = parts[1];
         const endTime = parts[2];
-        const location = parts[3];
-        const quote = parts[4];
+        const quote = parts[3];
+        const location = parts[4];
 
         // gameData = {date, startTime, endTime, location};
 
