@@ -36,8 +36,8 @@ bot.on('message', async (msg) => {
         'ДД.ММ.ГГГГ/чч:мм/чч:мм/количество мест/место проведения', {reply_to_message_id: msg.message_id});
         
         bot.once("message", async (msgOnce) => {
-            console.log('msgOnce: ', msgOnce);
-            if (!/^\d{2}\.\d{2}\.\d{4}\/\d{2}:\d{2}\/\d{2}:\d{2}\/\d+\/[\s\S]+$/.test(msgOnce)) {
+            //console.log('msgOnce: ', msgOnce);
+            if (!/^\d{2}\.\d{2}\.\d{4}\/\d{2}:\d{2}\/\d{2}:\d{2}\/\d+\/[\s\S]+$/.test(msgOnce.text)) {
                 bot.sendMessage(msg.chat.id, "Неверный формат");
                 return;
             } else {
