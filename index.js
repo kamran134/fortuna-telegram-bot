@@ -30,8 +30,8 @@ bot.on('message', async (msg) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (messageText === '/register') commands.register(pool, msg, bot);
-    if (messageText === '/tagregistered') commands.tagregistered(pool, msg, bot);
-    if (messageText === '/startgame' && isAdmin) {
+    else if (messageText === '/tagregistered') commands.tagregistered(pool, msg, bot);
+    else if (messageText === '/startgame' && isAdmin) {
         bot.sendMessage(msg.chat.id, 'Введите дату проведения игры, время начала, время конца, количество мест и место проведения игры в формате:\n' +
         'ДД.ММ.ГГГГ/чч:мм/чч:мм/количество мест/место проведения', {reply_to_message_id: msg.message_id});
         
@@ -47,14 +47,15 @@ bot.on('message', async (msg) => {
         });
         // commands.startgame(pool, msg, bot);
     }
-    if (messageText === '/showgames') commands.showgames(pool, msg, bot);
-    if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
-    if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
-    if (messageText === '+') commands.plus(pool, msg, bot);
-    if (messageText === '-' || messageText === 'минус' || messageText === 'minus' || messageText === '/minus') commands.minus(pool, msg, bot);
-    if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
-    if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
-    if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
+    else if (messageText === '/startgame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
+    else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
+    else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
+    else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
+    else if (messageText === '+') commands.plus(pool, msg, bot);
+    else if (messageText === '-' || messageText === 'минус' || messageText === 'minus' || messageText === '/minus') commands.minus(pool, msg, bot);
+    else if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
+    else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
+    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
 });
 
 bot.on('callback_query', (query) => {
