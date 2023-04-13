@@ -98,10 +98,10 @@ function showgames(pool, msg, bot) {
 function getList(pool, msg, bot) {
     const chatId = msg.chat.id;
 
-    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id FROM game_users ` +
+    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id, game_users.exactly FROM game_users ` +
         `LEFT JOIN users ON users.id = game_users.user_id ` +
         `LEFT JOIN games ON games.id = game_users.game_id ` +
-        `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.participate_time`, (err, res) => {
+        `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.exactly, game_users.participate_time`, (err, res) => {
 
         if (err) {
             console.error(err);
@@ -128,7 +128,7 @@ function getList(pool, msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
+                const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '*' : ''}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
                                 `Участники:\n${users}`;
 
