@@ -75,13 +75,17 @@ bot.on('callback_query', (query) => {
             .then(res => console.log(res))
             .catch(err => console.log('INSERT ERROR___: ', err));
     } else if (query.data === 'appointment') {
-        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.user_id = $2), $3, TRUE) ` +
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1), (SELECT id FROM users u WHERE u.user_id = $2), $3, TRUE) ` +
             `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
-        [query.data.substring(5), query.from.id, moment(new Date()).toISOString(), true])
+        [query.message.chat.id, query.from.id, moment(new Date()).toISOString(), true])
             .then(res => console.log(res))
             .catch(err => console.log('INSERT ERROR___: ', err));
     } else if (query.data === 'notexactly') {
-
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1), (SELECT id FROM users u WHERE u.user_id = $2), $3, TRUE) ` +
+        `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
+        [query.message.chat.id, query.from.id, moment(new Date()).toISOString(), false])
+            .then(res => console.log(res))
+            .catch(err => console.log('INSERT ERROR___: ', err));
     }
 
     bot.sendMessage(chatId, response);
