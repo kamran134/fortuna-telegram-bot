@@ -117,8 +117,12 @@ function getList(pool, msg, bot) {
         res.rows.forEach(row => {    
             if (!usersByGame[row.game_id]) {
                 i = 1;
-                usersByGame[row.game_id] = [{ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
-            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date}];
+                usersByGame[row.game_id] = [{
+                    ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date, exactly: row.exactly
+                }];
+            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {
+                ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date, exactly: row.exactly
+            }];
             i++;
         });
         
