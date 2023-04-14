@@ -31,24 +31,11 @@ bot.on('message', async (msg) => {
 
     if (messageText === '/register') commands.register(pool, msg, bot);
     else if (messageText === '/tagregistered') commands.tagregistered(pool, msg, bot);
-    else if (messageText.startsWith('/startgame') && isAdmin) {
-        // bot.sendMessage(msg.chat.id, 'Введите дату проведения игры, время начала, время конца, количество мест и место проведения игры в формате:\n' +
-        // 'ДД.ММ.ГГГГ/чч:мм/чч:мм/количество мест/место проведения', {reply_to_message_id: msg.message_id});
-        
-        // bot.once("message", async (msgOnce) => {
-        //     //console.log('msgOnce: ', msgOnce);
-        //     if (!/^\d{2}\.\d{2}\.\d{4}\/\d{2}:\d{2}\/\d{2}:\d{2}\/\d+\/[\s\S]+$/.test(msgOnce.text)) {
-        //         bot.sendMessage(msg.chat.id, "Неверный формат");
-        //         return;
-        //     } else {
-        //         commands.startgame(pool, msgOnce, bot);
-        //         return;
-        //     }
-        // });
-        commands.startgame(pool, msg, bot);
-    }
-    else if (messageText === '/startgame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
+    else if (messageText.startsWith('/startgame') && isAdmin) commands.startgame(pool, msg, bot);
+    else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
+    else if (messageText === '/deletegame') {}
+    else if (messageText === '/deactivegame') {}
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
     // else if (messageText === '+') commands.plus(pool, msg, bot);
@@ -82,8 +69,9 @@ bot.on('callback_query', (query) => {
         const [day, month, year] = dateString.split('.');
         const gameDate = new Date(year, month - 1, day);
 
-        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT id FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, TRUE) ` +
-            `ON CONFLICT (user_id, game_id)  DO UPDATE SET exactly = TRUE, participate_time = $3;`, 
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
+            `VALUES ((SELECT LAST(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, TRUE) ` +
+            `ON CONFLICT (user_id, game_id)  DO UPDATE SET exactly = TRUE, participate_time = $4;`, 
         [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
@@ -97,8 +85,9 @@ bot.on('callback_query', (query) => {
         const [day, month, year] = dateString.split('.');
         const gameDate = new Date(year, month - 1, day);
 
-        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT id FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, FALSE) ` +
-        `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = FALSE;`, 
+        pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
+            `VALUES ((SELECT LAST(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, FALSE) ` +
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = FALSE;`, 
         [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
@@ -111,7 +100,7 @@ bot.on('callback_query', (query) => {
         const [day, month, year] = dateString.split('.');
         const gameDate = new Date(year, month - 1, day);
 
-        pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = (SELECT id FROM games g WHERE g.game_date = $2);`, [query.from.id, moment(gameDate).toISOString()])
+        pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = (SELECT LAST(id) FROM games g WHERE g.game_date = $2);`, [query.from.id, moment(gameDate).toISOString()])
             .then(res => {
                 console.log(res);
                 bot.sendMessage(chatId, `@${username} удирает с игры. Бейте предателя!`)
