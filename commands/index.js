@@ -105,7 +105,7 @@ function showgames(pool, msg, bot) {
 function getList(pool, msg, bot) {
     const chatId = msg.chat.id;
 
-    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id, game_users.exactly FROM game_users ` +
+    pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id, game_users.exactly, games.quote FROM game_users ` +
         `LEFT JOIN users ON users.id = game_users.user_id ` +
         `LEFT JOIN games ON games.id = game_users.game_id ` +
         `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.exactly DESC, game_users.participate_time`, (err, res) => {
@@ -128,11 +128,13 @@ function getList(pool, msg, bot) {
                     users: [{
                         ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, exactly: row.exactly
                     }],
-                    gameDate: row.game_date
+                    game_date: row.game_date,
+                    quote: row.quote
                 };
             } else usersByGame[row.game_id] = {
                 users: [...usersByGame[row.game_id].users, {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, exactly: row.exactly}],
-                gameDate: row.game_date
+                game_gate: row.game_date,
+                quote: row.quote
             };
 
             i++;
@@ -148,7 +150,8 @@ function getList(pool, msg, bot) {
 
                 const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
-                                `Участники:\n${users}`;
+                                `Участники:\n${users}\n\n` +
+                                `Осталось мест: ${(usersByGame[game_id].quote - usersByGame[game_id].users.length)}`;
 
                 resultMessage.push(message);
             }
