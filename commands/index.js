@@ -95,7 +95,7 @@ function showgames(pool, msg, bot) {
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
         }
         else {
-            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}, {text: `Деактивизировать игру: `, callback_data: `deletegame_${row.id}`}]));
+            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}, {text: `Деактивизировать игру`, callback_data: `deletegame_${row.id}`}]));
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
@@ -108,7 +108,7 @@ function showgames(pool, msg, bot) {
             } else {
                 bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
                     reply_markup: {
-                        inline_keyboard: [gameButtons]
+                        inline_keyboard: [...gameButtons]
                     }
                 });
             }
