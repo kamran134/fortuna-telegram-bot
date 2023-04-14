@@ -40,8 +40,12 @@ function declineAppointment(pool, query, bot) {
     pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = $2 RETURNING (SELECT g.label FROM games g WHERE g.id = $2);`, [user.id, gameId])
         .then(res => {
             console.log(res);
-            const gameLabel = res.rows[0].label;
-            bot.sendMessage(chatId, `@${user.username} удирает с игры на ${gameLabel}. Бейте предателя!`)
+            if (res.rows.length > 0) {
+                const gameLabel = res.rows[0].label;
+                bot.sendMessage(chatId, `@${user.username} удирает с игры на ${gameLabel}. Бейте предателя!`);
+            } else {
+                bot.sendMessage(chatId, `Произошла ошибка при удалении челика из игры. Видимо челик и так не был в игре, но тыкал кнопку`);
+            }
         })
         .catch(err => console.log('DELETE ERROR___: ', err));
 }
