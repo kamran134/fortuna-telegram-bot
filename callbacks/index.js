@@ -38,7 +38,8 @@ function declineAppointment(pool, query, bot) {
     const gameId = query.data.replace('decline_', '');
 
     pool.query(`DELETE FROM game_users WHERE ` +
-        `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 RETURNING (SELECT g.label FROM games g WHERE g.id = 3);`, [user.id, chatId, gameId])
+        `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +
+        `RETURNING (SELECT g.label FROM games g WHERE g.id = $3);`, [user.id, chatId, gameId])
         .then(res => {
             console.log(res);
             if (res.rows.length > 0) {
