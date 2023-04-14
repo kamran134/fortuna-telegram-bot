@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 function appointmentToTheGame(pool, query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
