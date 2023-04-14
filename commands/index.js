@@ -50,8 +50,10 @@ async function startgame(pool, msg, bot) {
                 return;
             }
             else {
-                taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
-                
+                if (res.row.length > 0) {
+                    taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
+                }
+                 
                 pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
                     [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
                     .then(res => {
@@ -72,7 +74,7 @@ async function startgame(pool, msg, bot) {
                             }});
                     })
                     .catch(err => console.error('Inserting error', err));
-            }
+                }
         });
     } else {
         await bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
