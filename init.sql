@@ -22,7 +22,8 @@ CREATE TABLE games (
     place TEXT,
     quote INT,
     chat_id BIGINT NOT NULL,
-    status BOOLEAN
+    status BOOLEAN,
+    label TEXT
 );
 
 CREATE TABLE game_users (

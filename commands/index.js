@@ -32,34 +32,39 @@ async function startgame(pool, msg, bot) {
     const parts = msg.text.split('/');
     
     // Если указаны все данные, сохраняем их
-    if (parts.length === 5) {
+    if (parts.length === 6) {
         const date = parts[0];
         const startTime = parts[1];
         const endTime = parts[2];
         const quote = parts[3];
         const location = parts[4];
+        const label = parts[5];
 
         // gameData = {date, startTime, endTime, location};
 
-        pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status) VALUES ($1, $2, $3, $4, $5, $6, $7)', 
-        [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, true])
+        pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
+        [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
             .then(res => {
-                console.log('Successful', res);
+                console.log('Successful res', res);
                 bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime}. Место: ${location}`, {
                     reply_markup: {
                         inline_keyboard: [
                             [
-                                {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: 'appointment'},
-                                {text: 'Dəqiq deyil / Не точно', callback_data: 'notexactly'}
-                                // {text: 'Время начала игры', callback_data: 'gamestart'}
+                                {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
+                            ],
+                            [
+                                {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
+                            ],
+                            [
+                                {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
                             ]
                         ]
                     }});
             })
             .catch(err => console.error('Inserting error', err));
     } else {
-        // Иначе запрашиваем недостающую информацию
-        await bot.sendMessage(chatId, 'Введите дату, время начала, время окончания и место проведения игры в формате: /startgame - дд.мм.гггг - hh:mm - hh:mm - место');
+        await bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
+        '\/место проведения\/название игры\`');
     }
 }
 
@@ -74,13 +79,13 @@ function showgames(pool, msg, bot) {
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
         }
         else {
-            res.rows.map((row, index) => gameButtons.push({text: `Запись на игру №${(index + 1)}`, callback_data: `game_${row.id}`}));
+            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}]));
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
                 `    Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'
-            });
+                `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'}
+            );
 
             if (games.length === 0) {
                 bot.sendMessage(chatId, 'А игр ещё нет :(');
