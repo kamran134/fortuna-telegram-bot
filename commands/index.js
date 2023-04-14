@@ -56,21 +56,22 @@ async function startgame(pool, msg, bot) {
                 taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
             }
                 
-            pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
+            pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id', 
                 [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
                 .then(res => {
                     console.log('Successful res', res);
+                    const gameId = res.rows[0].id;
                     bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
                         reply_markup: {
                             inline_keyboard: [
                                 [
-                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
+                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${id}`},
                                 ],
                                 [
-                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
+                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${id}`},
                                 ],
                                 [
-                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
+                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${id}`}
                                 ]
                             ]
                         }});
@@ -95,7 +96,8 @@ function showgames(pool, msg, bot) {
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
         }
         else {
-            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}, {text: `Деактивизировать игру`, callback_data: `deletegame_${row.id}`}]));
+            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `appointment_${row.id}`},
+                {text: `Закрыть игру`, callback_data: `deactivegame_${row.id}`}]));
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
