@@ -73,9 +73,9 @@ bot.on('callback_query', async (query) => {
         const gameDate = new Date(year, month - 1, day);
 
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
-            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, TRUE) ` +
+            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3 AND u.chat_id = $1), $4, TRUE) ` +
             `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4;`, 
-        [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
+        [chatId, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
                 bot.sendMessage(chatId, `@${username}, вы записались на ${dateString}!`);
@@ -89,9 +89,9 @@ bot.on('callback_query', async (query) => {
         const gameDate = new Date(year, month - 1, day);
 
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
-            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, FALSE) ` +
+            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3 AND u.chat_id = $1), $4, FALSE) ` +
             `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = FALSE;`, 
-        [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
+        [chatId, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
                 bot.sendMessage(chatId, `@${username}, вы записались на ${dateString}! https://youtu.be/V5MD0Zwhfb0`);

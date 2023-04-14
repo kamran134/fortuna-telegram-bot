@@ -42,6 +42,8 @@ async function startgame(pool, msg, bot) {
 
         console.log(parts);
 
+        console.log('\n\nchatID:' + chatId + '\n\n');
+
         const taggedUsers = '';
 
         pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
@@ -87,7 +89,7 @@ function showgames(pool, msg, bot) {
     
     const gameButtons = [];
 
-    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = 't'`, (err, res) => {
+    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
         if (err) {
             console.log(err);
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
