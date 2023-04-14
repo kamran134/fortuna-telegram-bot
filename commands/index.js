@@ -124,7 +124,8 @@ function getList(pool, msg, bot) {
     pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id, game_users.exactly, games.quote FROM game_users ` +
         `LEFT JOIN users ON users.id = game_users.user_id ` +
         `LEFT JOIN games ON games.id = game_users.game_id ` +
-        `WHERE games.chat_id = ${chatId} ORDER BY game_users.game_id, game_users.exactly DESC, game_users.participate_time`, (err, res) => {
+        `WHERE games.chat_id = ${chatId} AND status = TRUE ` +
+        `ORDER BY game_users.game_id, game_users.exactly DESC, game_users.participate_time`, (err, res) => {
 
         if (err) {
             console.error(err);
