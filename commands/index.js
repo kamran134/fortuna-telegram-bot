@@ -29,7 +29,7 @@ async function startgame(pool, msg, bot) {
     const chatId = msg.chat.id;
     
     // Разбиваем текст команды на части
-    const parts = msg.text.split('/');
+    const parts = msg.text.replace('/startgame ').split('/');
     
     // Если указаны все данные, сохраняем их
     if (parts.length === 6) {

@@ -45,7 +45,7 @@ bot.on('message', async (msg) => {
         //         return;
         //     }
         // });
-        commands.startgame(pool, messageText.replace('/startgame '), bot);
+        commands.startgame(pool, msg, bot);
     }
     else if (messageText === '/startgame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
