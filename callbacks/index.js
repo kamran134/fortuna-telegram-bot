@@ -10,7 +10,7 @@ function appointmentToTheGame(pool, query, bot) {
         [gameId, chatId, user.id, moment(new Date()).toISOString()])
     .then(res => {
         console.log('\n\nappointment res' + JSON.stringify(res) + '\n\n');
-        const gameLabel = res.row[0].label;
+        const gameLabel = res.rows[0].label;
         bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
     })
     .catch(err => console.log('INSERT ERROR___: ', err));
@@ -26,7 +26,7 @@ function notExactlyAppointment(pool, query, bot) {
         [gameId, chatId, user.id, moment(new Date()).toISOString()])
         .then(res => {
             console.log(res);
-            const gameLabel = res.row[0].label;
+            const gameLabel = res.rows[0].label;
             bot.sendMessage(chatId, `@${username}, вы записались на ${gameLabel}! Но это не точно :(`);
         })
         .catch(err => console.log('INSERT ERROR___: ', err));
@@ -40,7 +40,7 @@ function declineAppointment(pool, query, bot) {
     pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = $2 RETURNING (SELECT label FROM games g WHERE g.id = $2);`, [user.id, gameId])
         .then(res => {
             console.log(res);
-            const gameLabel = res.row[0].label;
+            const gameLabel = res.rows[0].label;
             bot.sendMessage(chatId, `@${username} удирает с игры на ${gameLabel}. Бейте предателя!`)
         })
         .catch(err => console.log('DELETE ERROR___: ', err));
