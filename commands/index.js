@@ -87,7 +87,7 @@ function showgames(pool, msg, bot) {
     
     const gameButtons = [];
 
-    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
+    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = 't'`, (err, res) => {
         if (err) {
             console.log(err);
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);

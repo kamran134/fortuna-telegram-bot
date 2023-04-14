@@ -73,8 +73,8 @@ bot.on('callback_query', async (query) => {
         const gameDate = new Date(year, month - 1, day);
 
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
-            `VALUES ((SELECT id FROM games g WHERE g.chat_id = $1 AND g.game_date = $2 ORDER BY g.id DESC LIMIT 1), (SELECT id FROM users u WHERE u.user_id = $3), $4, TRUE) ` +
-            `ON CONFLICT (user_id, game_id)  DO UPDATE SET exactly = TRUE, participate_time = $4;`, 
+            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, TRUE) ` +
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4;`, 
         [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
@@ -89,7 +89,7 @@ bot.on('callback_query', async (query) => {
         const gameDate = new Date(year, month - 1, day);
 
         pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
-            `VALUES ((SELECT id FROM games g WHERE g.chat_id = $1 AND g.game_date = $2 ORDER BY g.id DESC LIMIT 1), (SELECT id FROM users u WHERE u.user_id = $3), $4, FALSE) ` +
+            `VALUES ((SELECT MAX(id) FROM games g WHERE g.chat_id = $1 AND g.game_date = $2), (SELECT id FROM users u WHERE u.user_id = $3), $4, FALSE) ` +
             `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = FALSE;`, 
         [query.message.chat.id, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
@@ -103,7 +103,7 @@ bot.on('callback_query', async (query) => {
         const [day, month, year] = dateString.split('.');
         const gameDate = new Date(year, month - 1, day);
 
-        pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = (SELECT id FROM games g WHERE g.game_date = $2 ORDER BY g.id DESC LIMIT 1);`, [query.from.id, moment(gameDate).toISOString()])
+        pool.query(`DELETE FROM game_users WHERE user_id = $1 AND game_id = (SELECT MAX(id) FROM games g WHERE g.game_date = $2);`, [query.from.id, moment(gameDate).toISOString()])
             .then(res => {
                 console.log(res);
                 bot.sendMessage(chatId, `@${username} удирает с игры. Бейте предателя!`)
