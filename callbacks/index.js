@@ -27,7 +27,7 @@ function notExactlyAppointment(pool, query, bot) {
         .then(res => {
             console.log(res);
             const gameLabel = res.rows[0].label;
-            bot.sendMessage(chatId, `@${username}, вы записались на ${gameLabel}! Но это не точно :(`);
+            bot.sendMessage(chatId, `@${user.username}, вы записались на ${gameLabel}! Но это не точно :(`);
         })
         .catch(err => console.log('INSERT ERROR___: ', err));
 }
@@ -41,7 +41,7 @@ function declineAppointment(pool, query, bot) {
         .then(res => {
             console.log(res);
             const gameLabel = res.rows[0].label;
-            bot.sendMessage(chatId, `@${username} удирает с игры на ${gameLabel}. Бейте предателя!`)
+            bot.sendMessage(chatId, `@${user.username} удирает с игры на ${gameLabel}. Бейте предателя!`)
         })
         .catch(err => console.log('DELETE ERROR___: ', err));
 }
