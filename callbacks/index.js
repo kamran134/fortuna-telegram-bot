@@ -5,7 +5,7 @@ function appointmentToTheGame(pool, query, bot) {
     const user = query.from;
     const gameId = query.data.replace('appointment_', '');
 
-    pool.query(`INSERT INTO game_users gu (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
+    pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
             `ON CONFLICT (user_id, game_id) DO NOTHING RETURNING (SELECT label FROM games g WHERE g.game_id = $1);`, 
         [gameId, chatId, user.id, moment(new Date()).toISOString()])
     .then(res => {
@@ -21,7 +21,7 @@ function notExactlyAppointment(pool, query, bot) {
     const user = query.from;
     const gameId = query.data.replace('notexactly_', '');
     
-    pool.query(`INSERT INTO game_users gu (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, FALSE) ` +
+    pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, FALSE) ` +
             `ON CONFLICT (user_id, game_id) DO NOTHING RETURNING (SELECT label FROM games g WHERE g.game_id = $1);`, 
         [gameId, chatId, user.id, moment(new Date()).toISOString()])
         .then(res => {
