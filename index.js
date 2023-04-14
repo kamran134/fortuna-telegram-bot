@@ -31,14 +31,15 @@ bot.on('message', async (msg) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (messageText === '/register') commands.register(pool, msg, bot);
-    else if (messageText === '/tagregistered') commands.tagregistered(pool, msg, bot);
+    else if (messageText === '/tagregistered') commands.registered(pool, msg, bot, 'tag');
+    else if (messageText === '/showregistered') commands.registered(pool, msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) commands.startgame(pool, msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
     else if (messageText === '/deletegame') {}
     else if (messageText === '/deactivegame') {}
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
-    else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Алейкум привет, ' + msg.from.first_name + '. Играть будем?');
+    else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Привет, ' + msg.from.first_name + '. Играть будем?');
     else if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);

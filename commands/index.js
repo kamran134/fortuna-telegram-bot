@@ -7,7 +7,7 @@ function register(pool, msg, bot) {
             .catch(err => console.error('Inserting error', err));
 }
 
-function tagregistered(pool, msg, bot) {
+function registered(pool, msg, bot, command) {
     pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
         if (err) {
             console.error(err);
@@ -16,11 +16,13 @@ function tagregistered(pool, msg, bot) {
         }
         
         const users = res.rows.map(row => `@${row.username}`);
+        const usersWithoutTag = res.rows.map(row => `${row.username} — ${row.first_name}`);
         
         if (users.length === 0) {
             bot.sendMessage(msg.chat.id, 'Никто не зарегистрировался в боте? Капец.');
         } else {
-            bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + users.join('\n'));
+            bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + 
+               (command === 'tag' ? users.join('\n') : usersWithoutTag.join('\n')));
         }
     });
 }
@@ -161,8 +163,6 @@ function getList(pool, msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                console.log('\n\nUSERS BY GAME: ' + JSON.stringify(usersByGame[game_id]) + '\n\n');
-
                 const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
                                 `Участники:\n${users}\n\n` +
@@ -220,7 +220,7 @@ function agilliol(pool, msg, bot) {
 
 module.exports = {
     register,
-    tagregistered,
+    registered,
     startgame,
     showgames,
     plus,
