@@ -147,6 +147,8 @@ function getList(pool, msg, bot) {
 function plus(pool, msg, bot) {
     const chatId = msg.chat.id;
     
+    bot.sendMessage(msg.from.id, 'Ağıllı ol!');
+
     bot.sendMessage(chatId, 'Выберите день:', {
         reply_markup: {
             inline_keyboard: [
