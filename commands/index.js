@@ -42,7 +42,7 @@ async function startgame(pool, msg, bot) {
 
         console.log(parts);
 
-        const taggedUsers = '';
+        let taggedUsers = '';
 
         pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
             if (err) {
