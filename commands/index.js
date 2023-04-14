@@ -124,12 +124,17 @@ function getList(pool, msg, bot) {
         res.rows.forEach(row => {    
             if (!usersByGame[row.game_id]) {
                 i = 1;
-                usersByGame[row.game_id] = [{
-                    ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date, exactly: row.exactly
-                }];
-            } else usersByGame[row.game_id] = [...usersByGame[row.game_id], {
-                ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, game_date: row.game_date, exactly: row.exactly
-            }];
+                usersByGame[row.game_id] = {
+                    users: [{
+                        ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, exactly: row.exactly
+                    }],
+                    gameDate: row.game_date
+                };
+            } else usersByGame[row.game_id] = {
+                users: [...usersByGame[row.game_id].users, {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, exactly: row.exactly}],
+                gameDate: row.game_date
+            };
+
             i++;
         });
         
@@ -139,9 +144,9 @@ function getList(pool, msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                console.log('\n\nUSERS BY GAME: ' + JSON.stringify(usersByGame[game_id].game_date) + '\n\n');
+                console.log('\n\nUSERS BY GAME: ' + JSON.stringify(usersByGame[game_id]) + '\n\n');
 
-                const users = usersByGame[game_id].map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
+                const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n` +
                                 `Участники:\n${users}`;
 
