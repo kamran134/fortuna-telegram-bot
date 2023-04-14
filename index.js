@@ -46,20 +46,13 @@ bot.on('message', async (msg) => {
 
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
-    // const username = query.from.username;
-
+    
     const chatMember = await bot.getChatMember(chatId, query.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
-
-    console.log('callback_query: ', query);
-
-    // let response;
     
     if (query.data.startsWith('appointment_')) callbacks.appointmentToTheGame(pool, query, bot);
     else if (query.data.startsWith('notexactly_')) callbacks.notExactlyAppointment(pool, query, bot);
     else if (query.data.startsWith('decline_')) callbacks.declineAppointment(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) callbacks.deactiveGame(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
-    
-    // bot.sendMessage(chatId, response);
 });

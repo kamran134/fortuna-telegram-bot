@@ -42,8 +42,6 @@ async function startgame(pool, msg, bot) {
 
         console.log(parts);
 
-        console.log('\n\nchatID:' + chatId + '\n\n');
-
         const taggedUsers = '';
 
         pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
@@ -52,8 +50,8 @@ async function startgame(pool, msg, bot) {
                 return;
             }
             
-            if (res.row && res.row.length > 0) {
-                taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
+            if (res.rows && res.rows.length > 0) {
+                taggedUsers = res.rows.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
             }
                 
             pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id', 
