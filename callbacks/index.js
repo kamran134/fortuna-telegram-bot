@@ -1,4 +1,7 @@
 function appointmentToTheGame(pool, query, bot) {
+
+    console.log(JSON.stringify(query));
+
     const chatId = query.chat.id;
     const user = query.from;
     const gameId = query.data.replace('appointment_', '');
