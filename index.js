@@ -94,7 +94,7 @@ bot.on('callback_query', async (query) => {
         [chatId, moment(gameDate).toISOString(), query.from.id, moment(new Date()).toISOString()])
             .then(res => {
                 console.log(res);
-                bot.sendMessage(chatId, `@${username}, вы записались на ${dateString}! https://youtu.be/V5MD0Zwhfb0`);
+                bot.sendMessage(chatId, `@${username}, вы записались на ${dateString}! Но это не точно :(`);
             })
             .catch(err => console.log('INSERT ERROR___: ', err));
     }

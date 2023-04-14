@@ -51,33 +51,33 @@ async function startgame(pool, msg, bot) {
                 console.error(err);
                 return;
             }
-            else {
-                if (res.row && res.row.length > 0) {
-                    taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
-                }
-                 
-                pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
-                    [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
-                    .then(res => {
-                        console.log('Successful res', res);
-                        bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [
-                                        {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
-                                    ],
-                                    [
-                                        {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
-                                    ],
-                                    [
-                                        {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
-                                    ]
+            
+            if (res.row && res.row.length > 0) {
+                taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
+            }
+                
+            pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
+                [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
+                .then(res => {
+                    console.log('Successful res', res);
+                    bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
+                                ],
+                                [
+                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
+                                ],
+                                [
+                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
                                 ]
-                            }});
-                    })
-                    .catch(err => console.error('Inserting error', err));
-                }
-        });
+                            ]
+                        }});
+                })
+                .catch(err => console.error('Inserting error', err));
+            }
+        );
     } else {
         await bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
         '\/место проведения\/название игры\`');
