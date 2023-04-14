@@ -1,8 +1,5 @@
 function appointmentToTheGame(pool, query, bot) {
-
-    console.log(JSON.stringify(query));
-
-    const chatId = query.chat.id;
+    const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('appointment_', '');
 
@@ -18,7 +15,7 @@ function appointmentToTheGame(pool, query, bot) {
 }
 
 function notExactlyAppointment(pool, query, bot) {
-    const chatId = query.chat.id;
+    const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('notexactly_', '');
     
@@ -34,7 +31,7 @@ function notExactlyAppointment(pool, query, bot) {
 }
 
 function declineAppointment(pool, query, bot) {
-    const chatId = query.chat.id;
+    const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('decline_', '');
 
