@@ -45,9 +45,12 @@ bot.on('message', async (msg) => {
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
 });
 
-bot.on('callback_query', (query) => {
+bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
     const username = query.from.username;
+
+    const chatMember = await bot.getChatMember(chatId, query.from.id);
+    const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     console.log('callback_query: ', query);
 
@@ -106,6 +109,19 @@ bot.on('callback_query', (query) => {
                 bot.sendMessage(chatId, `@${username} удирает с игры. Бейте предателя!`)
             })
             .catch(err => console.log('DELETE ERROR___: ', err));
+    }
+    else if (query.data.startsWith('deactivegame') && isAdmin) {
+        const gameId = query.data.replace('deletegame_', '');
+
+        pool.query(`UPDATE games SET status = FALSE WHERE id = $1`, [gameId])
+            .then(res => {
+                console.log(res);
+                bot.sendMessage(chatId, 'Игра деактивизирована!');
+            })
+            .catch(err => console.log('UPDATE ERROR___', err));
+    }
+    else if (query.data.startsWith('deactivegame') && !isAdmin) {
+        bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
     }
 
     bot.sendMessage(chatId, response);

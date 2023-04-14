@@ -42,28 +42,38 @@ async function startgame(pool, msg, bot) {
 
         console.log(parts);
 
-        // gameData = {date, startTime, endTime, location};
+        const taggedUsers = '';
 
-        pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
-        [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
-            .then(res => {
-                console.log('Successful res', res);
-                bot.sendMessage(chatId, `Игра создана на ${date} с ${startTime} до ${endTime}. Место: ${location}`, {
-                    reply_markup: {
-                        inline_keyboard: [
-                            [
-                                {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
-                            ],
-                            [
-                                {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
-                            ],
-                            [
-                                {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
-                            ]
-                        ]
-                    }});
-            })
-            .catch(err => console.error('Inserting error', err));
+        pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            else {
+                taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
+                
+                pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7)', 
+                    [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
+                    .then(res => {
+                        console.log('Successful res', res);
+                        bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${date}`},
+                                    ],
+                                    [
+                                        {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${date}`},
+                                    ],
+                                    [
+                                        {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${date}`}
+                                    ]
+                                ]
+                            }});
+                    })
+                    .catch(err => console.error('Inserting error', err));
+            }
+        });
     } else {
         await bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
         '\/место проведения\/название игры\`');
@@ -81,7 +91,7 @@ function showgames(pool, msg, bot) {
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
         }
         else {
-            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}]));
+            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `game_${row.id}`}, {text: `Деактивизировать игру: `, callback_data: `deletegame_${row.id}`}]));
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_data).format('DD.MM.YYYY')}\n` +
