@@ -65,13 +65,13 @@ async function startgame(pool, msg, bot) {
                         reply_markup: {
                             inline_keyboard: [
                                 [
-                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${id}`},
+                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${gameId}`},
                                 ],
                                 [
-                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${id}`},
+                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${gameId}`},
                                 ],
                                 [
-                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${id}`}
+                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${gameId}`}
                                 ]
                             ]
                         }});
