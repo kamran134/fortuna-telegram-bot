@@ -50,7 +50,7 @@ async function startgame(pool, msg, bot) {
                 return;
             }
             else {
-                if (res.row.length > 0) {
+                if (res.row && res.row.length > 0) {
                     taggedUsers = res.row.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
                 }
                  
