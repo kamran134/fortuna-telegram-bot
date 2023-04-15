@@ -31,7 +31,8 @@ bot.on('message', async (msg) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (messageText === '/register') commands.register(pool, msg, bot);
-    else if (messageText === '/tagregistered') commands.registered(pool, msg, bot, 'tag');
+    else if (messageText === '/tagregistered' && isAdmin) commands.registered(pool, msg, bot, 'tag');
+    else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
     else if (messageText === '/showregistered') commands.registered(pool, msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) commands.startgame(pool, msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
