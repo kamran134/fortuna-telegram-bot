@@ -43,7 +43,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
-    else if (messageText === '/tagalexey') pool.sendMessage(msg.chat.id, `Привет, <a href="tg://user?id=963292126">Aleksey</a>!`)
+    else if (messageText === '/tagalexey') bot.sendMessage(msg.chat.id, `Привет, <a href="tg://user?id=963292126">Aleksey</a>!`)
 });
 
 bot.on('callback_query', async (query) => {
