@@ -15,14 +15,15 @@ function registered(pool, msg, bot, command) {
             return;
         }
         
-        const users = res.rows.map(row => `@${row.username}`);
+        const users = res.rows.map(row => row.username ? `@${row.username}` :
+            `<a href="tg://user?id=${row.user_id}">${row.first_name}</a>`);
         const usersWithoutTag = res.rows.map(row => `${row.username} — ${row.first_name}`);
         
         if (users.length === 0) {
             bot.sendMessage(msg.chat.id, 'Никто не зарегистрировался в боте? Капец.');
         } else {
             bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + 
-               (command === 'tag' ? users.join('\n') : usersWithoutTag.join('\n')));
+               (command === 'tag' ? users.join('\n') : usersWithoutTag.join('\n')), {parse_mode: 'HTML'});
         }
     });
 }
