@@ -54,15 +54,16 @@ async function startgame(pool, msg, bot) {
             }
             
             if (res.rows && res.rows.length > 0) {
-                taggedUsers = res.rows.map((user, index) => `${(index + 1)}. @${user.username} — ${user.first_name} ${user.last_name ? user.last_name : '(челик не указал фамилию в тг)'}\n`);
+                taggedUsers = res.rows.map((user, index) => user.username ? `${(index + 1)}. @${user.username}}\n` :
+                    `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`);
             }
                 
             pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id', 
                 [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
                 .then(res => {
-                    console.log('Successful res', res);
                     const gameId = res.rows[0].id;
                     bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
+                        parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
                                 [
