@@ -46,7 +46,7 @@ function declineAppointment(pool, query, bot) {
                 const gameLabel = res.rows[0].label;
                 bot.sendMessage(chatId, `@${user.username} удирает с игры на ${gameLabel}. Бейте предателя!`);
             } else {
-                bot.sendMessage(chatId, `Произошла ошибка при удалении челика из игры. Видимо челик и так не был в игре, но тыкал кнопку`);
+                bot.sendMessage(chatId, `@${user.username} минусует :(`);
             }
         })
         .catch(err => console.log('DELETE ERROR___: ', err));

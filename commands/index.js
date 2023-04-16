@@ -54,8 +54,8 @@ async function startgame(pool, msg, bot) {
             }
             
             if (res.rows && res.rows.length > 0) {
-                taggedUsers = res.rows.map((user, index) => user.username ? `${(index + 1)}. @${user.username}}\n` :
-                    `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`);
+                taggedUsers = res.rows.map((user, index) => user.username ? `${(index + 1)}. @${user.username}\n` :
+                    `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>\n`);
             }
                 
             pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id', 
