@@ -9,7 +9,7 @@ function appointmentToTheGame(pool, query, bot) {
             `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
         [gameId, chatId, user.id, moment(new Date()).toISOString()])
     .then(res => {
-        console.log('\n\nappointment res' + JSON.stringify(res) + '\n\n');
+        console.log(res);
         const gameLabel = res.rows[0].label;
         bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
     })

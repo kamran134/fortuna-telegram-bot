@@ -208,6 +208,22 @@ function minus(pool, msg, bot) {
     });
 }
 
+function addguest(pool, msg, bot) {
+    const chatId = query.message.chat.id;
+    const user = query.from;
+    const gameId = query.data.replace('addguest ', '');
+
+    pool.query(`INSERT INTO game_guests (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
+        [gameId, chatId, user.id, moment(new Date()).toISOString()])
+    .then(res => {
+        console.log(res);
+        const gameLabel = res.rows[0].label;
+        bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
+    })
+    .catch(err => console.log('INSERT ERROR___: ', err));
+}
+
 function agilliol(pool, msg, bot) {
     pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
         if (err) {
@@ -228,5 +244,6 @@ module.exports = {
     plus,
     minus,
     getList,
+    addguest,
     agilliol
 }
