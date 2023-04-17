@@ -140,7 +140,8 @@ function getList(pool, msg, bot) {
         
         let i = 1;
 
-        res.rows.forEach(row => {    
+        res.rows.forEach(row => {
+            console.log('\nGAME_DATE: ' + row.game_date + '\n');
             if (!usersByGame[row.game_id]) {
                 i = 1;
                 usersByGame[row.game_id] = {
