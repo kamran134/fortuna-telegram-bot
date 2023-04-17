@@ -98,8 +98,13 @@ function showgames(pool, msg, bot) {
             bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
         }
         else {
-            res.rows.map(row => gameButtons.push([{text: `Запись на ${row.label}`, callback_data: `appointment_${row.id}`},
-                {text: `Закрыть игру`, callback_data: `deactivegame_${row.id}`}]));
+            gameButtons = res.rows.map(row => [
+                {text: `+ на ${row.label}`, callback_data: `appointment_${row.id}`},
+                {text: `+/- на ${row.label}`, callback_data: `notexactly_${row.id}`},
+                {text: `- на ${row.label}`, callback_data: `decline_${row.id}`}
+            ]);
+            gameButtons.push({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`});
+            
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_date).format('DD.MM.YYYY')}\n` +
