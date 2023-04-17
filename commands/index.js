@@ -91,6 +91,7 @@ function showgames(pool, msg, bot) {
     const chatId = msg.chat.id;
     
     let gameButtons = [];
+    let gameDeactiveButtons = [];
 
     pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
         if (err) {
@@ -103,7 +104,7 @@ function showgames(pool, msg, bot) {
                 {text: `+/- на ${row.label}`, callback_data: `notexactly_${row.id}`},
                 {text: `- на ${row.label}`, callback_data: `decline_${row.id}`}
             ]);
-            gameButtons.push({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`});
+            gameDeactiveButtons = res.rows.map(row => ({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`}));
 
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
