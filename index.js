@@ -49,10 +49,10 @@ bot.on('message', async (msg) => {
 
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
-    
+
     const chatMember = await bot.getChatMember(chatId, query.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
-    
+
     if (query.data.startsWith('appointment_')) callbacks.appointmentToTheGame(pool, query, bot);
     else if (query.data.startsWith('notexactly_')) callbacks.notExactlyAppointment(pool, query, bot);
     else if (query.data.startsWith('decline_')) callbacks.declineAppointment(pool, query, bot);
