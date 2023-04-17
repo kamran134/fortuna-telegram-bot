@@ -90,7 +90,7 @@ async function startgame(pool, msg, bot) {
 function showgames(pool, msg, bot) {
     const chatId = msg.chat.id;
     
-    const gameButtons = [];
+    let gameButtons = [];
 
     pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
         if (err) {
@@ -104,7 +104,7 @@ function showgames(pool, msg, bot) {
                 {text: `- на ${row.label}`, callback_data: `decline_${row.id}`}
             ]);
             gameButtons.push({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`});
-            
+
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
                 `    Дата: ${moment(row.game_date).format('DD.MM.YYYY')}\n` +
