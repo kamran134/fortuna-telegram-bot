@@ -168,7 +168,7 @@ function getList(pool, msg, bot) {
 
                 const game_date = usersByGame[game_id].game_date;
 
-                console.log("\n\n\nGame Date: " + game_date + "\n\n\n");
+                console.log("\n\n\nGame Id: "+ game_id + "\nGame Date: " + game_date + "\n\n\n");
                 const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
