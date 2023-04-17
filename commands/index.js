@@ -43,8 +43,6 @@ async function startgame(pool, msg, bot) {
         const location = parts[4];
         const label = parts[5];
 
-        console.log(parts);
-
         let taggedUsers = '';
 
         pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
@@ -91,7 +89,6 @@ function showgames(pool, msg, bot) {
     const chatId = msg.chat.id;
     
     let gameButtons = [];
-    let gameDeactiveButtons = [];
 
     pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
         if (err) {
@@ -104,7 +101,6 @@ function showgames(pool, msg, bot) {
                 {text: `+/- на ${row.label}`, callback_data: `notexactly_${row.id}`},
                 {text: `- на ${row.label}`, callback_data: `decline_${row.id}`}
             ]);
-            gameDeactiveButtons = res.rows.map(row => ({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`}));
 
             const games = res.rows.map((row, index) =>
                 `Игра №${(index + 1)}\n` +
@@ -119,6 +115,36 @@ function showgames(pool, msg, bot) {
                 bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
                     reply_markup: {
                         inline_keyboard: [...gameButtons]
+                    }
+                });
+            }
+        }
+    });
+}
+
+function deactivegames(pool, msg, bot) {
+    const chatId = msg.chat.id;
+
+    let gameDeactiveButtons = [];
+
+    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
+        if (err) {
+            bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
+        }
+        else {
+            gameDeactiveButtons = res.rows.map(row => ({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`}));
+
+            const games = res.rows.map((row, index) =>
+                `Игра №${(index + 1)}\n` +
+                `    Дата: ${moment(row.game_date).format('DD.MM.YYYY')}\n`
+            );
+
+            if (games.length === 0) {
+                bot.sendMessage(chatId, 'А игр ещё нет :(');
+            } else {
+                bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
+                    reply_markup: {
+                        inline_keyboard: [...gameDeactiveButtons]
                     }
                 });
             }
@@ -215,17 +241,23 @@ function minus(pool, msg, bot) {
 }
 
 function addguest(pool, msg, bot) {
-    const chatId = query.message.chat.id;
-    const user = query.from;
-    const gameId = query.data.replace('addguest ', '');
+    const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
+    const chatId = msg.chat.id;
+    const user = msg.from;
+    const query = messageText.replace('/addguest ', '');
+    const parts = query.split('/');
 
-    pool.query(`INSERT INTO game_guests (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
-            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
-        [gameId, chatId, user.id, moment(new Date()).toISOString()])
+    const gameLabel = parts[0];
+    const fullname = parts[1];
+    const exactly = parts.length > 2 && parts.length[2].contains('*') ? false : true;
+
+    pool.query(`INSERT INTO game_guests (game_id, fullname, participate_time, exactly) VALUES ((SELECT id FROM games g WHERE g.label = $1 AND g.chat_id = $2), $3, $4, $5) ` +
+            `RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
+        [gameLabel, chatId, fullname, moment(new Date()).toISOString(), exactly])
     .then(res => {
         console.log(res);
         const gameLabel = res.rows[0].label;
-        bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
+        bot.sendMessage(chatId, `${fullname} на игре ${gameLabel}!${!exactly ? ' Но это не точно' : ''}`);
     })
     .catch(err => console.log('INSERT ERROR___: ', err));
 }
@@ -251,5 +283,6 @@ module.exports = {
     minus,
     getList,
     addguest,
+    deactivegames,
     agilliol
 }

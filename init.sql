@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS game_users (
     PRIMARY KEY(user_id, game_id)
 );
 
-CREATE TABLE IF NOT EXISTS game_guest (
+CREATE TABLE IF NOT EXISTS game_guests (
     game_id BIGINT REFERENCES games(id),
-    fullname TEXT
+    fullname TEXT,
+    participate_time TIMESTAMP,
+    exactly BOOLEAN
 );
