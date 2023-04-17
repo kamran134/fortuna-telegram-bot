@@ -141,7 +141,6 @@ function getList(pool, msg, bot) {
         let i = 1;
 
         res.rows.forEach(row => {
-            console.log('\nGAME_DATE: ' + row.game_date + '\n');
             if (!usersByGame[row.game_id]) {
                 i = 1;
                 usersByGame[row.game_id] = {
@@ -153,7 +152,7 @@ function getList(pool, msg, bot) {
                 };
             } else usersByGame[row.game_id] = {
                 users: [...usersByGame[row.game_id].users, {ind: i, last_name: row.last_name, first_name: row.first_name, username: row.username, exactly: row.exactly}],
-                game_gate: row.game_date,
+                game_date: row.game_date,
                 quote: row.quote
             };
 
@@ -166,9 +165,6 @@ function getList(pool, msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                const game_date = usersByGame[game_id].game_date;
-
-                console.log("\n\n\nGame Id: "+ game_id + "\nGame Date: " + game_date + "\n\n\n");
                 const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
