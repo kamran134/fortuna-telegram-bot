@@ -1,7 +1,7 @@
 const moment = require('moment');
 
 function register(pool, msg, bot) {
-    pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username) VALUES ($1, $2, $3, $4, $5)', 
+    pool.query('INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest) VALUES ($1, $2, $3, $4, $5, FALSE)', 
         [msg.from.first_name, msg.from.last_name, msg.from.id, msg.chat.id, msg.from.username])
             .then(res => bot.sendMessage(msg.chat.id, "Siz uğurla botda qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в боте"))
             .catch(err => console.error('Inserting error', err));
@@ -169,7 +169,7 @@ function getList(pool, msg, bot) {
 
         const usersByGame = {};
         const resultMessage = [];
-        
+
         let i = 1;
 
         res.rows.forEach(row => {
@@ -190,7 +190,7 @@ function getList(pool, msg, bot) {
 
             i++;
         });
-        
+
         if (Object.keys(usersByGame).length === 0) {
             bot.sendMessage(msg.chat.id, 'Нет записавшихся на игру. Капец.');
         } else {
@@ -243,23 +243,31 @@ function minus(pool, msg, bot) {
 function addguest(pool, msg, bot) {
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
     const chatId = msg.chat.id;
-    const user = msg.from;
     const query = messageText.replace('/addguest ', '');
     const parts = query.split('/');
 
     const gameLabel = parts[0];
     const fullname = parts[1];
     const exactly = parts.length > 2 && parts.length[2].contains('*') ? false : true;
+    let userId = 0;
 
-    pool.query(`INSERT INTO game_guests (game_id, fullname, participate_time, exactly) VALUES ((SELECT id FROM games g WHERE g.label = $1 AND g.chat_id = $2), $3, $4, $5) ` +
-            `RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
-        [gameLabel, chatId, fullname, moment(new Date()).toISOString(), exactly])
-    .then(res => {
-        console.log(res);
-        const gameLabel = res.rows[0].label;
-        bot.sendMessage(chatId, `${fullname} на игре ${gameLabel}!${!exactly ? ' Но это не точно' : ''}`);
-    })
-    .catch(err => console.log('INSERT ERROR___: ', err));
+    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2) RETURNING id`, [chatId, fullname])
+        .then(res => {
+            console.log('Insert guest res: ', JSON.stringify(res));
+            userId = res.rows[0].id;
+
+            if (userId > 0) {
+                pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT id FROM games g WHERE g.label = $1 AND status = TRUE), $2, $3, $4) ` +
+                    `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
+                [gameLabel, userId, moment(new Date()).toISOString(), exactly])
+                    .then(res => {
+                        console.log(res);
+                        bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''))
+                    })
+                    .catch(err => console.log('INSERT GUEST TO GAME ERROR: ', err));
+            }
+        })
+        .catch(err => console.error('INSERT GUEST TO USERS ERROR: ', err));
 }
 
 function agilliol(pool, msg, bot) {

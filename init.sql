@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
     first_name TEXT NOT NULL,
     last_name TEXT,
     username TEXT,
+    is_guest BOOLEAN,
+    guest_name TEXT,
     PRIMARY KEY(id)
 );
 
@@ -28,7 +30,7 @@ CREATE TABLE IF NOT EXISTS games (
     game_ends TIME,
     place TEXT,
     participate_limit INT,
-    status BOOLEAN,
+    is_active BOOLEAN,
     label TEXT
 );
 
