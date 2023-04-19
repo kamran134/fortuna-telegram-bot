@@ -258,9 +258,9 @@ function addguest(pool, msg, bot) {
             userId = res.rows[0].id;
 
             if (userId > 0) {
-                pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT LAST(id) FROM games g WHERE g.label = $1 AND status = TRUE), $2, $3, $4) ` +
+                pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT LAST(id) FROM games g WHERE g.label = $1 AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
                     `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
-                [gameLabel, userId, moment(new Date()).toISOString(), exactly])
+                [gameLabel, chatId, userId, moment(new Date()).toISOString(), exactly])
                     .then(res => {
                         console.log(res);
                         bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''))
