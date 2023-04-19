@@ -251,7 +251,8 @@ function addguest(pool, msg, bot) {
     const exactly = parts.length > 2 && parts.length[2].contains('*') ? false : true;
     let userId = 0;
 
-    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2) RETURNING id`, [chatId, fullname])
+    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3) RETURNING id`,
+        [chatId, fullname, fullname.split(' ')[0]])
         .then(res => {
             console.log('Insert guest res: ', JSON.stringify(res));
             userId = res.rows[0].id;
