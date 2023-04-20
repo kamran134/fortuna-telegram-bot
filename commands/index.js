@@ -144,7 +144,7 @@ function deactivegames(pool, msg, bot) {
             } else {
                 bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
                     reply_markup: {
-                        inline_keyboard: [...gameDeactiveButtons]
+                        inline_keyboard: [gameDeactiveButtons]
                     }
                 });
             }
