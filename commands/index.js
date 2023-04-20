@@ -247,12 +247,14 @@ function addguest(pool, msg, bot) {
     const parts = query.split('/');
 
     const gameLabel = parts[0];
-    const fullname = parts[1];
+    const fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    const first_name = fullname.split(' ')[0];
+    const last_name = fullname.split(' ')[1] | ' ';
     const exactly = parts.length > 2 && parts[2].includes('*') ? false : true;
     let userId = 0;
 
-    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3) RETURNING id`,
-        [chatId, fullname, fullname.split(' ')[0]])
+    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name, last_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, $4) RETURNING id`,
+        [chatId, fullname, first_name, last_name])
         .then(res => {
             console.log('Insert guest res: ', JSON.stringify(res));
             userId = res.rows[0].id;

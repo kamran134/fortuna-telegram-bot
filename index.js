@@ -35,16 +35,18 @@ bot.on('message', async (msg) => {
     else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
     else if (messageText === '/showregistered') commands.registered(pool, msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) commands.startgame(pool, msg, bot);
-    else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только админ может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
+    else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
     else if (messageText === '/deletegame') {}
-    else if (messageText === '/deactivegame') {}
+    else if (messageText === '/deactivegame' && isAdmin) commands.deactivegames(pool, msg, bot);
+    else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Привет, ' + msg.from.first_name + '. Играть будем?');
     else if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
-    else if (messageText.startsWith('/addguest')) commands.addguest(pool, msg, bot);
+    else if (messageText.startsWith('/addguest') && isAdmin) commands.addguest(pool, msg, bot);
+    else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText === '/deactivegames') commands.deactivegames(pool, msg, bot);
 });
 
