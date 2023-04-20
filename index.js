@@ -31,6 +31,8 @@ bot.on('message', async (msg) => {
     const chatMember = await bot.getChatMember(msg.chat.id, msg.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
+    console.log(msg);
+
     if (messageText === '/register') commands.register(pool, msg, bot);
     else if (messageText === '/tagregistered' && isAdmin) commands.registered(pool, msg, bot, 'tag');
     else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
