@@ -197,15 +197,18 @@ function getList(pool, msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                const users = usersByGame[game_id].users.map(user => `${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
+                const placeLeft = usersByGame[game_id].quote - usersByGame[game_id].users.length;
+                const gameQuote = usersByGame[game_id].quote;
+
+                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameQuote + 1) ? '\n--------------Wait list--------------\n' : ''}${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
-                                `Осталось мест: ${(usersByGame[game_id].quote - usersByGame[game_id].users.length)}`;
+                                `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
 
                 resultMessage.push(message);
             }
-            
-            bot.sendMessage(msg.chat.id, resultMessage.join('\n--------------------------------\n'));
+
+            bot.sendMessage(msg.chat.id, resultMessage.join('\n////////////////////////////////\n'));
         }
     });
 }
