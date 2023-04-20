@@ -248,7 +248,7 @@ function addguest(pool, msg, bot) {
 
     const gameLabel = parts[0];
     const fullname = parts[1];
-    const exactly = parts.length > 2 && parts[2].contains('*') ? false : true;
+    const exactly = parts.length > 2 && parts[2].includes('*') ? false : true;
     let userId = 0;
 
     pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3) RETURNING id`,
