@@ -48,3 +48,10 @@ CREATE TABLE IF NOT EXISTS game_guests (
     participate_time TIMESTAMP,
     exactly BOOLEAN
 );
+
+CREATE TABLE IF NOT EXISTS admin_groups (
+    id SERIAL PRIMARY KEY,
+    chat_id BIGINT UNIQUE NOT NULL,
+    admin_chat_id BIGINT,
+    UNIQUE(chat_id, admin_chat_id)
+);

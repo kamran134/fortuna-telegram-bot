@@ -2,6 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
 const moment = require('moment');
 const commands = require('./commands');
+const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
 
 // Устанавливаем токен, который вы получили от BotFather
@@ -48,6 +49,9 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/addguest') && isAdmin) commands.addguest(pool, msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText === '/deactivegames') commands.deactivegames(pool, msg, bot);
+
+    // for admin group
+    else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
 });
 
 bot.on('callback_query', async (query) => {
