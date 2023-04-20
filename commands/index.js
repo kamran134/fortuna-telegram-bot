@@ -288,6 +288,19 @@ function agilliol(pool, msg, bot) {
     });
 }
 
+function whatTime(pool, msg, bot) {
+    const chatId = msg.chat.id;
+    pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE`, [chatId])
+        .then(res => {
+            console.log('What time res: ', JSON.stringify(res));
+            
+            const gameTimes = res.rows.map(row => `${row.label}: ${row.game_starts}`).join(', ');
+
+            bot.sendMessage(chatId, `Мэээх. Сколько можно спрашивать? :/\n${gameTimes}`);
+        })
+        .catch(err => console.error('What time error: ', err))
+}
+
 module.exports = {
     register,
     registered,
@@ -298,5 +311,6 @@ module.exports = {
     getList,
     addguest,
     deactivegames,
-    agilliol
+    agilliol,
+    whatTime
 }
