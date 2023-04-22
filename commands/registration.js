@@ -29,8 +29,8 @@ async function getRegistered(msg, bot, command) {
 
 function getRegistered(users) {
     console.log('users', JSON.stringify(users));
-    return users.map(user => user.username ? `@${user.username}` :
-    `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
+    return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
+    `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n') : '';
 }
 
 function listRegistered(users) {
