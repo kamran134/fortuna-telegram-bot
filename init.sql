@@ -53,5 +53,6 @@ CREATE TABLE IF NOT EXISTS admin_groups (
     id SERIAL PRIMARY KEY,
     chat_id BIGINT UNIQUE NOT NULL,
     admin_chat_id BIGINT,
+    group_name TEXT,
     UNIQUE(chat_id, admin_chat_id)
 );

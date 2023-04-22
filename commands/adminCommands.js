@@ -6,12 +6,15 @@ async function connectto(pool, msg, bot) {
     const adminChatId = msg.chat.id;
     const userId = msg.from.id;
 
+    const groupName = await bot.getChat(chatId);
+
     bot.getChatMember(chatId, userId).then(member => {
         if (member.status === 'administrator' || member.status === 'creator') {
-            pool.query(`INSERT INTO admin_groups (chat_id, admin_chat_id) VALUES ($1, $2)`, [chatId, adminChatId])
+            pool.query(`INSERT INTO admin_groups (chat_id, admin_chat_id, group_name) VALUES ($1, $2, $3)`,
+            [chatId, adminChatId, groupName])
                 .then(res => {
                     console.log('Connecting groups: ', JSON.stringify(res));
-                    bot.sendMessage(adminChatId, `Группа успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`)
+                    bot.sendMessage(adminChatId, `Группа ${groupName} успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`)
                 })
         } else {
             bot.sendMessage(adminChatId, 'Дело пахнет жареным. Вряд-ли вы админ той группы');
