@@ -16,6 +16,7 @@ async function getUsers(pool, {chat: {id: chatId}}) {
     try {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
         if (result) {
+            console.log('I am here!', result);
             return result.rows;
         } else {
             console.error('NOT RESULT');
