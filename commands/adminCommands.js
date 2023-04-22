@@ -25,6 +25,8 @@ async function connectto(pool, msg, bot) {
     });
 }
 
+// async function 
+
 module.exports = {
     connectto
 }

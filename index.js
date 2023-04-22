@@ -11,9 +11,6 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
-// const chatId = msg.chat.id;
-// const chatMembersCount = await bot.getChatMembersCount(chatId);
-
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
     user: 'postgres',
@@ -23,38 +20,34 @@ const pool = new Pool({
     port: 5432,
 });
 
-// msg.from.id === 112254199
-
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
     const chatMember = await bot.getChatMember(msg.chat.id, msg.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    // console.log(msg);
-
-    if (messageText === '/register') commands.register(pool, msg, bot);
-    else if (messageText === '/tagregistered' && isAdmin) commands.registered(pool, msg, bot, 'tag');
+    if (messageText === '/register') commands.register(msg, bot);
+    else if (messageText === '/tagregistered' && isAdmin) commands.tagRegistered(pool, msg, bot, 'tag');
     else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
-    else if (messageText === '/showregistered') commands.registered(pool, msg, bot, 'show');
-    else if (messageText.startsWith('/startgame') && isAdmin) commands.startgame(pool, msg, bot);
+    else if (messageText === '/showregistered') commands.tagRegistered(pool, msg, bot, 'show');
+    else if (messageText.startsWith('/startgame') && isAdmin) commands.startGame(pool, msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/showgames') commands.showgames(pool, msg, bot);
+    else if (messageText === '/showgames') commands.showGames(pool, msg, bot);
     else if (messageText === '/deletegame') {}
-    else if (messageText === '/deactivegame' && isAdmin) commands.deactivegames(pool, msg, bot);
+    else if (messageText === '/deactivegame' && isAdmin) commands.deactiveGames(pool, msg, bot);
     else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Привет, ' + msg.from.first_name + '. Играть будем?');
-    else if (messageText === '/список' || messageText === '/list') commands.getList(pool, msg, bot);
+    else if (messageText === '/список' || messageText === '/list') commands.getGamePlayers(pool, msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
-    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliol(pool, msg, bot);
-    else if (messageText.startsWith('/addguest') && isAdmin) commands.addguest(pool, msg, bot);
+    else if (messageText.startsWith('/addguest') && isAdmin) commands.addGuest(pool, msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText.includes('во ск')) commands.whatTime(pool, msg, bot);
     else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(msg.from.id, `ID вашей группы ${msg.chat.id}`);
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(msg.chat.id, 'Эта информация не для маглов!');
     else if (messageText === '/алохамора') bot.sendMessage(msg.chat.id, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(msg.chat.id, `De 'sən öl'`, {reply_to_message_id: msg.message_id});
+    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliOl(pool, msg, bot);
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
