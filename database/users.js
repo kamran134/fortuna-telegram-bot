@@ -12,6 +12,20 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
     }
 }
 
+async function getUsers(pool, {chat: {id: chatId}}) {
+    try {
+        const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
+        if (result) {
+            return result.rows;
+        } else {
+            console.error('NOT RESULT');
+        }
+    } catch (error) {
+        console.error('GETTING USERS: ', error);
+    }
+}
+
 module.exports = {
-    addUser
+    addUser,
+    getUsers
 }

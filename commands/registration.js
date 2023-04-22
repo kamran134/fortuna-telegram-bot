@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { addUserToDatabase } = require('../database');
+const { addUserToDatabase, getUsersFromDatabase } = require('../database');
 
 async function register(msg, bot) {
     try {
@@ -10,28 +10,32 @@ async function register(msg, bot) {
     }
 }
 
-function tagRegistered(pool, msg, bot, command) {
-    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} AND is_guest = FALSE;`, (err, res) => {
-        if (err) {
-            console.error(err);
-            bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
-            return;
-        }
-        
-        const users = res.rows.map(row => row.username ? `@${row.username}` :
-            `<a href="tg://user?id=${row.user_id}">${row.first_name}</a>`);
-        const usersWithoutTag = res.rows.map(row => `${row.username} — ${row.first_name}`);
-        
-        if (users.length === 0) {
-            bot.sendMessage(msg.chat.id, 'Никто не зарегистрировался в боте? Капец.');
+async function getRegistered(msg, bot, command) {
+    try {
+        const users = await getUsersFromDatabase(msg);
+        if (!users) {
+            bot.sendMessage(msg.from.id, 'Произошла ошибка. Читай логи');
+        } else if (users.length === 0) {
+            bot.sendMessage(msg.chat.id, 'Нет зарегистрированных пользователей. Капец!');
         } else {
-            bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n' + 
-               (command === 'tag' ? users.join('\n') : usersWithoutTag.join('\n')), {parse_mode: 'HTML'});
+            const usersString = command === 'tag' ? getRegistered(users) : listRegistered(users);
+            bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n\n' + usersString);
         }
-    });
+    } catch (error) {
+        console.error('REGISTERED ERROR', error);
+    }
+}
+
+function getRegistered(users) {
+    return users.map(user => user.username ? `@${user.username}` :
+    `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
+}
+
+function listRegistered(users) {
+    return users.map((user, index) => `${(index + 1)}. ${user.username} — ${user.first_name} ${user.last_name}`).join('\n');
 }
 
 module.exports = {
     register,
-    tagRegistered
+    getRegistered
 }

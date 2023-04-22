@@ -5,7 +5,7 @@ const jokes = require('./jokes');
 
 module.exports = {
     register: registration.register,
-    tagRegistered: registration.tagRegistered,
+    getRegistered: registration.getRegistered,
     startGame: games.startGame,
     showGames: games.showGames,
     deactiveGames: games.deactiveGames,
