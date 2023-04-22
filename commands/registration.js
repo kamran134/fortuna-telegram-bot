@@ -13,6 +13,9 @@ async function register(msg, bot) {
 async function getRegistered(msg, bot, command) {
     try {
         const users = await getUsersFromDatabase(msg);
+
+        console.log('users', JSON.stringify(users));
+
         if (!users) {
             bot.sendMessage(msg.from.id, 'Произошла ошибка. Читай логи');
         } else if (users.length === 0) {
@@ -28,7 +31,6 @@ async function getRegistered(msg, bot, command) {
 }
 
 function getRegistered(users) {
-    console.log('users', JSON.stringify(users));
     return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
     `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n') : '';
 }

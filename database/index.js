@@ -17,6 +17,7 @@ function addUserToDatabase(msg) {
 
 function getUsersFromDatabase(msg) {
     const { chat: { id: chatId }} = msg;
+    console.log('getUsersFromDatabase:', chatId);
     return getUsers(pool, { chat: { id: chatId } });
 }
 
