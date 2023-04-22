@@ -11,6 +11,8 @@ async function register(msg, bot) {
 }
 
 async function getRegistered(msg, bot, command) {
+    console.log('getRegistered', msg);
+
     try {
         const users = await getUsersFromDatabase(msg);
 
