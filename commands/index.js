@@ -8,7 +8,7 @@ function register(pool, msg, bot) {
 }
 
 function registered(pool, msg, bot, command) {
-    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id}`, (err, res) => {
+    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} AND is_guest = FALSE;`, (err, res) => {
         if (err) {
             console.error(err);
             bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
@@ -45,7 +45,7 @@ async function startgame(pool, msg, bot) {
 
         let taggedUsers = '';
 
-        pool.query(`SELECT * FROM users WHERE chat_id = ${chatId};`, (err, res) => {
+        pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`, (err, res) => {
             if (err) {
                 console.error(err);
                 return;
@@ -277,7 +277,7 @@ function addguest(pool, msg, bot) {
 }
 
 function agilliol(pool, msg, bot) {
-    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
+    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} AND is_guest = FALSE ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
         if (err) {
             console.error(err);
             bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
