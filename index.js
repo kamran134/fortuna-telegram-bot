@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
-const moment = require('moment');
 const commands = require('./commands');
+const { register, getRegistered, startGame } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
 
@@ -26,11 +26,11 @@ bot.on('message', async (msg) => {
     const chatMember = await bot.getChatMember(msg.chat.id, msg.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    if (messageText === '/register') commands.register(msg, bot);
-    else if (messageText === '/tagregistered' && isAdmin) await commands.getRegistered(msg, bot, 'tag');
+    if (messageText === '/register') await register(msg, bot);
+    else if (messageText === '/tagregistered' && isAdmin) await getRegistered(msg, bot, 'tag');
     else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
-    else if (messageText === '/showregistered') {console.log('messageText', messageText); await commands.getRegistered(msg, bot, 'show');}
-    else if (messageText.startsWith('/startgame') && isAdmin) commands.startGame(pool, msg, bot);
+    else if (messageText === '/showregistered') await getRegistered(msg, bot, 'show');
+    else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') commands.showGames(pool, msg, bot);
     else if (messageText === '/deletegame') {}

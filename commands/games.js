@@ -1,38 +1,38 @@
 const moment = require('moment');
+const { getUsersFromDatabase, addGameToDatabase } = require('../database');
 
-async function startGame(pool, msg, bot) {
+async function startGame(msg, bot) {
     const chatId = msg.chat.id;
+    const userId = msg.from.id;
     
     // Разбиваем текст команды на части
     const parts = msg.text.replace('/startgame ', '').split('/');
     
     // Если указаны все данные, сохраняем их
     if (parts.length === 6) {
-        const date = parts[0];
-        const startTime = parts[1];
-        const endTime = parts[2];
-        const quote = parts[3];
-        const location = parts[4];
-        const label = parts[5];
+
+        const gameOptions = {
+            date: parts[0],
+            start: parts[1],
+            end: parts[2],
+            quote: parts[3],
+            location: parts[4],
+            label: parts[5]
+        }
 
         let taggedUsers = '';
 
-        pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`, (err, res) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            
-            if (res.rows && res.rows.length > 0) {
-                taggedUsers = res.rows.map((user, index) => user.username ? `${(index + 1)}. @${user.username}` :
-                    `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
-            }
-                
-            pool.query('INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id', 
-                [moment(date, 'DD.MM.YYYY').toISOString(), startTime, endTime, quote, location, chatId, label])
-                .then(res => {
-                    const gameId = res.rows[0].id;
-                    bot.sendMessage(chatId, `Игра создана на ${date}\nс ${startTime} до ${endTime}.\nМесто: ${location}\n\n${taggedUsers}`, {
+        const users = await getUsersFromDatabase(chatId);
+
+        if (users && users.length > 0) {
+            taggedUsers = tagUsersForGame(users);
+
+            try {
+                const gameId = await addGameToDatabase(chatId, gameOptions);
+
+                if (gameId && gameId > 0) {
+                    bot.sendMessage(chatId, `Игра создана на ${gameOptions.date}\nс ${gameOptions.start} до ${gameOptions.end}.\n` +
+                        `Место: ${gameOptions.location}\n\n${taggedUsers}`, {
                         parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
@@ -46,15 +46,28 @@ async function startGame(pool, msg, bot) {
                                     {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${gameId}`}
                                 ]
                             ]
-                        }});
-                })
-                .catch(err => console.error('Inserting error', err));
+                        }
+                    });
+                } else {
+                    bot.sendMessage(userId, 'Что-то пошло не так и игра не создалась. Читай логи!');
+                }
+            } catch(error) {
+                console.error('ADDING GAME ERROR', error);
             }
-        );
+
+        } else {
+            bot.sendMessage(chatId, 'Кажется у нас нет зарегистрированных игроков для игры :(');
+            return;
+        }
     } else {
-        await bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
+        bot.sendMessage(chatId, 'Введённый формат неверный. Введите в формате \`\/startgame ДД.ММ.ГГГГ\/ЧЧ:ММ (время начала)\/ЧЧ:ММ (время конца)\/количество мест' +
         '\/место проведения\/название игры\`');
     }
+}
+
+function tagUsersForGame(users) {
+    return users.map((user, index) => user.username ? `${(index + 1)}. @${user.username}` :
+        `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
 }
 
 function showGames(pool, msg, bot) {

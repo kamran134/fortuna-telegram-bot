@@ -7,12 +7,12 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
         console.log(JSON.stringify(result));
         return true;
     } catch (error) {
-        console.error('Inserting error', error);
+        console.error('ADD USERS:', error);
         return false;
     }
 }
 
-async function getUsers(pool, {chat: {id: chatId}}) {
+async function getUsers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
         if (result) {
