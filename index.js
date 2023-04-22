@@ -53,7 +53,8 @@ bot.on('message', async (msg) => {
     else if (messageText.includes('во ск')) commands.whatTime(pool, msg, bot);
     else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(msg.from.id, `ID вашей группы ${msg.chat.id}`);
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(msg.chat.id, 'Эта информация не для маглов!');
-    else if (messageText === '/алохамора') bot.sendMessage(msg.chat.id, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`);
+    else if (messageText === '/алохамора') bot.sendMessage(msg.chat.id, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
+    else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(msg.chat.id, `De 'sən öl'`, {reply_to_message_id: msg.message_id});
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
