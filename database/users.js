@@ -16,6 +16,7 @@ async function getUsers(pool, {chat: {id: chatId}}) {
     try {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
         if (result) {
+            console.log('RESULT: ', JSON.stringify(result));
             if (Array.isArray(result.rows)) return result.rows;
             else return undefined;
         } else {
