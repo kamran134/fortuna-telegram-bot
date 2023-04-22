@@ -8,7 +8,7 @@ async function addGame(pool, chatId, {date, start, end, quote, location, label})
 
         console.log('insert result: ', JSON.stringify(result));
 
-        if (result && result.rows > 0) {
+        if (result && result.rows && result.rows.length > 0) {
             return result.rows[0].id;
         } else {
             return undefined;
