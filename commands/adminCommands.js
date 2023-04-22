@@ -6,7 +6,8 @@ async function connectto(pool, msg, bot) {
     const adminChatId = msg.chat.id;
     const userId = msg.from.id;
 
-    const groupName = await bot.getChat(chatId);
+    const groupInfo = await bot.getChat(chatId);
+    const groupName = groupInfo ? groupInfo.title : 'noname';
 
     bot.getChatMember(chatId, userId).then(member => {
         if (member.status === 'administrator' || member.status === 'creator') {
