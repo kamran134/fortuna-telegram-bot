@@ -52,6 +52,8 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText === '/deactivegames') commands.deactivegames(pool, msg, bot);
     else if (messageText.includes('во ск')) commands.whatTime(pool, msg, bot);
+    else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(msg.from.id, `ID вашей группы ${msg.chat.id}`);
+    else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(msg.chat.id, 'Эта информация не для маглов!');
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
