@@ -24,7 +24,7 @@ async function getRegistered(msg, bot, command) {
             bot.sendMessage(msg.chat.id, 'Нет зарегистрированных пользователей. Капец!');
         } else {
             console.log(JSON.stringify(users));
-            const usersString = command === 'tag' ? getRegistered(users) : listRegistered(users);
+            const usersString = command === 'tag' ? tagRegistered(users) : listRegistered(users);
             bot.sendMessage(msg.chat.id, 'Зарегистрированные участники:\n\n' + usersString);
         }
     } catch (error) {
@@ -32,7 +32,7 @@ async function getRegistered(msg, bot, command) {
     }
 }
 
-function getRegistered(users) {
+function tagRegistered(users) {
     return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
     `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n') : '';
 }
