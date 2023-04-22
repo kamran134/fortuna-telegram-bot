@@ -3,6 +3,8 @@ const moment = require('moment');
 function getGamePlayers(pool, msg, bot) {
     const chatId = msg.chat.id;
 
+    console.log('chatId', chatId);
+
     pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, game_users.game_id, game_users.exactly, games.quote FROM game_users ` +
         `LEFT JOIN users ON users.id = game_users.user_id ` +
         `LEFT JOIN games ON games.id = game_users.game_id ` +
