@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
 const commands = require('./commands');
-const { register, getRegistered, startGame } = require('./commands');
+const { register, getRegistered, startGame, showGames } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
 
@@ -32,7 +32,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/showregistered') await getRegistered(msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/showgames') commands.showGames(pool, msg, bot);
+    else if (messageText === '/showgames') await showGames(msg, bot);
     else if (messageText === '/deletegame') {}
     else if (messageText === '/deactivegame' && isAdmin) commands.deactiveGames(pool, msg, bot);
     else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');

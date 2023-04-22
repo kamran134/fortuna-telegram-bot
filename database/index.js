@@ -1,6 +1,6 @@
 const { Pool } = require('pg');
 const { addUser, getUsers } = require('./users');
-const { addGame } = require('./games');
+const { addGame, getGames } = require('./games');
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -24,8 +24,13 @@ function addGameToDatabase(chatId, gameOptions) {
     return addGame(pool, chatId, gameOptions);
 }
 
+function getGamesFromDatabase(chatId) {
+    return getGames(pool, chatId);
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
-    addGameToDatabase
+    addGameToDatabase,
+    getGamesFromDatabase
 }

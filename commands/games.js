@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getUsersFromDatabase, addGameToDatabase } = require('../database');
+const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase } = require('../database');
 
 async function startGame(msg, bot) {
     const chatId = msg.chat.id;
@@ -70,41 +70,39 @@ function tagUsersForGame(users) {
         `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
 }
 
-function showGames(pool, msg, bot) {
+async function showGames(msg, bot) {
     const chatId = msg.chat.id;
     
     let gameButtons = [];
 
-    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
-        if (err) {
-            console.log(err);
-            bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
-        }
-        else {
-            gameButtons = res.rows.map(row => [
-                {text: `+ на ${row.label}`, callback_data: `appointment_${row.id}`},
-                {text: `+/- на ${row.label}`, callback_data: `notexactly_${row.id}`},
-                {text: `- на ${row.label}`, callback_data: `decline_${row.id}`}
+    try {
+        const games = await getGamesFromDatabase(chatId);
+
+        if (games && games.length > 0) {
+            gameButtons = games.map(game => [
+                {text: `+ на ${game.label}`, callback_data: `appointment_${game.id}`},
+                {text: `+/- на ${game.label}`, callback_data: `notexactly_${game.id}`},
+                {text: `- на ${game.label}`, callback_data: `decline_${game.id}`}
             ]);
 
-            const games = res.rows.map((row, index) =>
+            const gamesString = games.map((game, index) =>
                 `Игра №${(index + 1)}\n` +
-                `    Дата: ${moment(row.game_date).format('DD.MM.YYYY')}\n` +
-                `    Время: с ${moment(row.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(row.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                `    Место: ${row.place}`, {parse_mode: 'MarkdownV2'}
-            );
+                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n` +
+                `    Время: с ${moment(game.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(game.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
+                `    Место: ${game.place}`, {parse_mode: 'MarkdownV2'}
+            ).join('\n----------------------------------\n');
 
-            if (games.length === 0) {
-                bot.sendMessage(chatId, 'А игр ещё нет :(');
-            } else {
-                bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
-                    reply_markup: {
-                        inline_keyboard: [...gameButtons]
-                    }
-                });
-            }
+            bot.sendMessage(chatId, gamesString, {
+                reply_markup: {
+                    inline_keyboard: [...gameButtons]
+                }
+            });
+        } else {
+            bot.sendMessage(chatId, 'А игр ещё нет :(');   
         }
-    });
+    } catch (error) {
+        console.error('SHOW GAME ERROR', error);
+    }
 }
 
 function deactiveGames(pool, msg, bot) {
