@@ -105,34 +105,35 @@ async function showGames(msg, bot) {
     }
 }
 
-function deactiveGames(pool, msg, bot) {
+async function deactiveGames(msg, bot) {
     const chatId = msg.chat.id;
 
     let gameDeactiveButtons = [];
 
-    pool.query(`SELECT * FROM games WHERE chat_id = ${chatId} AND status = TRUE`, (err, res) => {
-        if (err) {
-            bot.sendMessage(chatId, 'Произошла ошибка: ' + err);
-        }
-        else {
-            gameDeactiveButtons = res.rows.map(row => ({text: `Закрыть игру на ${row.label} (для админов)`, callback_data: `deactivegame_${row.id}`}));
+    try {
+        const games = await getGamesFromDatabase(chatId);
 
-            const games = res.rows.map((row, index) =>
+        if (games && games.length > 0) {
+            const gamesString = games.map((game, index) =>
                 `Игра №${(index + 1)}\n` +
-                `    Дата: ${moment(row.game_date).format('DD.MM.YYYY')}\n`
-            );
+                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
+            ).join('\n----------------------------------\n');
 
-            if (games.length === 0) {
-                bot.sendMessage(chatId, 'А игр ещё нет :(');
-            } else {
-                bot.sendMessage(chatId, games.join('\n----------------------------------\n'), {
-                    reply_markup: {
-                        inline_keyboard: [gameDeactiveButtons]
-                    }
-                });
-            }
+            gameDeactiveButtons = games.map(game => ({
+                text: `Закрыть игру на ${game.label} (для админов)`,
+                callback_data: `deactivegame_${game.id}`}));
+
+            bot.sendMessage(chatId, gamesString, {
+                reply_markup: {
+                    inline_keyboard: [gameDeactiveButtons]
+                }
+            });
+        } else {
+            bot.sendMessage(chatId, 'Ты не можешь деактивировать игру, если активных игр нет');
         }
-    });
+    } catch (error) {
+        console.error('DEACTIVE GAME ERROR', error);
+    }
 }
 
 module.exports = {

@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
 const commands = require('./commands');
-const { register, getRegistered, startGame, showGames } = require('./commands');
+const { register, getRegistered, startGame, showGames, deactiveGames } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
 
@@ -34,11 +34,11 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
     else if (messageText === '/showgames') await showGames(msg, bot);
     else if (messageText === '/deletegame') {}
-    else if (messageText === '/deactivegame' && isAdmin) commands.deactiveGames(pool, msg, bot);
+    else if (messageText === '/deactivegame' && isAdmin) await deactiveGames(msg, bot);
     else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Привет, ' + msg.from.first_name + '. Играть будем?');
-    else if (messageText === '/список' || messageText === '/list') commands.getGamePlayers(pool, msg, bot);
+    else if (messageText === '/list') commands.getGamePlayers(pool, msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
     else if (messageText.startsWith('/addguest') && isAdmin) commands.addGuest(pool, msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
@@ -46,8 +46,9 @@ bot.on('message', async (msg) => {
     else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(msg.from.id, `ID вашей группы ${msg.chat.id}`);
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(msg.chat.id, 'Эта информация не для маглов!');
     else if (messageText === '/алохамора') bot.sendMessage(msg.chat.id, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
-    else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(msg.chat.id, `De 'sən öl'`, {reply_to_message_id: msg.message_id});
+    else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(msg.chat.id, `De "sən öl"`, {reply_to_message_id: msg.message_id});
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliOl(pool, msg, bot);
+    else if (messageText ==='А вы рыбов продоете' || messageText === 'А вы рыбов продоёте') bot.sendMessage(msg.chat.id, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
