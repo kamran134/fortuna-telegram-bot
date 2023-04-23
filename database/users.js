@@ -5,10 +5,9 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
           [first_name, last_name, userId, chatId, username]
         );
         console.log(JSON.stringify(result));
-        return true;
     } catch (error) {
         console.error('ADD USERS:', error);
-        return false;
+        throw error;
     }
 }
 

@@ -8,7 +8,7 @@ async function register(msg, bot) {
         await addUserToDatabase(msg);
         bot.sendMessage(chatId, "Siz uğurla botda qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в боте");
     } catch (error) {
-        console.error('Inserting error', error);
+        console.error('REGISTRATION ERROR: ', error);
     }
 }
 
