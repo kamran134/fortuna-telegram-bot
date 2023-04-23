@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { getGamesTimesFromDatabase } = require('../database');
 
 async function agilliOl(pool, msg, bot) {
@@ -19,7 +20,7 @@ async function whatTime(msg, bot) {
         const gamesTimes = await getGamesTimesFromDatabase(chatId);
 
         if (gamesTimes && gamesTimes.length > 0) {
-            const gamesTimesString = gamesTimes.map(game => `${game.label}: ${game.game_starts}`).join(', ');
+            const gamesTimesString = gamesTimes.map(game => `${game.label}: ${moment(game.game_starts).format('hh:mm')}`).join(', ');
             bot.sendMessage(chatId, `Мэээх. Сколько можно спрашивать? :/\n${gamesTimesString}`);
         }
     } catch (error) {
