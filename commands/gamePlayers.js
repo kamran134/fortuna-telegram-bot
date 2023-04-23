@@ -73,6 +73,8 @@ async function addGuest(msg, bot) {
         first_name: fullname.split(' ')[0],
         last_name: fullname.split(' ')[1] | ' '
     }
+
+    console.log('fullname: ', fullname, ' last_name: ', guestOptions.last_name);
     
     try {
         const userId = await addGuestToDatabase(guestOptions);
