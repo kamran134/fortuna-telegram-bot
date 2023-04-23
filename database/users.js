@@ -64,9 +64,9 @@ async function getRandomUser(pool, chatId) {
 async function getAzList(pool, chatId, gameLabel) {
     console.log('chatID', chatId);
     console.log('gameLabel', gameLabel);
-    
+
     try {
-        const result = pool.query(`SELECT u.fullname_az FROM users u ` +
+        const result = await pool.query(`SELECT u.fullname_az FROM users u ` +
             `LEFT JOIN game_users gu ON gu.user_id = u.id ` +
             `WHERE u.chat_id = $1 AND gu.game_id = (SELECT MAX(g.id) FROM games g WHERE LOWER(g.label) = LOWER($2));`,
             [chatId, gameLabel]);
