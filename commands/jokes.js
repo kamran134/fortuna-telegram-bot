@@ -16,7 +16,7 @@ async function whatTime(msg, bot) {
     const chatId = msg.chat.id;
 
     try {
-        const gamesTimes = await getGamesTimesFromDatabase();
+        const gamesTimes = await getGamesTimesFromDatabase(chatId);
 
         if (gamesTimes && gamesTimes.length > 0) {
             const gamesTimesString = gamesTimes.map(game => `${game.label}: ${game.game_starts}`).join(', ');
