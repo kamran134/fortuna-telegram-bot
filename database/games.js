@@ -2,7 +2,7 @@ const moment = require('moment');
 
 async function getGames(pool, chatId) {
     try {
-        const result = await pool.query(`SELECT * FROM games WHERE chat_id = $1 AND status = TRUE`, [chatId]);
+        const result = await pool.query(`SELECT * FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
 
         console.log('Get games result: ', JSON.stringify(result));
 
@@ -14,13 +14,31 @@ async function getGames(pool, chatId) {
         }
     } catch(error) {
         console.error('GET GAME: ', error);
+        throw error;
+    }
+}
+
+async function getGamesTimes(pool, chatId) {
+    try {
+        const result = await pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
+
+        console.log('Get games times result: ', JSON.stringify(result));
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows;
+        } else {
+            console.error('GET GAMES TIMES RESULT ERROR', result);
+        }
+    } catch (error) {
+        console.log('GET GAMES TIMES ERROR: ', error);
+        throw error;
     }
 }
 
 async function addGame(pool, chatId, {date, start, end, quote, location, label}) {
     try {
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, ` +
-            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id`, 
+            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id;`, 
             [moment(date, 'DD.MM.YYYY').toISOString(), start, end, quote, location, chatId, label]);
 
         console.log('Add game result: ', JSON.stringify(result));
@@ -32,10 +50,12 @@ async function addGame(pool, chatId, {date, start, end, quote, location, label})
         }
     } catch(error) {
         console.error('ADD GAMES:', error);
+        throw error;
     }
 }
 
 module.exports = {
     getGames,
-    addGame
+    addGame,
+    getGamesTimes
 }

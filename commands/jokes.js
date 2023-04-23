@@ -1,3 +1,5 @@
+const { getGamesTimesFromDatabase } = require('../database');
+
 async function agilliOl(pool, msg, bot) {
     pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} AND is_guest = FALSE ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
         if (err) {
@@ -10,17 +12,19 @@ async function agilliOl(pool, msg, bot) {
     });
 }
 
-async function whatTime(pool, msg, bot) {
+async function whatTime(msg, bot) {
     const chatId = msg.chat.id;
-    pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE`, [chatId])
-        .then(res => {
-            console.log('What time res: ', JSON.stringify(res));
-            
-            const gameTimes = res.rows.map(row => `${row.label}: ${row.game_starts}`).join(', ');
 
-            bot.sendMessage(chatId, `Мэээх. Сколько можно спрашивать? :/\n${gameTimes}`);
-        })
-        .catch(err => console.error('What time error: ', err))
+    try {
+        const gamesTimes = await getGamesTimesFromDatabase();
+
+        if (gamesTimes && gamesTimes.length > 0) {
+            const gamesTimesString = gamesTimes.map(game => `${game.label}: ${game.game_starts}`).join(', ');
+            bot.sendMessage(chatId, `Мэээх. Сколько можно спрашивать? :/\n${gamesTimesString}`);
+        }
+    } catch (error) {
+        console.error('WHAT TIME ERROR: ', error);
+    }
 }
 
 module.exports = {
