@@ -23,12 +23,14 @@ async function getGamePlayers(pool, chatId) {
 
 async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, exactly }) {
     try {
+        console.log('\n\ngameLabel: ', gameLabel);
         await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
             `VALUES ((SELECT MAX(id) FROM games g WHERE g.label = $1 AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
             `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
             [gameLabel, chatId, userId, moment(new Date()).toISOString(), exactly]);
     } catch (error) {
-        console.error('ADD GAME PLAYER BY LABEL ERROR: ', error)
+        console.error('ADD GAME PLAYER BY LABEL ERROR: ', error);
+        throw error;
     }
 }
 

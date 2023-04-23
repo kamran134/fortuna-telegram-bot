@@ -74,26 +74,32 @@ async function addGuest(msg, bot) {
         last_name: fullname.split(' ')[1] | ' '
     }
     
-    const userId = await addGuestToDatabase(guestOptions);
+    try {
+        const userId = await addGuestToDatabase(guestOptions);
 
-    if (userId) {
-        const gameOptions = {
-            gameLabel,
-            chatId,
-            userId,
-            exactly
+        if (userId) {
+            const gameOptions = {
+                gameLabel,
+                chatId,
+                userId,
+                exactly
+            }
+    
+            try {
+                await addGuestToGame(gameOptions);
+    
+                bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''));
+            } catch (error) {
+                console.error('ADD GUEST TO GAME ERROR: ', error);
+            }
+        } else {
+            console.error('GET GUEST ID ERROR: ', userId);
         }
+    } catch (error) {
+        console.error('ADD GUEST ERROR', error);
+    } 
 
-        try {
-            await addGuestToGame(gameOptions);
-
-            bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''));
-        } catch (error) {
-            console.error('ADD GUEST TO GAME ERROR: ', error);
-        }
-    } else {
-        console.error('GET GUEST ID ERROR: ', userId);
-    }
+    
 }
 
 module.exports = {
