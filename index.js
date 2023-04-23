@@ -54,7 +54,7 @@ bot.on('message', async (msg) => {
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/azlist') getAzList(msg, bot);
+    else if (messageText === '/azlist') {console.log('I am here!'); getAzList(msg, bot);}
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
 });
