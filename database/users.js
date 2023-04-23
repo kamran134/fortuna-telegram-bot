@@ -75,6 +75,7 @@ async function getAzList(pool, chatId, gameLabel) {
             return result.rows;
         } else {
             console.log('GET AZ LIST RESULT ERROR', result);
+            throw result;
         }
     } catch (error) {
         console.error('GET AZ LIST ERROR: ', error);
