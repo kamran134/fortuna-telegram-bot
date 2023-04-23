@@ -7,7 +7,6 @@ const {
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
-const { getAzList } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
