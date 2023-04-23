@@ -103,14 +103,11 @@ async function addGuest(msg, bot) {
 }
 
 async function getAzList(msg, bot) {
-    console.log('\n\n\n\nI am here!');
     const chatId = msg.chat.id;
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') :
         msg.text ? msg.text.toLowerCase() : '';
 
     const gameLabel = messageText.replace('/azlist ', '');
-
-    console.log('gameLabel', gameLabel, messageText);
 
     try {
         const azList = await getAzListFromDatabase(chatId, gameLabel);

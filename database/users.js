@@ -62,6 +62,9 @@ async function getRandomUser(pool, chatId) {
 }
 
 async function getAzList(pool, chatId, gameLabel) {
+    console.log('chatID', chatId);
+    console.log('gameLabel', gameLabel);
+    
     try {
         const result = pool.query(`SELECT u.fullname_az FROM users u ` +
             `LEFT JOIN game_users gu ON gu.user_id = u.id ` +
