@@ -71,7 +71,7 @@ async function addGuest(msg, bot) {
         chatId,
         fullname,
         first_name: fullname.split(' ')[0],
-        last_name: fullname.split(' ')[1] || ' '
+        last_name: fullname.split(' ')[1].charAt(0).toUpperCase() + fullname.split(' ')[1].slice(1) || ' '
     }
     
     try {
