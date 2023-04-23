@@ -7,6 +7,7 @@ const {
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
+const { getAzList } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -54,7 +55,7 @@ bot.on('message', async (msg) => {
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
-
+    else if (messageText === '/azlist') getAzList(msg, bot);
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
 });

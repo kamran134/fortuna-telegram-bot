@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame } = require('../database');
+const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase } = require('../database');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -102,7 +102,29 @@ async function addGuest(msg, bot) {
     
 }
 
+async function getAzList(msg, bot) {
+    const chatId = msg.chat.id;
+    const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') :
+        msg.text ? msg.text.toLowerCase() : '';
+
+    const gameLabel = messageText.replace('/azlist ', '');
+
+    try {
+        const azList = await getAzListFromDatabase(chatId, gameLabel);
+
+        if (azList && azList.length > 0) {
+            azListString = azList.map(user => `${user.fullname_az}`).join('\n');
+            bot.sendMessage(chatId, `Azərbaycanca siyahı: \n\n${azListString}`);
+        } else {
+            bot.sendMessage(chatId, 'Нет игроков на игру');
+        }
+    } catch (error) {
+        console.error('GET AZ LIST ERROR: ', error);
+    }
+}
+
 module.exports = {
     getGamePlayers,
-    addGuest
+    addGuest,
+    getAzList
 }

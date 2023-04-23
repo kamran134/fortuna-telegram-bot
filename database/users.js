@@ -62,9 +62,30 @@ async function getRandomUser(pool, chatId) {
     }
 }
 
+async function getAzList(pool, chatId, gameLabel) {
+    try {
+        const result = pool.query(`SELECT u.fullname_az FROM users u ` +
+            `LEFT JOIN game_users gu ON gu.user_id = u.id ` +
+            `WHERE u.chat_id = $1 AND gu.game_id = (SELECT g.id FROM games WHERE LOWER(g.label) = LOWER($2));`,
+            [chatId, gameLabel]);
+        
+        console.log('Get az list result', JSON.stringify(result));
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows;
+        } else {
+            console.log('GET AZ LIST RESULT ERROR', result);
+        }
+    } catch (error) {
+        console.error('GET AZ LIST ERROR: ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     addUser,
     getUsers,
     addGuest,
-    getRandomUser
+    getRandomUser,
+    getAzList
 }

@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const { addUser, getUsers, addGuest, getRandomUser } = require('./users');
+const { addUser, getUsers, addGuest, getRandomUser, getAzList } = require('./users');
 const { addGame, getGames, getGamesTimes } = require('./games');
 const { getGamePlayers, addGamePlayerByLabel } = require('./gamePlayers');
 
@@ -49,6 +49,10 @@ function getRandomUserFromDatabase(chatId) {
     return getRandomUser(pool, chatId);
 }
 
+function getAzListFromDatabase(chatId, gameLabel) {
+    return getAzList(pool, chatId, gameLabel);
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
@@ -58,5 +62,6 @@ module.exports = {
     addGuestToDatabase,
     addGuestToGame,
     getGamesTimesFromDatabase,
-    getRandomUserFromDatabase
+    getRandomUserFromDatabase,
+    getAzListFromDatabase
 }
