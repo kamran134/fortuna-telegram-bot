@@ -27,7 +27,25 @@ async function getUsers(pool, chatId) {
     }
 }
 
+async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
+    try {
+        const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name, last_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, $4) RETURNING id`,
+            [chatId, fullname, first_name, last_name]);
+
+        console.log('Add guest result: ', JSON.stringify(result));
+        
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].id;
+        } else {
+            console.error('ADD GUEST RESULT ERROR: ', result);
+        }
+    } catch (error) {
+        console.error('ADD GUEST ERROR: ', error);
+    }
+}
+
 module.exports = {
     addUser,
-    getUsers
+    getUsers,
+    addGuest
 }

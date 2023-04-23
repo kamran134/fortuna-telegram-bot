@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getGamePlayersFromDataBase } = require('../database');
+const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame } = require('../database');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -58,37 +58,42 @@ async function getGamePlayers(msg, bot) {
     }
 }
 
-function addGuest(pool, msg, bot) {
+async function addGuest(msg, bot) {
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
     const chatId = msg.chat.id;
     const query = messageText.replace('/addguest ', '');
     const parts = query.split('/');
-
     const gameLabel = parts[0];
     const fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    const first_name = fullname.split(' ')[0];
-    const last_name = fullname.split(' ')[1] | ' ';
     const exactly = parts.length > 2 && parts[2].includes('*') ? false : true;
-    let userId = 0;
+    
+    const guestOptions = {
+        chatId,
+        fullname,
+        first_name: fullname.split(' ')[0],
+        last_name: fullname.split(' ')[1] | ' '
+    }
+    
+    const userId = await addGuestToDatabase(guestOptions);
 
-    pool.query(`INSERT INTO users (user_id, chat_id, is_guest, guest_name, first_name, last_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, $4) RETURNING id`,
-        [chatId, fullname, first_name, last_name])
-        .then(res => {
-            console.log('Insert guest res: ', JSON.stringify(res));
-            userId = res.rows[0].id;
+    if (userId) {
+        const gameOptions = {
+            gameLabel,
+            chatId,
+            userId,
+            exactly
+        }
 
-            if (userId > 0) {
-                pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ((SELECT MAX(id) FROM games g WHERE g.label = $1 AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
-                    `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
-                [gameLabel, chatId, userId, moment(new Date()).toISOString(), exactly])
-                    .then(res => {
-                        console.log(res);
-                        bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''))
-                    })
-                    .catch(err => console.log('INSERT GUEST TO GAME ERROR: ', err));
-            }
-        })
-        .catch(err => console.error('INSERT GUEST TO USERS ERROR: ', err));
+        try {
+            await addGuestToGame(gameOptions);
+
+            bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''));
+        } catch (error) {
+            console.error('ADD GUEST TO GAME ERROR: ', error);
+        }
+    } else {
+        console.error('GET GUEST ID ERROR: ', userId);
+    }
 }
 
 module.exports = {

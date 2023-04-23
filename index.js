@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
 const commands = require('./commands');
-const { register, getRegistered, startGame, showGames, deactiveGames, getGamePlayers } = require('./commands');
+const { register, getRegistered, startGame, showGames, deactiveGames, getGamePlayers, addGuest } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
 
@@ -26,21 +26,21 @@ bot.on('message', async (msg) => {
     const chatMember = await bot.getChatMember(msg.chat.id, msg.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    if (messageText === '/register') await register(msg, bot);
-    else if (messageText === '/tagregistered' && isAdmin) await getRegistered(msg, bot, 'tag');
+    if (messageText === '/register') register(msg, bot);
+    else if (messageText === '/tagregistered' && isAdmin) getRegistered(msg, bot, 'tag');
     else if (messageText === '/tagregistered' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может массово беспокоить всех!');
-    else if (messageText === '/showregistered') await getRegistered(msg, bot, 'show');
+    else if (messageText === '/showregistered') getRegistered(msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/showgames') await showGames(msg, bot);
+    else if (messageText === '/showgames') showGames(msg, bot);
     else if (messageText === '/deletegame') {}
-    else if (messageText === '/deactivegame' && isAdmin) await deactiveGames(msg, bot);
+    else if (messageText === '/deactivegame' && isAdmin) deactiveGames(msg, bot);
     else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
     else if (messageText === 'приффки') bot.sendMessage(msg.chat.id, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ');
     else if (messageText === 'привет') bot.sendMessage(msg.chat.id, 'Привет, ' + msg.from.first_name + '. Играть будем?');
     else if (messageText === '/list') getGamePlayers(msg, bot);
     else if (messageText === 'Пока') bot.sendMessage(msg.chat.id, 'До свидания, ' + msg.from.first_name);
-    else if (messageText.startsWith('/addguest') && isAdmin) commands.addGuest(pool, msg, bot);
+    else if (messageText.startsWith('/addguest') && isAdmin) addGuest(msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(msg.chat.id, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText.includes('во ск')) commands.whatTime(pool, msg, bot);
     else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(msg.from.id, `ID вашей группы ${msg.chat.id}`);
