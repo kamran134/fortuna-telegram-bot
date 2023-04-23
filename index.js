@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
-    getGamePlayers, addGuest, whatTime, agilliOl
+    getGamePlayers, addGuest, whatTime, agilliOl, getAzList
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');

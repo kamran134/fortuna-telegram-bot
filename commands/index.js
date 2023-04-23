@@ -12,5 +12,6 @@ module.exports = {
     getGamePlayers: gamePlayers.getGamePlayers,
     addGuest: gamePlayers.addGuest,
     agilliOl: jokes.agilliOl,
-    whatTime: jokes.whatTime
+    whatTime: jokes.whatTime,
+    getAzList: gamePlayers.getAzList
 }
