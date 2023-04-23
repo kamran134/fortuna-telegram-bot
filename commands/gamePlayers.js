@@ -109,7 +109,7 @@ async function getAzList(msg, bot) {
 
     const gameLabel = messageText.replace('/azlist ', '');
 
-    console.log('gameLabel', gameLabel);
+    console.log('gameLabel', gameLabel, messageText);
 
     try {
         const azList = await getAzListFromDatabase(chatId, gameLabel);
