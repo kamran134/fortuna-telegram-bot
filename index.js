@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
-    getGamePlayers, addGuest, whatTime
+    getGamePlayers, addGuest, whatTime, agilliOl
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
@@ -52,7 +52,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(chatId, 'Эта информация не для маглов!');
     else if (messageText === '/алохамора') bot.sendMessage(chatId, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
-    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') commands.agilliOl(pool, msg, bot);
+    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
 
     // for admin group

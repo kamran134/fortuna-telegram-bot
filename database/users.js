@@ -44,8 +44,27 @@ async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
     }
 }
 
+async function getRandomUser(pool, chatId) {
+    try {
+        const result = await pool.query(`SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE ORDER BY RANDOM() LIMIT 1;`, 
+            [chatId]);
+
+        console.log('Get random user result: ', JSON.stringify(result));
+
+        if (result && result.rows) {
+            return result.rows[0];
+        } else {
+            console.error('GET RANDOM USER RESULT ERROR: ', result);
+        }
+    } catch (error) {
+        console.log('GET RANDOM USER ERROR: ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     addUser,
     getUsers,
-    addGuest
+    addGuest,
+    getRandomUser
 }

@@ -1,16 +1,24 @@
 const moment = require('moment');
-const { getGamesTimesFromDatabase } = require('../database');
+const { getGamesTimesFromDatabase, getRandomUserFromDatabase } = require('../database');
 
-async function agilliOl(pool, msg, bot) {
-    pool.query(`SELECT * FROM users WHERE chat_id = ${msg.chat.id} AND is_guest = FALSE ORDER BY RANDOM() LIMIT 1;`, (err, res) => {
-        if (err) {
-            console.error(err);
-            bot.sendMessage(msg.chat.id, 'Произошла ошибка: ' + err);
-            return;
+async function agilliOl(msg, bot) {
+    const chatId = msg.chat.id;
+
+    try {
+        const randomUser = await getRandomUserFromDatabase(chatId);
+
+        console.log('Random user: ', JSON.stringify(randomUser));
+
+        if (randomUser) {
+            bot.sendMessage(chatId, `@${randomUser.username ? randomUser.username :
+                '<a href="tg://user?id=${user.user_id}">' + randomUser.first_name + '</a>'}, ağıllı ol! ☝️`,
+                {parse_mode: 'HTML'});
+        } else {
+            bot.sendMessage(chatId, 'Печально, когда некому говорить "Ağıllı ol" 🥲');
         }
-        
-        if (res.rows && res.rows[0] && res.rows[0].username) bot.sendMessage(msg.chat.id, `@${res.rows[0].username}, ağıllı ol!`);
-    });
+    } catch (error) {
+        console.error('AGILLI OL ERROR: ', error);
+    }
 }
 
 async function whatTime(msg, bot) {
