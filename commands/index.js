@@ -10,8 +10,8 @@ module.exports = {
     showGames: games.showGames,
     deactiveGames: games.deactiveGames,
     getGamePlayers: gamePlayers.getGamePlayers,
+    getAzList: gamePlayers.getAzList,
     addGuest: gamePlayers.addGuest,
     agilliOl: jokes.agilliOl,
-    whatTime: jokes.whatTime,
-    getAzList: gamePlayers.getAzList
+    whatTime: jokes.whatTime
 }
