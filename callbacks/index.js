@@ -1,4 +1,3 @@
-const moment = require('moment');
 const appointment = require('./appointment');
 const gameOptions = require('./gameOptions');
 

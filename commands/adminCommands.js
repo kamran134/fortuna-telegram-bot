@@ -48,7 +48,29 @@ async function showGroups(adminChatId, bot) {
     }
 }
 
+async function startGameFromAdmin(adminChatId, bot) {
+    try {
+        const groups = await getGroupsFromDataBase(adminChatId);
+
+        if (!groups || !Array.isArray(groups)) {
+            console.error('groups is not an array!', groups);
+        } else if (groups.length === 0) {
+            bot.sendMessage(adminChatId, `У вас нет подчинённых групп`);
+        } else {
+            const groupsButtons = groups.map(group => ([{text: group.group_name, callback_data: `selectedGroup_${group.chat_id}`}]));
+            bot.sendMessage(adminChatId, `Выберите группу, где хотите создать игру`, {
+                reply_markup: {
+                    inline_keyboard: [groupsButtons]
+                }
+            });
+        }
+    } catch (error) {
+        console.log('START GAME ERROR: ', error);
+    }
+}
+
 module.exports = {
     connectTo,
-    showGroups
+    showGroups,
+    startGameFromAdmin
 }
