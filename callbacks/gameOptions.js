@@ -20,7 +20,7 @@ async function startGameInSelectedGroup(query, bot) {
 
     let waitForInput = true;
 
-    bot.once('message', async (msg) => {
+    bot.on('message', async (msg) => {
         try {
             if (!waitForInput) {
                 return;
