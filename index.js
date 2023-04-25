@@ -4,7 +4,7 @@ const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
-    connectTo, showGroups
+    connectTo, showGroups, startGameFromAdmin
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
@@ -59,7 +59,7 @@ bot.on('message', async (msg) => {
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
-    else if (messageText === '/adminstartgame') {}
+    else if (messageText === '/adminstartgame') startGameFromAdmin(chatId, bot);
 });
 
 bot.on('callback_query', async (query) => {
@@ -73,5 +73,5 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('decline_')) callbacks.declineAppointment(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) callbacks.deactiveGame(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
-    else if (query.data.startsWith('selectedGroup_') && isAdmin) {}
+    else if (query.data.startsWith('selectedGroup_') && isAdmin) callbacks.startGameInSelectedGroup(query, bot);
 });

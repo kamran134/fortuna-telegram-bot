@@ -5,5 +5,6 @@ module.exports = {
     appointmentToTheGame: appointment.appointmentToTheGame,
     notExactlyAppointment: appointment.notExactlyAppointment,
     declineAppointment: appointment.declineAppointment,
-    deactiveGame: gameOptions.deactiveGame
+    deactiveGame: gameOptions.deactiveGame,
+    startGameInSelectedGroup: gameOptions.startGameInSelectedGroup
 }

@@ -16,5 +16,6 @@ module.exports = {
     agilliOl: jokes.agilliOl,
     whatTime: jokes.whatTime,
     connectTo: adminCommands.connectTo,
-    showGroups: adminCommands.showGroups
+    showGroups: adminCommands.showGroups,
+    startGameFromAdmin: adminCommands.startGameFromAdmin
 }
