@@ -59,7 +59,7 @@ function addGroupAdminToDatabase({ chatId, adminChatId, groupName }) {
 }
 
 function getGroupsFromDataBase(adminChatId) {
-    return getGroups(adminChatId);
+    return getGroups(pool, adminChatId);
 }
 
 module.exports = {
