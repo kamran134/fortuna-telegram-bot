@@ -2,6 +2,7 @@ const registration = require('./registration');
 const games = require('./games');
 const gamePlayers = require('./gamePlayers');
 const jokes = require('./jokes');
+const adminCommands = require('./adminCommands');
 
 module.exports = {
     register: registration.register,
@@ -13,5 +14,7 @@ module.exports = {
     getAzList: gamePlayers.getAzList,
     addGuest: gamePlayers.addGuest,
     agilliOl: jokes.agilliOl,
-    whatTime: jokes.whatTime
+    whatTime: jokes.whatTime,
+    connectTo: adminCommands.connectTo,
+    showGroups: adminCommands.showGroups
 }

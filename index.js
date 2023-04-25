@@ -3,7 +3,8 @@ const { Pool } = require('pg');
 const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
-    getGamePlayers, addGuest, whatTime, agilliOl, getAzList
+    getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
+    connectTo, showGroups
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const callbacks = require('./callbacks');
@@ -56,7 +57,8 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
     // for admin group
-    else if (messageText.startsWith('/connectto') && isAdmin) adminCommands.connectto(pool, msg, bot);
+    else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
+    else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
 });
 
 bot.on('callback_query', async (query) => {

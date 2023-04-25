@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const { addUser, getUsers, addGuest, getRandomUser, getAzList } = require('./users');
 const { addGame, getGames, getGamesTimes } = require('./games');
 const { getGamePlayers, addGamePlayerByLabel } = require('./gamePlayers');
+const { adminGroupAdd, getGroups } = require('./adminGroup');
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -53,6 +54,14 @@ function getAzListFromDatabase(chatId, gameLabel) {
     return getAzList(pool, chatId, gameLabel);
 }
 
+function addGroupAdminToDatabase({ chatId, adminChatId, groupName }) {
+    return adminGroupAdd(pool, { chatId, adminChatId, groupName });
+}
+
+function getGroupsFromDataBase(adminChatId) {
+    return getGroups(adminChatId);
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
@@ -63,5 +72,7 @@ module.exports = {
     addGuestToGame,
     getGamesTimesFromDatabase,
     getRandomUserFromDatabase,
-    getAzListFromDatabase
+    getAzListFromDatabase,
+    addGroupAdminToDatabase,
+    getGroupsFromDataBase
 }

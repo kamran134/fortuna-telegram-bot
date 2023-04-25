@@ -1,6 +1,6 @@
-const moment = require('moment');
+const { addGroupAdminToDatabase, getGroupsFromDataBase } = require('../database');
 
-async function connectto(pool, msg, bot) {
+async function connectTo(msg, bot) {
     const messageText = msg.text.replace('@fortunaVolleybalBot', '');
     const chatId = messageText.replace('/connectto ', '');
     const adminChatId = msg.chat.id;
@@ -11,12 +11,19 @@ async function connectto(pool, msg, bot) {
 
     bot.getChatMember(chatId, userId).then(member => {
         if (member.status === 'administrator' || member.status === 'creator') {
-            pool.query(`INSERT INTO admin_groups (chat_id, admin_chat_id, group_name) VALUES ($1, $2, $3)`,
-            [chatId, adminChatId, groupName])
-                .then(res => {
-                    console.log('Connecting groups: ', JSON.stringify(res));
-                    bot.sendMessage(adminChatId, `Группа ${groupName} успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`)
-                })
+            try {
+                const result = addGroupAdminToDatabase({ chatId, adminChatId, groupName });
+
+                if (!result) {
+                    console.error('RESULT ERROR: ', result);
+                    throw result;
+                } else {
+                    bot.sendMessage(adminChatId, `Группа ${groupName} успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`);
+                }
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
         } else {
             bot.sendMessage(adminChatId, 'Дело пахнет жареным. Вряд-ли вы админ той группы');
         }
@@ -25,8 +32,23 @@ async function connectto(pool, msg, bot) {
     });
 }
 
-// async function 
+async function showGroups(adminChatId, bot) {
+    try {
+        const groups = await getGroupsFromDataBase(adminChatId);
+
+        if (!groups || !Array.isArray(groups)) {
+            console.error('groups is not an array!', groups);
+        } else if (groups.length === 0) {
+            bot.sendMessage(adminChatId, `У вас нет подчинённых групп`);
+        } else {
+            bot.sendMessage(adminChatId, `Группы, которые вы админите: \n\n${groups.map(group => group.group_name).join('\n')}`);
+        }
+    } catch (error) {
+        console.error('SHOW GROUP ERROR: ', error);
+    }
+}
 
 module.exports = {
-    connectto
+    connectTo,
+    showGroups
 }
