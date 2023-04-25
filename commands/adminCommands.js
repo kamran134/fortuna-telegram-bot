@@ -60,7 +60,7 @@ async function startGameFromAdmin(adminChatId, bot) {
             const groupsButtons = groups.map(group => ([{text: group.group_name, callback_data: `selectedGroup_${group.chat_id}`}]));
             bot.sendMessage(adminChatId, `Выберите группу, где хотите создать игру`, {
                 reply_markup: {
-                    inline_keyboard: [groupsButtons]
+                    inline_keyboard: [...groupsButtons]
                 }
             });
         }
