@@ -17,5 +17,5 @@ module.exports = {
     whatTime: jokes.whatTime,
     connectTo: adminCommands.connectTo,
     showGroups: adminCommands.showGroups,
-    startGameFromAdmin: adminCommands.startGameFromAdmin
+    showYourGroups: adminCommands.showYourGroups
 }

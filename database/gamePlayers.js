@@ -18,15 +18,15 @@ async function getGamePlayers(pool, chatId) {
         }
     } catch (error) {
         console.error('GET GAME PLAYERS: ', error);
+        throw error;
     }
 }
 
 async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, exactly }) {
     try {
-        console.log('\n\ngameLabel: ', gameLabel);
         await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
             `VALUES ((SELECT MAX(id) FROM games g WHERE LOWER(g.label) = LOWER($1) AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
-            `ON CONFLICT (user_id, game_id) DO NOTHING;`, 
+            `ON CONFLICT (user_id, game_id) DO NOTHING;`,
             [gameLabel, chatId, userId, moment(new Date()).toISOString(), exactly]);
     } catch (error) {
         console.error('ADD GAME PLAYER BY LABEL ERROR: ', error);
@@ -34,7 +34,25 @@ async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, exactly }
     }
 }
 
+async function addGamePlayerById(pool, { gameId, chatId, userId }) {
+    try {
+        const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
+            [gameId, chatId, userId, moment(new Date()).toISOString()]);
+        
+        if (result && result.rows && Array.isArray(result.rows)) return result.rows[0].label;
+        else {
+            console.error('ADD GAME PLAYER BY ID RESULT ERROR, ', result);
+            return undefined;
+        }
+    } catch (error) {
+        console.error('ADD GAME PLAYER BY ID ERROR', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getGamePlayers,
-    addGamePlayerByLabel
+    addGamePlayerByLabel,
+    addGamePlayerById
 }

@@ -4,10 +4,13 @@ const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
-    connectTo, showGroups, startGameFromAdmin
+    connectTo, showGroups, showYourGroups
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
-const callbacks = require('./callbacks');
+const {
+    appointmentToTheGame, declineAppointment, notExactlyAppointment, 
+    deactiveGame, startGameInSelectedGroup
+} = require('./callbacks');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -59,19 +62,20 @@ bot.on('message', async (msg) => {
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
-    else if (messageText === '/adminstartgame') startGameFromAdmin(chatId, bot);
+    else if (messageText === '/adminstartgame' && isAdmin) showYourGroups(chatId, bot, 'Start');
+    else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
 });
 
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
-    const buttonId = query.data;
     const chatMember = await bot.getChatMember(chatId, query.from.id);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    if (query.data.startsWith('appointment_')) callbacks.appointmentToTheGame(pool, query, bot);
-    else if (query.data.startsWith('notexactly_')) callbacks.notExactlyAppointment(pool, query, bot);
-    else if (query.data.startsWith('decline_')) callbacks.declineAppointment(pool, query, bot);
-    else if (query.data.startsWith('deactivegame_') && isAdmin) callbacks.deactiveGame(pool, query, bot);
+    if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
+    else if (query.data.startsWith('notexactly_')) notExactlyAppointment(pool, query, bot);
+    else if (query.data.startsWith('decline_')) declineAppointment(pool, query, bot);
+    else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
-    else if (query.data.startsWith('selectedGroup_') && isAdmin) callbacks.startGameInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) deactiveGame(query, bot);
 });

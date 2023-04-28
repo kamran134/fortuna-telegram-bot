@@ -1,19 +1,23 @@
 const moment = require('moment');
+const { addGamePlayerByIdToDatabase } = require('../database');
 
-function appointmentToTheGame(pool, query, bot) {
+async function appointmentToTheGame(query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('appointment_', '');
 
-    pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
-            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
-        [gameId, chatId, user.id, moment(new Date()).toISOString()])
-    .then(res => {
-        console.log(res);
-        const gameLabel = res.rows[0].label;
-        bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
-    })
-    .catch(err => console.log('INSERT ERROR___: ', err));
+    try {
+        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id });
+
+        if (!gameLabel) {
+            bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
+            return;
+        } else {
+            bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
+        }
+    } catch (error) {
+        console.error('APPOINTMENT ERROR: ', error);
+    }
 }
 
 function notExactlyAppointment(pool, query, bot) {

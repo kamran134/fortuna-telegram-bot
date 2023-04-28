@@ -54,8 +54,54 @@ async function addGame(pool, chatId, {date, start, end, quote, location, label})
     }
 }
 
+async function deactiveGame(pool, gameId) {
+    const client = await pool.connect();
+
+    try {
+        const result = await client.query(`UPDATE games SET status = FALSE WHERE id = $1 RETURNING label;`, [gameId]);
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].label;
+        } else {
+            console.error('DEACTIVE GAME RESULT ERROR: ', error);
+            throw result;
+        }
+    } catch (error) {
+        console.error('DEACTIVE GAME ERROR: ', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
+async function deleteGame(pool, gameId) {
+    const client = await pool.connect();
+
+    try {
+        // Удаляем связанные строки в таблице game_users
+        await client.query(`DELETE FROM game_users WHERE game_id = $1;`, [gameId]);
+
+        // Удаляем игру из таблицы games
+        const result = await client.query(`DELETE FROM games WHERE id = $1 RETURNING label;`, [gameId]);
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].label;
+        } else {
+            console.error('DEACTIVE GAME RESULT ERROR: ', error);
+            throw result;
+        }
+    } catch (error) {
+        console.error('DEACTIVE GAME ERROR: ', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
 module.exports = {
     getGames,
     addGame,
-    getGamesTimes
+    getGamesTimes,
+    deactiveGame,
+    deleteGame
 }

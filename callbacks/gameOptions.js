@@ -1,15 +1,21 @@
 const { startGame } = require("../commands");
+const { deactiveGameInDatabase } = require("../database");
 
-async function deactiveGame(pool, query, bot) {
-    const gameId = query.data.replace('deactivegame_', '');
+async function deactiveGame(query, bot) {
+    const gameId = query.data.split('_')[1];
     const chatId = query.message.chat.id;
 
-    pool.query(`UPDATE games SET status = FALSE WHERE id = $1`, [gameId])
-        .then(res => {
-            console.log(res);
-            bot.sendMessage(chatId, 'Игра закрыта!');
-        })
-        .catch(err => console.log('UPDATE GAMES ERROR', err));
+    try {
+        const label = await deactiveGameInDatabase(gameId);
+
+        if (label) {
+            bot.sendMessage(chatId, `Игра закрыта (${label})!`);
+        } else {
+            bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
+        }
+    } catch (error) {
+        console.error('DEACTIVE GAME ERROR: ', error);
+    }
 }
 
 async function startGameInSelectedGroup(query, bot) {
