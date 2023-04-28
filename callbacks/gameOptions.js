@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { startGame, deactiveGames } = require("../commands");
+const { startGame } = require("../commands");
 const { deactiveGameInDatabase, getGamesFromDatabase } = require("../database");
 
 async function deactiveGame(query, bot) {
@@ -87,13 +87,6 @@ async function showGamesInSelectedGroup(query, bot) {
     } catch (error) {
         console.error('DEACTIVE GAME ERROR', error);
     }
-
-    // try {
-    //     await deactiveGames({chat: {id: selectedGroupChatId}}, bot);
-    // } catch (error) {
-    //     console.error("SHOW GAMES ERROR: ", error);
-    //     throw error;
-    // }
 }
 
 module.exports = {

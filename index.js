@@ -1,6 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
 const { Pool } = require('pg');
-const commands = require('./commands');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
@@ -64,6 +63,8 @@ bot.on('message', async (msg) => {
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
     else if (messageText === '/adminstartgame' && isAdmin) showYourGroups(chatId, bot, 'Start');
     else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
+    else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
+    else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
 });
 
 bot.on('callback_query', async (query) => {
@@ -78,4 +79,5 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showGamesInSelectedGroup(query, bot);
 });

@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const { addUser, getUsers, addGuest, getRandomUser, getAzList } = require('./users');
+const { addUser, getUsers, addGuest, getRandomUser, getAzList, editUser } = require('./users');
 const { addGame, getGames, getGamesTimes, deactiveGame, deleteGame } = require('./games');
 const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById } = require('./gamePlayers');
 const { adminGroupAdd, getGroups } = require('./adminGroup');
@@ -74,6 +74,10 @@ function deleteGameFromDatabase(gameId) {
     return deleteGame(pool, gameId);
 }
 
+function editUserInDatabase({ userId, firstName, lastName, fullnameAz }) {
+    return editUser(pool, {userId, firstName, lastName, fullnameAz});
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
@@ -89,5 +93,6 @@ module.exports = {
     getGroupsFromDataBase,
     addGamePlayerByIdToDatabase,
     deactiveGameInDatabase,
-    deleteGameFromDatabase
+    deleteGameFromDatabase,
+    editUserInDatabase
 }

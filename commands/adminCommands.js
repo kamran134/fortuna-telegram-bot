@@ -68,8 +68,13 @@ async function showYourGroups(adminChatId, bot, command) {
     }
 }
 
+async function editUser(msg, bot) {
+
+}
+
 module.exports = {
     connectTo,
     showGroups,
-    showYourGroups
+    showYourGroups,
+    editUser
 }

@@ -16,6 +16,7 @@ async function getUsers(pool, chatId) {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
         if (result) {
             console.log('RESULT: ', JSON.stringify(result));
+
             if (Array.isArray(result.rows)) return result.rows;
             else return undefined;
         } else {
@@ -85,10 +86,46 @@ async function getAzList(pool, chatId, gameLabel) {
     }
 }
 
+async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
+    try {
+        const updateFields = [];
+        const values = [];
+
+    if (firstName) {
+        updateFields.push('first_name = $1');
+        values.push(firstName);
+    }
+
+    if (lastName) {
+        updateFields.push('last_name = $2');
+        values.push(lastName);
+    }
+  
+    if (fullnameAz) {
+        updateFields.push('fullname_az = $3');
+        values.push(fullnameAz);
+    }
+
+    const setClause = updateFields.join(', ');
+    values.push(userId);
+  
+    const result = await pool.query(
+        `UPDATE users SET ${setClause} WHERE id = $${values.length} RETURNING *`,
+        values
+    );
+  
+      return result.rows[0];
+    } catch (error) {
+      console.error('EDIT USER ERROR: ', error);
+      throw error;
+    }
+}
+
 module.exports = {
     addUser,
     getUsers,
     addGuest,
     getRandomUser,
-    getAzList
+    getAzList,
+    editUser
 }
