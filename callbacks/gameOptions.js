@@ -1,5 +1,5 @@
-const { startGame } = require("../commands");
-const { deactiveGameInDatabase } = require("../database");
+const { startGame, deactiveGames } = require("../commands");
+const { deactiveGameInDatabase, getGamesFromDatabase } = require("../database");
 
 async function deactiveGame(query, bot) {
     const gameId = query.data.split('_')[1];
@@ -56,7 +56,47 @@ async function startGameInSelectedGroup(query, bot) {
     });
 }
 
+async function showGamesInSelectedGroup(query, bot) {
+    const adminChatId = query.message.chat.id;
+    const selectedGroupChatId = parseInt(query.data.split('_')[1]);
+
+    let gameDeactiveButtons = [];
+
+    try {
+        const games = await getGamesFromDatabase(selectedGroupChatId);
+
+        if (games && games.length > 0) {
+            const gamesString = games.map((game, index) =>
+                `Игра №${(index + 1)}\n` +
+                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
+            ).join('\n----------------------------------\n');
+
+            gameDeactiveButtons = games.map(game => ({
+                text: `Закрыть игру на ${game.label} (для админов)`,
+                callback_data: `deactivegame_${game.id}`}));
+
+            bot.sendMessage(adminChatId, gamesString, {
+                reply_markup: {
+                    inline_keyboard: [gameDeactiveButtons]
+                }
+            });
+        } else {
+            bot.sendMessage(adminChatId, 'Ты не можешь деактивировать игру, если активных игр нет');
+        }
+    } catch (error) {
+        console.error('DEACTIVE GAME ERROR', error);
+    }
+
+    // try {
+    //     await deactiveGames({chat: {id: selectedGroupChatId}}, bot);
+    // } catch (error) {
+    //     console.error("SHOW GAMES ERROR: ", error);
+    //     throw error;
+    // }
+}
+
 module.exports = {
     deactiveGame,
-    startGameInSelectedGroup
+    startGameInSelectedGroup,
+    showGamesInSelectedGroup
 }
