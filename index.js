@@ -62,8 +62,6 @@ bot.on('message', async (msg) => {
     else if (messageText === '/adminstartgame') startGameFromAdmin(chatId, bot);
 });
 
-const buttonClicks = new Set();
-
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
     const buttonId = query.data;
@@ -75,12 +73,5 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('decline_')) callbacks.declineAppointment(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) callbacks.deactiveGame(pool, query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
-    else if (query.data.startsWith('selectedGroup_') && isAdmin) {
-
-        if (buttonClicks.has(buttonId)) bot.sendMessage(chatId, 'Вы уже нажали на эту кнопку. Может вам подойдёт команда /agilliol ?');
-        else {
-            buttonClicks.add(buttonId);
-            callbacks.startGameInSelectedGroup(query, bot);
-        }
-    }
+    else if (query.data.startsWith('selectedGroup_') && isAdmin) callbacks.startGameInSelectedGroup(query, bot);
 });

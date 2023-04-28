@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS games (
     place TEXT,
     participate_limit INT,
     is_active BOOLEAN,
-    label TEXT
+    label TEXT,
+    UNIQUE(chat_id, game_date, label)
 );
 
 CREATE TABLE IF NOT EXISTS game_users (

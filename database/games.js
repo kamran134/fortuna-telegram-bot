@@ -38,7 +38,7 @@ async function getGamesTimes(pool, chatId) {
 async function addGame(pool, chatId, {date, start, end, quote, location, label}) {
     try {
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, quote, place, chat_id, status, ` +
-            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) RETURNING id;`, 
+            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) CONFLICT(chat_id, game_date, label) DO NOTHING RETURNING id;`, 
             [moment(date, 'DD.MM.YYYY').toISOString(), start, end, quote, location, chatId, label]);
 
         console.log('Add game result: ', JSON.stringify(result));
