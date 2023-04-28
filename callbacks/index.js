@@ -6,5 +6,6 @@ module.exports = {
     notExactlyAppointment: appointment.notExactlyAppointment,
     declineAppointment: appointment.declineAppointment,
     deactiveGame: gameOptions.deactiveGame,
-    startGameInSelectedGroup: gameOptions.startGameInSelectedGroup
+    startGameInSelectedGroup: gameOptions.startGameInSelectedGroup,
+    showGamesInSelectedGroup: gameOptions.showGamesInSelectedGroup
 }
