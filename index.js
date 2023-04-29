@@ -17,15 +17,6 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
-// Создаем пулл соединений к базе данных
-const pool = new Pool({
-    user: 'postgres',
-    host: 'db',
-    database: 'fortuna',
-    password: 'postgres',
-    port: 5432,
-});
-
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -58,6 +49,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
+    
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
@@ -73,8 +65,8 @@ bot.on('callback_query', async (query) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
-    else if (query.data.startsWith('notexactly_')) notExactlyAppointment(pool, query, bot);
-    else if (query.data.startsWith('decline_')) declineAppointment(pool, query, bot);
+    else if (query.data.startsWith('notexactly_')) notExactlyAppointment(query, bot);
+    else if (query.data.startsWith('decline_')) declineAppointment(query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);

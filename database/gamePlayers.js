@@ -34,11 +34,11 @@ async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, exactly }
     }
 }
 
-async function addGamePlayerById(pool, { gameId, chatId, userId }) {
+async function addGamePlayerById(pool, { gameId, chatId, userId, exactly }) {
     try {
         const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, TRUE) ` +
-            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = TRUE, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
-            [gameId, chatId, userId, moment(new Date()).toISOString()]);
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
+            [gameId, chatId, userId, moment(new Date()).toISOString(), exactly]);
         
         if (result && result.rows && Array.isArray(result.rows)) return result.rows[0].label;
         else {
@@ -51,8 +51,27 @@ async function addGamePlayerById(pool, { gameId, chatId, userId }) {
     }
 }
 
+async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
+    try {
+        const result = await pool.query(`DELETE FROM game_users WHERE ` +
+            `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +
+            `RETURNING (SELECT g.label FROM games g WHERE g.id = $3);`, [userId, chatId, gameId]);
+        
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].label;
+        } else {
+            console.error('REMOVE GAME RESULT ERROR: ', result);
+            throw result;
+        }
+    } catch (error) {
+        console.error('REMOVE GAMER ERROR: ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     getGamePlayers,
     addGamePlayerByLabel,
-    addGamePlayerById
+    addGamePlayerById,
+    removeGamePlayerById
 }

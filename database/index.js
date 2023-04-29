@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const { addUser, getUsers, addGuest, getRandomUser, getAzList, editUser } = require('./users');
 const { addGame, getGames, getGamesTimes, deactiveGame, deleteGame } = require('./games');
-const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById } = require('./gamePlayers');
+const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById } = require('./gamePlayers');
 const { adminGroupAdd, getGroups } = require('./adminGroup');
 
 // Создаем пулл соединений к базе данных
@@ -62,8 +62,8 @@ function getGroupsFromDataBase(adminChatId) {
     return getGroups(pool, adminChatId);
 }
 
-function addGamePlayerByIdToDatabase({ gameId, chatId, userId }) {
-    return addGamePlayerById(pool, { gameId, chatId, userId });
+function addGamePlayerByIdToDatabase({ gameId, chatId, userId, exactly }) {
+    return addGamePlayerById(pool, { gameId, chatId, userId, exactly });
 }
 
 function deactiveGameInDatabase(gameId) {
@@ -76,6 +76,10 @@ function deleteGameFromDatabase(gameId) {
 
 function editUserInDatabase({ userId, firstName, lastName, fullnameAz }) {
     return editUser(pool, {userId, firstName, lastName, fullnameAz});
+}
+
+function removeGamePlayerByIdFromDatabase({ gameId, chatId, userId }) {
+    return removeGamePlayerById(pool, { gameId, chatId, userId });
 }
 
 module.exports = {
@@ -94,5 +98,6 @@ module.exports = {
     addGamePlayerByIdToDatabase,
     deactiveGameInDatabase,
     deleteGameFromDatabase,
-    editUserInDatabase
+    editUserInDatabase,
+    removeGamePlayerByIdFromDatabase
 }
