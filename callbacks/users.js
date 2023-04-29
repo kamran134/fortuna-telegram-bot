@@ -32,7 +32,7 @@ async function showUsersInSelectedGroup(query, bot) {
                 `На азербайджанском: ${user.fullname_az}`
             ).join('\n----------------------------------\n');
 
-            await sendMessage(bot, adminChatId, usersString + "\n\nДля редактирования данных кого-то введите команду '/adminedituser [имя]/[фамилия]/[полное имя на азербайджанском]'");
+            await sendMessage(bot, adminChatId, usersString + "\n\nДля редактирования данных кого-то введите команду '/adminedituser [ID]/[имя]/[фамилия]/[полное имя на азербайджанском]'");
         } else {
             bot.sendMessage(adminChatId, 'Ты не можешь редактировать игроков, если игроков игр нет');
         }
