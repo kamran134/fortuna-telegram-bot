@@ -57,14 +57,16 @@ async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
             `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +
             `RETURNING (SELECT g.label FROM games g WHERE g.id = $3);`, [userId, chatId, gameId]);
         
+        console.log('REMOVE GAME PLAYER RESULT: ', JSON.stringify(result));
+        
         if (result && result.rows && Array.isArray(result.rows)) {
             return result.rows[0].label;
         } else {
-            console.error('REMOVE GAME RESULT ERROR: ', result);
+            console.error('REMOVE GAME PLAYER RESULT ERROR: ', result);
             throw result;
         }
     } catch (error) {
-        console.error('REMOVE GAMER ERROR: ', error);
+        console.error('REMOVE GAMER PLAYER ERROR: ', error);
         throw error;
     }
 }
