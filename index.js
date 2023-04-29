@@ -8,7 +8,8 @@ const {
 const adminCommands = require('./commands/adminCommands');
 const {
     appointmentToTheGame, declineAppointment, notExactlyAppointment, 
-    deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup
+    deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
+    showUsersInSelectedGroup
 } = require('./callbacks');
 
 // Устанавливаем токен, который вы получили от BotFather
@@ -71,5 +72,5 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showGamesInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
 });
