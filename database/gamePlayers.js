@@ -59,7 +59,9 @@ async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
         
         console.log('REMOVE GAME PLAYER RESULT: ', JSON.stringify(result));
         
-        if (result && result.rows && Array.isArray(result.rows)) {
+        if (result && result.rows && result.rowCount === 0) {
+            return undefined;
+        } else if (result && result.rows) {
             return result.rows[0].label;
         } else {
             console.error('REMOVE GAME PLAYER RESULT ERROR: ', result);
