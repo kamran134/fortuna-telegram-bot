@@ -69,7 +69,12 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('notexactly_')) notExactlyAppointment(query, bot);
     else if (query.data.startsWith('decline_')) declineAppointment(query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
-    else if (query.data.startsWith('deactivegame_') && !isAdmin) bot.sendMessage(chatId, 'Бый! Только админ может деактивировать игру', { reply_to_message_id: query.data.message_id });
+    else if (query.data.startsWith('deactivegame_') && !isAdmin) 
+        bot.sendMessage(chatId, `Бый! Только админ может деактивировать игру. Так что, <a href="tg://user?id=${query.from.user_id}">${query.from.first_name}</a> ağllı ol`, 
+        {
+            parse_mode: 'HTML',
+            reply_to_message_id: query.data.message_id
+        });
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
