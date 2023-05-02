@@ -19,7 +19,7 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 const bot = new TelegramBot(token, { polling: true });
 
 // Слушаем сообщения
-/*bot.on('message', async (msg) => {
+bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
@@ -59,7 +59,7 @@ const bot = new TelegramBot(token, { polling: true });
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
 });
-*/
+
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
     const chatMember = await bot.getChatMember(chatId, query.from.id);
