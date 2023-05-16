@@ -1,5 +1,4 @@
 const TelegramBot = require('node-telegram-bot-api');
-const { Pool } = require('pg');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
@@ -51,7 +50,7 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
     else if (messageText.includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
-    
+
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);

@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase } = require('../database');
+const { Markup } = require('telegraf');
 
 async function startGame(msg, bot) {
     const chatId = msg.chat.id;
@@ -119,13 +120,18 @@ async function deactiveGames(msg, bot) {
                 `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
             ).join('\n----------------------------------\n');
 
-            gameDeactiveButtons = games.map(game => ({
-                text: `Закрыть игру на ${game.label} (для админов)`,
-                callback_data: `deactivegame_${game.id}`}));
+            // gameDeactiveButtons = games.map(game => ({
+            //     text: `Закрыть игру на ${game.label} (для админов)`,
+            //     callback_data: `deactivegame_${game.id}`}));
+
+            gameDeactiveButtons = games.map(game => Markup.callbackButton(`Закрыть игру на ${game.label} (для админов)`, `deactivegame_${game.id}`));
+
+            const inlineKeyboard = Markup.inlineKeyboard(gameDeactiveButtons);
 
             bot.sendMessage(chatId, gamesString, {
                 reply_markup: {
-                    inline_keyboard: [gameDeactiveButtons]
+                    // inline_keyboard: [gameDeactiveButtons]
+                    inline_keyboard: inlineKeyboard
                 }
             });
         } else {
