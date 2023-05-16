@@ -59,7 +59,7 @@ async function showYourGroups(adminChatId, bot, command) {
         else {
             // const groupsButtons = groups.map(group => ([{text: group.group_name, callback_data: `selectedGroupFor${command}_${group.chat_id}`}]));
             
-            groupsButtons = groups.map(group => Markup.callbackButton(group.group_name, `selectedGroupFor${command}_${group.chat_id}`));
+            groupsButtons = groups.map(group => Markup.button.callback(group.group_name, `selectedGroupFor${command}_${group.chat_id}`));
             const inlineKeyboard = Markup.inlineKeyboard(groupsButtons);
 
             bot.sendMessage(adminChatId, `Выберите группу, которая подчиняется вам`, {
