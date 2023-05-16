@@ -64,7 +64,7 @@ async function showYourGroups(adminChatId, bot, command) {
 
             bot.sendMessage(adminChatId, `Выберите группу, которая подчиняется вам`, {
                 reply_markup: {
-                    keyboard: [...groupsButtons]
+                    inline_keyboard: [...groupsButtons]
                 }
                 //reply_markup: inlineKeyboard
             });
