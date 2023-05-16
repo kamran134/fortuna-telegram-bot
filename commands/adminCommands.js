@@ -57,16 +57,16 @@ async function showYourGroups(adminChatId, bot, command) {
             console.error('groups is not an array!', groups);
         } else if (groups.length === 0) bot.sendMessage(adminChatId, `У вас нет подчинённых групп`);
         else {
-            // const groupsButtons = groups.map(group => ([{text: group.group_name, callback_data: `selectedGroupFor${command}_${group.chat_id}`}]));
+            const groupsButtons = groups.map(group => ([{text: group.group_name, callback_data: `selectedGroupFor${command}_${group.chat_id}`}]));
             
-            groupsButtons = groups.map(group => Markup.button.callback(group.group_name, `selectedGroupFor${command}_${group.chat_id}`));
-            const inlineKeyboard = Markup.inlineKeyboard(groupsButtons);
+            // groupsButtons = groups.map(group => Markup.button.callback(group.group_name, `selectedGroupFor${command}_${group.chat_id}`));
+            // const inlineKeyboard = Markup.inlineKeyboard(groupsButtons);
 
             bot.sendMessage(adminChatId, `Выберите группу, которая подчиняется вам`, {
-                // reply_markup: {
-                //     keyboard: [...groupsButtons]
-                // }
-                reply_markup: inlineKeyboard
+                reply_markup: {
+                    keyboard: [...groupsButtons]
+                }
+                //reply_markup: inlineKeyboard
             });
         }
     } catch (error) {
