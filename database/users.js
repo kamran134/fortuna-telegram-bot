@@ -13,7 +13,7 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
 
 async function getUsers(pool, chatId) {
     try {
-        const result = await pool.query(`SELECT * FROM users WHERE chat_id = ${chatId} AND is_guest = FALSE;`);
+        const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE;', [chatId]);
         if (result) {
             console.log('RESULT: ', JSON.stringify(result));
 
@@ -21,9 +21,29 @@ async function getUsers(pool, chatId) {
             else return undefined;
         } else {
             console.error('NOT RESULT');
+            throw result;
         }
     } catch (error) {
         console.error('GETTING USERS: ', error);
+        throw error;
+    }
+}
+
+async function getUserChat(pool, userId) {
+    try {
+        const result = await pool.query('SELECT chat_id FROM users WHERE id = $1', [userId]);
+        if (result) {
+            console.log('RESULT: ', JSON.stringify(result));
+
+            if (Array.isArray(result.rows)) return result.rows[0];
+            else return undefined;
+        } else {
+            console.error('NOT RESULT');
+            throw result;
+        }
+    } catch (error) {
+        console.error('GET USER CHAT ERROR: ', error);
+        throw error;
     }
 }
 
@@ -121,6 +141,7 @@ async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
 module.exports = {
     addUser,
     getUsers,
+    getUserChat,
     addGuest,
     getRandomUser,
     getAzList,

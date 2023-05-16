@@ -60,6 +60,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
+    else if (messageText === '/adminremoveplayer') {}
 });
 
 bot.on('callback_query', async (query) => {

@@ -1,4 +1,4 @@
-const { addGroupAdminToDatabase, getGroupsFromDataBase, editUserInDatabase } = require('../database');
+const { addGroupAdminToDatabase, getGroupsFromDataBase, editUserInDatabase, getUserChatFromDatabase } = require('../database');
 const { Markup } = require('telegraf');
 
 async function connectTo(msg, bot) {
@@ -76,19 +76,31 @@ async function showYourGroups(adminChatId, bot, command) {
 
 async function editUser(msg, bot) {
     const chatId = msg.chat.id;
+    const adminId = msg.from.id;
     const userOptionsString = msg.text.replace('/adminedituser ', '');
     const [userId, firstName, lastName, ...rest] = userOptionsString.split('/');
     const fullnameAz = rest[0] || null;
 
     try {
-        const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
+        const userChatId = await getUserChatFromDatabase(userId);
 
-        if (user) {
-            bot.sendMessage(chatId, `Данные игрока успешно отредактированы!\n` +
-            `ID: ${user.id}\nИмя: ${user.first_name}\nФамилия: ${user.last_name}\nНа азербайджанском: ${user.fullname_az}`);
+        if (userChatId) {
+            const chatMember = await bot.getChatMember(userChatId, adminId);
+            const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
+
+            if (isAdmin) {
+                const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
+
+                if (user) {
+                    bot.sendMessage(chatId, `Данные игрока успешно отредактированы!\n` +
+                    `ID: ${user.id}\nИмя: ${user.first_name}\nФамилия: ${user.last_name}\nНа азербайджанском: ${user.fullname_az}`);
+                } else {
+                    bot.sendMessage(chatId, 'Если честно, мы в шоке 😳 Пока вы редактировали пользователя, он пропал. ' +
+                     'Возможно вы что-то напутали с ID-шкой.');
+                }
+            }
         } else {
-            bot.sendMessage(chatId, 'Если честно, мы в шоке 😳 Пока вы редактировали пользователя, он пропал. ' +
-             'Возможно вы что-то напутали с ID-шкой.');
+            bot.sendMessage(chatId, `Кажется, ваш пользователь не в той группе, где вы админ!`);
         }
     } catch (error) {
         console.error('EDIT USER ERROR: ', error);
