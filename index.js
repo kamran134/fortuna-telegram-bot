@@ -51,6 +51,16 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
     else if (messageText.includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
 
+    else if (messageText === '/menu') {
+        const keyboard = Markup.inlineKeyboard([
+          Markup.button.callback('Show games', 'show_games'),
+          Markup.button.callback('Show lists', 'show_lists'),
+          Markup.button.callback('Register', 'register'),
+        ]);
+    
+        await ctx.reply('Выберите пункт меню:', keyboard);
+    }
+    
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
