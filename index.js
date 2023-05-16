@@ -1,4 +1,6 @@
 const TelegramBot = require('node-telegram-bot-api');
+const { Markup } = require('telegraf');
+
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
@@ -60,7 +62,7 @@ bot.on('message', async (msg) => {
     
         await ctx.reply('Выберите пункт меню:', keyboard);
     }
-    
+
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
     else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
