@@ -60,7 +60,7 @@ bot.on('message', async (msg) => {
           Markup.button.callback('Register', 'register'),
         ]);
     
-        await ctx.reply('Выберите пункт меню:', keyboard);
+        await msg.reply('Выберите пункт меню:', keyboard);
     }
 
     // for admin group
