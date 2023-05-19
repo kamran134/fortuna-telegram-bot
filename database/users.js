@@ -104,6 +104,9 @@ async function getAzList(pool, chatId, gameLabel) {
 }
 
 async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
+
+    console.log('\n\nuserId', userId, 'firstName', firstName, 'lastName', lastName, 'fullnameAz', fullnameAz, '\n\n');
+
     try {
         const updateFields = [];
         const values = [];

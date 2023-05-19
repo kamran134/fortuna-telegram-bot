@@ -87,6 +87,8 @@ async function editUser(msg, bot) {
             const chatMember = await bot.getChatMember(userChatId, adminId);
             const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
+            console.log('\n\nisAdmin', isAdmin, '\n\n');
+
             if (isAdmin) {
                 const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
 
