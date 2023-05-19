@@ -79,13 +79,11 @@ async function editUser(msg, bot) {
     const fullnameAz = rest[0] || null;
 
     try {
-        const userChatId = await getUserChatFromDatabase(userId);
+        const result = await getUserChatFromDatabase(userId);
 
-        console.log('\n\nuserChatID: ', userChatId, '\n\n');
+        if (result) {
 
-        if (userChatId) {
-
-            console.log('\n\nuserChatID after if: ', userChatId, '\n\n');
+            userChatId = result.chat_id;
             
             const chatMember = await bot.getChatMember(userChatId, adminId);
             const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
