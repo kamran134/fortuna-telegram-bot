@@ -86,22 +86,29 @@ async function editUser(msg, bot) {
             userChatId = result.chat_id;
             
             const chatMember = await bot.getChatMember(userChatId, adminId);
-            const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-            console.log('\n\nisAdmin', isAdmin, '\n\n');
+            console.log('\n\nchatmember', chatMember, '\n\n');
 
-            if (isAdmin) {
-                const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
+            if (chatMember) {
+                const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-                if (user) {
-                    bot.sendMessage(chatId, `Данные игрока успешно отредактированы!\n` +
-                    `ID: ${user.id}\nИмя: ${user.first_name}\nФамилия: ${user.last_name}\nНа азербайджанском: ${user.fullname_az}`);
+                console.log('\n\nisAdmin', isAdmin, '\n\n');
+    
+                if (isAdmin) {
+                    const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
+    
+                    if (user) {
+                        bot.sendMessage(chatId, `Данные игрока успешно отредактированы!\n` +
+                        `ID: ${user.id}\nИмя: ${user.first_name}\nФамилия: ${user.last_name}\nНа азербайджанском: ${user.fullname_az}`);
+                    } else {
+                        bot.sendMessage(chatId, 'Если честно, мы в шоке 😳 Пока вы редактировали пользователя, он пропал. ' +
+                         'Возможно вы что-то напутали с ID-шкой.');
+                    }
                 } else {
-                    bot.sendMessage(chatId, 'Если честно, мы в шоке 😳 Пока вы редактировали пользователя, он пропал. ' +
-                     'Возможно вы что-то напутали с ID-шкой.');
+                    bot.sendMessage(chatId, `Вы не одмэн в той группе. Может вам подойдёт команда /agilliol ?`);
                 }
             } else {
-                bot.sendMessage(chatId, `Вы не одмэн в той группе. Может вам подойдёт команда /agilliol ?`);
+                bot.sendMessage(chatId, `Вас ваще в той группе нет, умный штоле?`);
             }
         } else {
             bot.sendMessage(chatId, `Кажется, ваш пользователь не в той группе, где вы админ!`);
