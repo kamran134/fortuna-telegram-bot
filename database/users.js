@@ -31,6 +31,8 @@ async function getUsers(pool, chatId) {
 
 async function getUserChat(pool, userId) {
     try {
+        console.log('\n\n\nuserID\n', userId, '\n\n\n');
+        
         const result = await pool.query('SELECT chat_id FROM users WHERE id = $1', [userId]);
         if (result) {
             console.log('RESULT: ', JSON.stringify(result));
