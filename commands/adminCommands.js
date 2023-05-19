@@ -74,7 +74,7 @@ async function showYourGroups(adminChatId, bot, command) {
 async function editUser(msg, bot) {
     const chatId = msg.chat.id;
     const adminId = msg.from.id;
-    const userOptionsString = msg.text.replace('/adminedituser ', '');
+    const userOptionsString = msg.text.replace('/adminedituser ', '').replace('/adminedituser@fortunaVolleybalBot ', '');
     const [userId, firstName, lastName, ...rest] = userOptionsString.split('/');
     const fullnameAz = rest[0] || null;
 
