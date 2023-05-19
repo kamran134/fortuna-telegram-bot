@@ -28,33 +28,33 @@ async function startGameInSelectedGroup(query, bot) {
     let waitForInput = true;
 
     bot.on('message', async (msg) => {
-        if (msg.chat.id === adminChatId) {
-            try {
-                if (!waitForInput) {
-                    return;
-                }
-                
-                if (msg.text === '/cancel' && msg.chat.id === adminChatId) {
-                    waitForInput = false;
-                    bot.sendMessage(adminChatId, 'Создание игры отменено!');                
-                    return;
-                }
+        try {
+            if (!waitForInput) {
+                return;
+            }
+            
+            if (msg.text === '/cancel' && msg.chat.id === adminChatId) {
+                waitForInput = false;
+                bot.sendMessage(adminChatId, 'Создание игры отменено!');                
+                return;
+            }
 
-                // Проверяем, что сообщение пользователя соответствует нужному формату
-                const regex = /^(\d{2}\.\d{2}\.\d{4})\/(\d{2}:\d{2})\/(\d{2}:\d{2})\/(\d+)\/([^\/]+)\/([^\/]+)$/;
-                const match = msg.text.match(regex);
+            // Проверяем, что сообщение пользователя соответствует нужному формату
+            const regex = /^(\d{2}\.\d{2}\.\d{4})\/(\d{2}:\d{2})\/(\d{2}:\d{2})\/(\d+)\/([^\/]+)\/([^\/]+)$/;
+            const match = msg.text.match(regex);
 
-                // Если сообщение не соответствует формату, то отправляем пользователю сообщение об ошибке и ждем следующее сообщение от него
+            // Если сообщение не соответствует формату, то отправляем пользователю сообщение об ошибке и ждем следующее сообщение от него
+            if (msg.chat.id === adminChatId) {
                 if (!match) {
                     await bot.sendMessage(adminChatId, 'Формат неверный');
                 } else {
                     waitForInput = false;
                     await startGame({...msg, chat: {...msg.chat, id: selectedGroupChatId}}, bot);
                 }
-            } catch (error) {
-                console.log('CREATE GAME ERROR: ', error);
-                bot.sendMessage(adminChatId, 'Произошла ошибка при создании игры');
             }
+        } catch (error) {
+            console.log('CREATE GAME ERROR: ', error);
+            bot.sendMessage(adminChatId, 'Произошла ошибка при создании игры');
         }
     });
 }
