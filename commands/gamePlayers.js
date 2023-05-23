@@ -1,5 +1,6 @@
 const moment = require('moment');
-const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase } = require('../database');
+const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase } = require('../database');
+const { tagUsers } = require('./common');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -123,8 +124,23 @@ async function getAzList(msg, bot) {
     }
 }
 
+async function saySomethingToInactive(msg, bot) {
+    const chatId = msg.chat.id;
+
+    try {
+        const users = await getInactiveUsersFromDatabase(chatId);
+
+        if (users && users.length > 0) {
+            bot.sendMessage(chatId, 'Значит так, \n\n' + tagUsers(users) + '\n\nпочему не посещаем игры? Бот негодуэ 🤨', {parse_mode: 'HTML'});
+        }
+    } catch (error) {
+        console.error('SAY SOMETHING ERROR: ', error);
+    }
+}
+
 module.exports = {
     getGamePlayers,
     addGuest,
-    getAzList
+    getAzList,
+    saySomethingToInactive
 }

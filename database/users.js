@@ -79,7 +79,28 @@ async function getRandomUser(pool, chatId) {
             console.error('GET RANDOM USER RESULT ERROR: ', result);
         }
     } catch (error) {
-        console.log('GET RANDOM USER ERROR: ', error);
+        console.error('GET RANDOM USER ERROR: ', error);
+        throw error;
+    }
+}
+
+async function getInactiveUsers(pool, chatId) {
+    try {
+        const result = await pool.query(`SELECT u.user_id, u.first_name, u.last_name, u.username, COUNT(gu.game_id) AS game_count
+        FROM users u
+        LEFT JOIN game_users gu ON gu.user_id = u.id AND gu.participate_time >= NOW() - INTERVAL '2 months'
+        WHERE u.chat_id = $1 AND u.is_guest = FALSE
+        GROUP BY u.user_id, u.first_name, u.last_name, u.username
+        HAVING COUNT(gu.game_id) < 2
+        ORDER BY game_count ASC;`, [chatId]);
+
+        if (result && result.rows.length > 0) return result.rows; 
+        else {
+            console.error('THIS CHAT HAS NO GAME USERS');
+            return undefined;
+        }
+    } catch (error) {
+        console.error('GET INACTIVE USERS ERROR: ', error);
         throw error;
     }
 }
@@ -149,6 +170,7 @@ module.exports = {
     getUserChat,
     addGuest,
     getRandomUser,
+    getInactiveUsers,
     getAzList,
     editUser
 }

@@ -1,5 +1,5 @@
-const moment = require('moment');
 const { addUserToDatabase, getUsersFromDatabase } = require('../database');
+const { tagUsers, listUsers } = require('./common');
 
 async function register(msg, bot) {
     const chatId = msg.chat.id;
@@ -24,21 +24,12 @@ async function getRegistered(msg, bot, command) {
         } else if (users.length === 0) {
             bot.sendMessage(chatId, 'Нет зарегистрированных пользователей. Капец!');
         } else {
-            const usersString = command === 'tag' ? tagRegistered(users) : listRegistered(users);
+            const usersString = command === 'tag' ? tagUsers(users) : listUsers(users);
             bot.sendMessage(chatId, 'Зарегистрированные участники:\n\n' + usersString, {parse_mode: 'HTML'});
         }
     } catch (error) {
         console.error('REGISTERED ERROR', error);
     }
-}
-
-function tagRegistered(users) {
-    return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
-        `<a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n') : '';
-}
-
-function listRegistered(users) {
-    return users.map((user, index) => `${(index + 1)}. ${user.username} — ${user.first_name} ${user.last_name}`).join('\n');
 }
 
 module.exports = {

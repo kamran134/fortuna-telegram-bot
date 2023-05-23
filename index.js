@@ -12,6 +12,7 @@ const {
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup
 } = require('./callbacks');
+const { inactive, saySomethingToInactive } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -52,6 +53,8 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
     else if (messageText.includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
+    else if (messageText === '/saysomethingtoinactive' && isAdmin) saySomethingToInactive(msg, bot);
+    else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
