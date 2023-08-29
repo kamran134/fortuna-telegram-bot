@@ -16,7 +16,7 @@ async function startGame(msg, bot) {
             date: parts[0],
             start: parts[1],
             end: parts[2],
-            quote: parts[3],
+            users_limit: parts[3],
             location: parts[4],
             label: parts[5]
         }
@@ -41,7 +41,7 @@ async function startGame(msg, bot) {
                                     {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${gameId}`},
                                 ],
                                 [
-                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notexactly_${gameId}`},
+                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notconfirmed_${gameId}`},
                                 ],
                                 [
                                     {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${gameId}`}
@@ -71,18 +71,22 @@ function tagUsersForGame(users) {
         `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
 }
 
-async function showGames(msg, bot) {
-    const chatId = msg.chat.id;
-    
+async function showGames(chatId, bot, isDelete = false) {
     let gameButtons = [];
 
     try {
         const games = await getGamesFromDatabase(chatId);
 
         if (games && games.length > 0) {
+            if (isDelete) {
+                gameButtons = games.map(game => [
+                    {text: `${game.label}`, callback_data: `deletefromgame_${game.id}`}
+                ]);
+            }
+
             gameButtons = games.map(game => [
                 {text: `+ на ${game.label}`, callback_data: `appointment_${game.id}`},
-                {text: `+/- на ${game.label}`, callback_data: `notexactly_${game.id}`},
+                {text: `+/- на ${game.label}`, callback_data: `notconfirmed_${game.id}`},
                 {text: `- на ${game.label}`, callback_data: `decline_${game.id}`}
             ]);
 

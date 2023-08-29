@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS game_users (
     user_id BIGINT REFERENCES users(id),
     game_id BIGINT REFERENCES games(id),
     participate_time TIMESTAMP,
-    exactly BOOLEAN,
+    confirmed_attendance BOOLEAN,
     PRIMARY KEY(user_id, game_id)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS game_guests (
     game_id BIGINT REFERENCES games(id),
     fullname TEXT,
     participate_time TIMESTAMP,
-    exactly BOOLEAN
+    confirmed_attendance BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS admin_groups (

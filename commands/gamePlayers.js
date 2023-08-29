@@ -22,17 +22,17 @@ async function getGamePlayers(msg, bot) {
                     usersByGame[gamePlayer.game_id] = {
                         users: [{
                             ind: i, last_name: gamePlayer.last_name, first_name: gamePlayer.first_name, 
-                            username: gamePlayer.username, exactly: gamePlayer.exactly
+                            username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance
                         }],
                         game_date: gamePlayer.game_date,
-                        quote: gamePlayer.quote
+                        users_limit: gamePlayer.users_limit
                     };
                 } else usersByGame[gamePlayer.game_id] = {
                     users: [...usersByGame[gamePlayer.game_id].users, {ind: i, last_name: gamePlayer.last_name,
-                        first_name: gamePlayer.first_name, username: gamePlayer.username, exactly: gamePlayer.exactly}
+                        first_name: gamePlayer.first_name, username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance}
                     ],
                     game_date: gamePlayer.game_date,
-                    quote: gamePlayer.quote
+                    users_limit: gamePlayer.users_limit
                 };
     
                 i++;
@@ -41,10 +41,10 @@ async function getGamePlayers(msg, bot) {
             for (const game_id of Object.keys(usersByGame)) {
                 if (!game_id) return;
 
-                const placeLeft = usersByGame[game_id].quote - usersByGame[game_id].users.length;
-                const gameQuote = usersByGame[game_id].quote;
+                const placeLeft = usersByGame[game_id].users_limit - usersByGame[game_id].users.length;
+                const gameUsersLimit = usersByGame[game_id].users_limit;
 
-                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameQuote + 1) ? '\n--------------Wait list--------------\n' : ''}${user.ind}. ${user.first_name} ${user.last_name}${user.exactly ? '' : '*'}`).join('\n');
+                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}${user.ind}. ${user.first_name} ${user.last_name}${user.confirmed_attendance ? '' : '*'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
@@ -52,7 +52,7 @@ async function getGamePlayers(msg, bot) {
                 resultMessage.push(message);
             }
 
-            bot.sendMessage(msg.chat.id, resultMessage.join('\n////////////////////////////////\n'));
+            bot.sendMessage(msg.chat.id, resultMessage.join('\n\n————————————————————————————————\n————————————————————————————————\n\n'));
         }
     } catch (error) {
         console.error('GET GAME PLAYERS SERVICE ERROR', error);
@@ -66,7 +66,7 @@ async function addGuest(msg, bot) {
     const parts = query.split('/');
     const gameLabel = parts[0];
     const fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    const exactly = parts.length > 2 && parts[2].includes('*') ? false : true;
+    const confirmed_attendance = parts.length > 2 && parts[2].includes('*') ? false : true;
     
     const guestOptions = {
         chatId,
@@ -83,13 +83,13 @@ async function addGuest(msg, bot) {
                 gameLabel,
                 chatId,
                 userId,
-                exactly
+                confirmed_attendance
             }
     
             try {
                 await addGuestToGame(gameOptions);
     
-                bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!exactly ? ' Но это не точно :(' : ''));
+                bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
             } catch (error) {
                 console.error('ADD GUEST TO GAME ERROR: ', error);
             }
@@ -138,8 +138,13 @@ async function saySomethingToInactive(msg, bot) {
     }
 }
 
+async function getGamePlayersForDelete(msg, bot) {
+    const chatId = msg.chat.id;
+}
+
 module.exports = {
     getGamePlayers,
+    getGamePlayersForDelete,
     addGuest,
     getAzList,
     saySomethingToInactive

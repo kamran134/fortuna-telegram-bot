@@ -7,7 +7,7 @@ async function appointmentToTheGame(query, bot) {
     const gameId = query.data.replace('appointment_', '');
 
     try {
-        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, exactly: true });
+        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: true });
 
         if (!gameLabel) {
             bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
@@ -20,13 +20,13 @@ async function appointmentToTheGame(query, bot) {
     }
 }
 
-async function notExactlyAppointment(query, bot) {
+async function notConfirmedAttendance(query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
-    const gameId = query.data.replace('notexactly_', '');
+    const gameId = query.data.replace('notconfirmed_', '');
     
     try {
-        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, exactly: false });
+        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: false });
 
         if (!gameLabel) {
             bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
@@ -35,7 +35,7 @@ async function notExactlyAppointment(query, bot) {
             bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}! Но это не точно 😒`);
         }
     } catch (error) {
-        console.error('APPOINTMENT NOT EXACTLY ERROR: ', error);
+        console.error('NOT CONFIRMED ATTENDANCE ERROR: ', error);
     }
 }
 
@@ -59,6 +59,6 @@ async function declineAppointment(query, bot) {
 
 module.exports = {
     appointmentToTheGame,
-    notExactlyAppointment,
+    notConfirmedAttendance,
     declineAppointment
 }

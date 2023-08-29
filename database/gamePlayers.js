@@ -3,11 +3,11 @@ const moment = require('moment');
 async function getGamePlayers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, ` +
-            `game_users.game_id, game_users.exactly, games.quote FROM game_users ` +
+            `game_users.game_id, game_users.confirmed_attendance, games.users_limit FROM game_users ` +
             `LEFT JOIN users ON users.id = game_users.user_id ` +
             `LEFT JOIN games ON games.id = game_users.game_id ` +
             `WHERE games.chat_id = $1 AND status = TRUE ` +
-            `ORDER BY game_users.game_id, users.is_guest, game_users.exactly DESC, game_users.participate_time`, [chatId]);
+            `ORDER BY game_users.game_id, users.is_guest, game_users.confirmed_attendance DESC, game_users.participate_time`, [chatId]);
 
         console.log('Get game players result: ', JSON.stringify(result));
 
@@ -22,23 +22,23 @@ async function getGamePlayers(pool, chatId) {
     }
 }
 
-async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, exactly }) {
+async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
     try {
-        await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) ` +
+        await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) ` +
             `VALUES ((SELECT MAX(id) FROM games g WHERE LOWER(g.label) = LOWER($1) AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
             `ON CONFLICT (user_id, game_id) DO NOTHING;`,
-            [gameLabel, chatId, userId, moment(new Date()).toISOString(), exactly]);
+            [gameLabel, chatId, userId, moment(new Date()).toISOString(), confirmed_attendance]);
     } catch (error) {
         console.error('ADD GAME PLAYER BY LABEL ERROR: ', error);
         throw error;
     }
 }
 
-async function addGamePlayerById(pool, { gameId, chatId, userId, exactly }) {
+async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance }) {
     try {
-        const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, exactly) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, $5) ` +
-            `ON CONFLICT (user_id, game_id) DO UPDATE SET exactly = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
-            [gameId, chatId, userId, moment(new Date()).toISOString(), exactly]);
+        const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, $5) ` +
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET confirmed_attendance = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
+            [gameId, chatId, userId, moment(new Date()).toISOString(), confirmed_attendance]);
         
         if (result && result.rows && Array.isArray(result.rows)) return result.rows[0].label;
         else {

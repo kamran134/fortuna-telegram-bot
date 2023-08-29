@@ -66,8 +66,8 @@ function getGroupsFromDataBase(adminChatId) {
     return getGroups(pool, adminChatId);
 }
 
-function addGamePlayerByIdToDatabase({ gameId, chatId, userId, exactly }) {
-    return addGamePlayerById(pool, { gameId, chatId, userId, exactly });
+function addGamePlayerByIdToDatabase({ gameId, chatId, userId, confirmed_attendance }) {
+    return addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance });
 }
 
 function deactiveGameInDatabase(gameId) {

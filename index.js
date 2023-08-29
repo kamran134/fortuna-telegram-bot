@@ -8,7 +8,7 @@ const {
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const {
-    appointmentToTheGame, declineAppointment, notExactlyAppointment, 
+    appointmentToTheGame, declineAppointment, notConfirmedAttendance, 
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup
 } = require('./callbacks');
@@ -34,7 +34,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/showregistered') getRegistered(msg, bot, 'show');
     else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
     else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/showgames') showGames(msg, bot);
+    else if (messageText === '/showgames') showGames(chatId, bot);
     else if (messageText === '/deletegame') {}
     else if (messageText === '/deactivegame' && isAdmin) deactiveGames(msg, bot);
     else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
@@ -55,6 +55,8 @@ bot.on('message', async (msg) => {
     else if (messageText.includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
     else if (messageText === '/saysomethingtoinactive' && isAdmin) saySomethingToInactive(msg, bot);
     else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
+    else if (messageText === '/deleteplayer' && isAdmin) showGames(chatId, bot, true);
+    else if (messageText === '/deleteplater' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
@@ -72,7 +74,7 @@ bot.on('callback_query', async (query) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
-    else if (query.data.startsWith('notexactly_')) notExactlyAppointment(query, bot);
+    else if (query.data.startsWith('notconfirmed_')) notConfirmedAttendance(query, bot);
     else if (query.data.startsWith('decline_')) declineAppointment(query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) 

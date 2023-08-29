@@ -4,7 +4,7 @@ const users = require('./users');
 
 module.exports = {
     appointmentToTheGame: appointment.appointmentToTheGame,
-    notExactlyAppointment: appointment.notExactlyAppointment,
+    notConfirmedAttendance: appointment.notConfirmedAttendance,
     declineAppointment: appointment.declineAppointment,
     deactiveGame: gameOptions.deactiveGame,
     startGameInSelectedGroup: gameOptions.startGameInSelectedGroup,
