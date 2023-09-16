@@ -51,7 +51,7 @@ async function getUserChat(pool, userId) {
 
 async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
     try {
-        const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, first_name, last_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, $4) RETURNING id`,
+        const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, first_name, last_name) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3) RETURNING id`,
             [chatId, first_name, last_name]);
 
         console.log('Add guest result: ', JSON.stringify(result));
