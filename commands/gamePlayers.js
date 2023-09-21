@@ -69,45 +69,43 @@ async function addGuest(msg, bot) {
     
     try {
         fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    } catch (error) {
-        console.error('ERROR: ', error);
-    }
+        
+        const confirmed_attendance = parts.length > 2 && parts[2].includes('*') ? false : true;
     
-    const confirmed_attendance = parts.length > 2 && parts[2].includes('*') ? false : true;
-    
-    const guestOptions = {
-        chatId,
-        fullname,
-        first_name: fullname.split(' ')[0],
-        last_name: (fullname.split(' ')[1] || '').charAt(0).toUpperCase() + (fullname.split(' ')[1] || '').slice(1) || ' '
-    }
-    
-    try {
-        const userId = await addGuestToDatabase(guestOptions);
+        const guestOptions = {
+            chatId,
+            fullname,
+            first_name: fullname.split(' ')[0],
+            last_name: (fullname.split(' ')[1] || '').charAt(0).toUpperCase() + (fullname.split(' ')[1] || '').slice(1) || ' '
+        }
+        
+        try {
+            const userId = await addGuestToDatabase(guestOptions);
 
-        if (userId) {
-            const gameOptions = {
-                gameLabel,
-                chatId,
-                userId,
-                confirmed_attendance
+            if (userId) {
+                const gameOptions = {
+                    gameLabel,
+                    chatId,
+                    userId,
+                    confirmed_attendance
+                }
+        
+                try {
+                    await addGuestToGame(gameOptions);
+        
+                    bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
+                } catch (error) {
+                    console.error('ADD GUEST TO GAME ERROR: ', error);
+                }
+            } else {
+                console.error('GET GUEST ID ERROR: ', userId);
             }
-    
-            try {
-                await addGuestToGame(gameOptions);
-    
-                bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
-            } catch (error) {
-                console.error('ADD GUEST TO GAME ERROR: ', error);
-            }
-        } else {
-            console.error('GET GUEST ID ERROR: ', userId);
+        } catch (error) {
+            console.error('ADD GUEST ERROR', error);
         }
     } catch (error) {
-        console.error('ADD GUEST ERROR', error);
-    } 
-
-    
+        console.error('Неверный формат! ERROR: ', error);
+    }
 }
 
 async function getAzList(msg, bot) {
