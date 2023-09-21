@@ -65,7 +65,14 @@ async function addGuest(msg, bot) {
     const query = messageText.replace('/addguest ', '');
     const parts = query.split('/');
     const gameLabel = parts[0];
-    const fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    let fullname;
+    
+    try {
+        fullname = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    } catch (error) {
+        console.error('ERROR: ', error);
+    }
+    
     const confirmed_attendance = parts.length > 2 && parts[2].includes('*') ? false : true;
     
     const guestOptions = {
