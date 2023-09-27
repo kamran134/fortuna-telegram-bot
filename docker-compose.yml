@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: fortuna
     volumes:
-      - ~/pg_data:/var/lib/postgresql/data #- db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   web:
     image: fortuna:latest
