@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     last_name TEXT,
     username TEXT,
     is_guest BOOLEAN,
-    guest_name TEXT,
-    PRIMARY KEY(id)
+    chat_id BIGINT,
+    fullname_az TEXT
 );
 
 CREATE TABLE IF NOT EXISTS group_users (
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS games (
     game_ends TIME,
     place TEXT,
     participate_limit INT,
-    is_active BOOLEAN,
+    status BOOLEAN,
     label TEXT,
     UNIQUE(chat_id, game_date, label)
 );
