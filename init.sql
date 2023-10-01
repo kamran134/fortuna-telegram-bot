@@ -1,5 +1,5 @@
 CREATE DATABASE fortuna;
-CREATE USER postgres WITH PASSWORD 'postgres';
+CREATE USER postgres WITH PASSWORD 'plk_S2%92';
 GRANT ALL PRIVILEGES ON DATABASE fortuna TO postgres;
 
 \connect fortuna
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS games (
     game_starts TIME,
     game_ends TIME,
     place TEXT,
-    participate_limit INT,
+    users_limit INT,
     status BOOLEAN,
     label TEXT,
     UNIQUE(chat_id, game_date, label)
