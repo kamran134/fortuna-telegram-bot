@@ -2,7 +2,7 @@ const moment = require('moment');
 
 async function getGamePlayers(pool, chatId) {
     try {
-        const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, games.game_date, ` +
+        const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, games.game_date, ` +
             `game_users.game_id, game_users.confirmed_attendance, games.users_limit FROM game_users ` +
             `LEFT JOIN users ON users.id = game_users.user_id ` +
             `LEFT JOIN games ON games.id = game_users.game_id ` +
