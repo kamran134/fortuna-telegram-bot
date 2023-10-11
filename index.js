@@ -56,7 +56,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
     else if (messageText === '/deleteplayer' && isAdmin) showGames(chatId, bot, true);
     else if (messageText === '/deleteplater' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
-    else if (messageText === '/taggamers' && isAdmin) tagGamePlayers()
+    else if (messageText === '/taggamers' && isAdmin) tagGamePlayers(chatId, bot);
     else if (messageText === '/taggamers' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может тревожить игроков. А для вас есть развлечение в качестве команды /agilliol 🤪');
 
     // for admin group
