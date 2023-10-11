@@ -60,9 +60,10 @@ async function getGamePlayers(msg, bot) {
 }
 
 async function tagGamePlayers(msg, bot) {
+    console.log(msg);
     const chatId = msg.chat.id;
     let resultMessage = '';
-
+    
     try {
         const gamePlayers = await getGamePlayersFromDataBase(chatId);
 
