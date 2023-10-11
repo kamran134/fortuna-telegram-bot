@@ -69,7 +69,7 @@ async function tagGamePlayers(chatId, bot) {
             bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
         } else {
             resultMessage = tagUsersBuCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
-            bot.sendMessage(chatId, resultMessage);
+            bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
         }
     } catch (error) {
         console.error('GET GAME PLAYERS SERVICE ERROR', error);
