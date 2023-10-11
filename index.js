@@ -1,5 +1,4 @@
 const TelegramBot = require('node-telegram-bot-api');
-const { Markup } = require('telegraf');
 
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
@@ -12,7 +11,7 @@ const {
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup
 } = require('./callbacks');
-const { inactive, saySomethingToInactive } = require('./commands/gamePlayers');
+const { inactive, saySomethingToInactive, tagGamePlayers } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -57,6 +56,8 @@ bot.on('message', async (msg) => {
     else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
     else if (messageText === '/deleteplayer' && isAdmin) showGames(chatId, bot, true);
     else if (messageText === '/deleteplater' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
+    else if (messageText === '/taggamers' && isAdmin) tagGamePlayers()
+    else if (messageText === '/taggamers' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может тревожить игроков. А для вас есть развлечение в качестве команды /agilliol 🤪');
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);

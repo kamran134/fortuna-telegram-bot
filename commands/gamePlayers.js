@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase } = require('../database');
-const { tagUsers } = require('./common');
+const { tagUsers, tagUsersBuCommas } = require('./common');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -53,6 +53,24 @@ async function getGamePlayers(msg, bot) {
             }
 
             bot.sendMessage(msg.chat.id, resultMessage.join('\n\n————————————————————————————————\n————————————————————————————————\n\n'));
+        }
+    } catch (error) {
+        console.error('GET GAME PLAYERS SERVICE ERROR', error);
+    }
+}
+
+async function tagGamePlayers(msg, bot) {
+    const chatId = msg.chat.id;
+    let resultMessage = '';
+
+    try {
+        const gamePlayers = await getGamePlayersFromDataBase(chatId);
+
+        if (!gamePlayers || gamePlayers.length === 0) {
+            bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
+        } else {
+            resultMessage = tagUsersBuCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
+            bot.sendMessage(chatId, resultMessage);
         }
     } catch (error) {
         console.error('GET GAME PLAYERS SERVICE ERROR', error);
@@ -149,6 +167,7 @@ async function getGamePlayersForDelete(msg, bot) {
 
 module.exports = {
     getGamePlayers,
+    tagGamePlayers,
     getGamePlayersForDelete,
     addGuest,
     getAzList,
