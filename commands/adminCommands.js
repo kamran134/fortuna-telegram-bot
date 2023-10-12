@@ -7,30 +7,35 @@ async function connectTo(msg, bot) {
     const adminChatId = msg.chat.id;
     const userId = msg.from.id;
 
-    const groupInfo = await bot.getChat(chatId);
-    const groupName = groupInfo ? groupInfo.title : 'noname';
-
-    bot.getChatMember(chatId, userId).then(member => {
-        if (member.status === 'administrator' || member.status === 'creator') {
-            try {
-                const result = addGroupAdminToDatabase({ chatId, adminChatId, groupName });
-
-                if (!result) {
-                    console.error('RESULT ERROR: ', result);
-                    throw result;
-                } else {
-                    bot.sendMessage(adminChatId, `Группа ${groupName} успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`);
+    try {
+        const groupInfo = await bot.getChat(chatId);
+        const groupName = groupInfo ? groupInfo.title : 'noname';
+    
+        bot.getChatMember(chatId, userId).then(member => {
+            if (member.status === 'administrator' || member.status === 'creator') {
+                try {
+                    const result = addGroupAdminToDatabase({ chatId, adminChatId, groupName });
+    
+                    if (!result) {
+                        console.error('RESULT ERROR: ', result);
+                        throw result;
+                    } else {
+                        bot.sendMessage(adminChatId, `Группа ${groupName} успешно связана с текущей. Теперь вы можете создавать игры, редактировать пользователей и игры отсюда!`);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    throw error;
                 }
-            } catch (error) {
-                console.error(error);
-                throw error;
+            } else {
+                bot.sendMessage(adminChatId, 'Дело пахнет жареным. Вряд-ли вы админ той группы');
             }
-        } else {
-            bot.sendMessage(adminChatId, 'Дело пахнет жареным. Вряд-ли вы админ той группы');
-        }
-    }).catch(err => {
-        console.error('Checking for group admin error: ', err);
-    });
+        }).catch(err => {
+            console.error('Checking for group admin error: ', err);
+        });
+    } catch (error) {
+        console.error('CHAT INFO ERROR: ', error);
+    }
+    
 }
 
 async function showGroups(adminChatId, bot) {
