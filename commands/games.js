@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase } = require('../database');
+const { tagUsersBuCommas } = require('./common');
 const { Markup } = require('telegraf');
 
 async function startGame(msg, bot) {
@@ -26,7 +27,8 @@ async function startGame(msg, bot) {
         const users = await getUsersFromDatabase(chatId);
 
         if (users && users.length > 0) {
-            taggedUsers = tagUsersForGame(users);
+            //taggedUsers = tagUsersForGame(users);
+            taggedUsers = tagUsersBuCommas(users);
 
             try {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
