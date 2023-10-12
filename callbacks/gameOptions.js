@@ -116,6 +116,7 @@ async function tagGamePlayersInSelectedGroup(query, bot) {
                 try {
                     const gamePlayers = await getGamePlayersFromDataBase(selectedGroupChatId);
                     resultMessage = tagUsersBuCommas(gamePlayers) + ', ' + msg.text;
+                    waitForInput = false;
                     bot.sendMessage(selectedGroupChatId, resultMessage, {parse_mode: 'HTML'});
                     return;
                 } catch (error) {
