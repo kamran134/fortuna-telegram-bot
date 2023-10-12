@@ -120,6 +120,25 @@ async function editUser(msg, bot) {
     }
 }
 
+async function sendMessageToTheGamers(msg, bot) {
+    try {
+        const chatId = msg.chat.id;
+        const adminId = msg.from.id;
+
+        try {
+            const [command, text] = msg.text.split(' ');
+
+            showYourGroups(chatId, bot, 'TagGamers');
+
+        } catch (error) {
+            bot.sendMessage(chatId, `Неверный формат!`);
+        }
+        
+    } catch (error) {
+        console.error('ADMIN SEND MESSAGE ERROR: ', error);
+    }
+}
+
 module.exports = {
     connectTo,
     showGroups,

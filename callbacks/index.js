@@ -9,5 +9,6 @@ module.exports = {
     deactiveGame: gameOptions.deactiveGame,
     startGameInSelectedGroup: gameOptions.startGameInSelectedGroup,
     showGamesInSelectedGroup: gameOptions.showGamesInSelectedGroup,
-    showUsersInSelectedGroup: users.showUsersInSelectedGroup
+    showUsersInSelectedGroup: users.showUsersInSelectedGroup,
+    tagGamePlayersInSelectedGroup: gameOptions.tagGamePlayersInSelectedGroup
 }

@@ -1,6 +1,7 @@
 const moment = require("moment");
 const { startGame } = require("../commands");
-const { deactiveGameInDatabase, getGamesFromDatabase } = require("../database");
+const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase } = require("../database");
+const { tagUsersBuCommas } = require("../commands/common");
 
 async function deactiveGame(query, bot) {
     const gameId = query.data.split('_')[1];
@@ -91,8 +92,45 @@ async function showGamesInSelectedGroup(query, bot) {
     }
 }
 
+async function tagGamePlayersInSelectedGroup(query, bot) {
+    const adminChatId = query.message.chat.id;
+    const selectedGroupChatId = parseInt(query.data.split('_')[1]);
+
+    bot.sendMessage(adminChatId, 'Введите ваше послание игрокам!');
+    let waitForInput = true;
+
+    bot.on('message', async (msg) => {
+        try {
+            if (!waitForInput) {
+                return;
+            }
+            
+            if (msg.text === '/cancel' && msg.chat.id === adminChatId) {
+                waitForInput = false;
+                bot.sendMessage(adminChatId, 'Послание отменено!');                
+                return;
+            }
+
+            // Если сообщение не соответствует формату, то отправляем пользователю сообщение об ошибке и ждем следующее сообщение от него
+            if (msg.chat.id === adminChatId) {
+                try {
+                    const gamePlayers = await getGamePlayersFromDataBase(selectedGroupChatId);
+                    resultMessage = tagUsersBuCommas(gamePlayers) + ', ' + msg.text;
+                    bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
+                } catch (error) {
+                    console.error('GET GAMERS ERROR: ', error);
+                }
+            }
+        } catch (error) {
+            console.error('CREATE GAME ERROR: ', error);
+            bot.sendMessage(adminChatId, 'Произошла ошибка при создании игры');
+        }
+    });
+}
+
 module.exports = {
     deactiveGame,
     startGameInSelectedGroup,
-    showGamesInSelectedGroup
+    showGamesInSelectedGroup,
+    tagGamePlayersInSelectedGroup
 }

@@ -9,7 +9,7 @@ const adminCommands = require('./commands/adminCommands');
 const {
     appointmentToTheGame, declineAppointment, notConfirmedAttendance, 
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
-    showUsersInSelectedGroup
+    showUsersInSelectedGroup, tagGamePlayersInSelectedGroup
 } = require('./callbacks');
 const { inactive, saySomethingToInactive } = require('./commands/gamePlayers');
 
@@ -70,6 +70,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
     else if (messageText === '/adminremoveplayer') {}
+    else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
 });
 
 bot.on('callback_query', async (query) => {
@@ -90,4 +91,5 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
 });
