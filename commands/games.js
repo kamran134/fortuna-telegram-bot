@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase } = require('../database');
+const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase } = require('../database');
 const { Markup } = require('telegraf');
 
 async function startGame(msg, bot) {
@@ -112,7 +112,6 @@ async function showGames(chatId, bot, isDelete = false) {
 
 async function deactiveGames(msg, bot) {
     const chatId = msg.chat.id;
-
     let gameDeactiveButtons = [];
 
     try {
@@ -146,8 +145,37 @@ async function deactiveGames(msg, bot) {
     }
 }
 
+async function changeGameLimit(msg, bot) {
+    const chatId = msg.chat.id;
+    const parts = msg.text.replace('/changelimit ', '').split('/');
+    
+    // Если указаны все данные, сохраняем их
+    if (parts.length === 2) {
+
+        const limitOptions = {
+            label: parts[0],
+            limit: parts[1]
+        }
+
+        try {
+            const label = await changeGameLimitFromDataBase(chatId, limitOptions);
+
+            if (label) {
+                bot.sendMessage(chatId, `Изменено количество игроков на игру в ${label}!`);
+            } else {
+                bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
+            }
+        } catch (error) {
+            console.error('LIMIT CHANGE ERROR', error);
+        }
+    } else {
+        bot.sendMessage(chatId, 'Неверный формат. Правильный формат: \`\/changelimit [название игры]\/[новый лимит]');
+    }
+}
+
 module.exports = {
     startGame,
     showGames,
-    deactiveGames
+    deactiveGames,
+    changeGameLimit
 }

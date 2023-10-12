@@ -3,7 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const {
     register, getRegistered, startGame, showGames, deactiveGames,
     getGamePlayers, addGuest, whatTime, agilliOl, getAzList,
-    connectTo, showGroups, showYourGroups
+    connectTo, showGroups, showYourGroups, tagGamePlayers, changeGameLimit
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const {
@@ -11,7 +11,7 @@ const {
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup
 } = require('./callbacks');
-const { inactive, saySomethingToInactive, tagGamePlayers } = require('./commands/gamePlayers');
+const { inactive, saySomethingToInactive } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -58,6 +58,9 @@ bot.on('message', async (msg) => {
     else if (messageText === '/deleteplater' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
     else if (messageText === '/taggamers' && isAdmin) tagGamePlayers(chatId, bot);
     else if (messageText === '/taggamers' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может тревожить игроков. А для вас есть развлечение в качестве команды /agilliol 🤪');
+    else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
+    else if (messageText.startsWith('/changelimit') && !isAdmin) bot.sendMessage(chatId, 'Я, конечно, всё понимаю, за исключением квантовой физики и степени твоей наглости 🤨');
+    else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨')
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);

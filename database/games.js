@@ -98,10 +98,31 @@ async function deleteGame(pool, gameId) {
     }
 }
 
+async function changeGameLimit(pool, chatId, {label, limit}) {
+    const client = await pool.connect();
+
+    try {
+        const result = await client.query(`UPDATE games SET users_limit = $1 WHERE chat_id = $2 AND label = $3 RETURNING label;`, [limit, chatId, label]);
+        
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].label;
+        } else {
+            console.error('CHANGE GAME LIMIT RESULT ERROR: ', error);
+            throw result;
+        }
+    } catch (e) {
+        console.error('CHANGE GAME LIMIT IN DATABASE ERROR: ', error);
+        throw error;
+    } finally {
+        client.release();
+    }
+}
+
 module.exports = {
     getGames,
     addGame,
     getGamesTimes,
     deactiveGame,
-    deleteGame
+    deleteGame,
+    changeGameLimit
 }
