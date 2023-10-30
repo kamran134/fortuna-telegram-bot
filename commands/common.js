@@ -1,5 +1,5 @@
 function tagUsers(users) {
-    return Array.isArray(users) ? users.map(user => `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name}</a>`).join(',') : '';
+    return Array.isArray(users) ? users.map(user => `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name}</a>`).join(', ') : '';
 }
 
 function listUsers(users) {
