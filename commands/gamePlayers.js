@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase } = require('../database');
+const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase, getUndecidedPlayersFromDataBase } = require('../database');
 const { tagUsers, tagUsersBuCommas } = require('./common');
 
 async function getGamePlayers(msg, bot) {
@@ -69,6 +69,23 @@ async function tagGamePlayers(chatId, bot) {
             bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
         } else {
             resultMessage = tagUsersBuCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
+            bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
+        }
+    } catch (error) {
+        console.error('GET GAME PLAYERS SERVICE ERROR', error);
+    }
+}
+
+async function tagUndecidedPlayers(chatId, bot) {
+    let resultMessage = '';
+    
+    try {
+        const gamePlayers = await getUndecidedPlayersFromDataBase(chatId);
+
+        if (!gamePlayers || gamePlayers.length === 0) {
+            bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
+        } else {
+            resultMessage = tagUsersBuCommas(gamePlayers) + `, ну шо, товарищи? Пришло время определиться! Играть будем или нет?`;
             bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
         }
     } catch (error) {
@@ -167,6 +184,7 @@ async function getGamePlayersForDelete(msg, bot) {
 module.exports = {
     getGamePlayers,
     tagGamePlayers,
+    tagUndecidedPlayers,
     getGamePlayersForDelete,
     addGuest,
     getAzList,

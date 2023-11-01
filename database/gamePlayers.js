@@ -22,6 +22,25 @@ async function getGamePlayers(pool, chatId) {
     }
 }
 
+async function getUndecidedPlayers(pool, chatId) {
+    try {
+        const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, games.game_date, ` +
+            `game_users.game_id, game_users.confirmed_attendance, games.users_limit FROM game_users ` +
+            `LEFT JOIN users ON users.id = game_users.user_id ` +
+            `LEFT JOIN games ON games.id = game_users.game_id ` +
+            `WHERE games.chat_id = $1 AND games.status = TRUE AND game_users.confirmed_attendance = FALSE ` +
+            `ORDER BY game_users.game_id, users.is_guest, game_users.confirmed_attendance DESC, game_users.participate_time`, [chatId]);
+
+        if (result && result.rows) {
+            return result.rows;
+        } else {
+            console.error('GAME PLAYERS RESULT: ', result);
+        }
+    } catch (error) {
+        console.error('GET UNDECIDED PLAYERS: ', error);
+    }
+}
+
 async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
     try {
         await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) ` +
@@ -75,6 +94,7 @@ async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
 
 module.exports = {
     getGamePlayers,
+    getUndecidedPlayers,
     addGamePlayerByLabel,
     addGamePlayerById,
     removeGamePlayerById

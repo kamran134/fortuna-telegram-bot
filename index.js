@@ -11,7 +11,7 @@ const {
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup, tagGamePlayersInSelectedGroup
 } = require('./callbacks');
-const { inactive, saySomethingToInactive } = require('./commands/gamePlayers');
+const { inactive, saySomethingToInactive, tagUndecidedPlayers } = require('./commands/gamePlayers');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -60,7 +60,9 @@ bot.on('message', async (msg) => {
     else if (messageText === '/taggamers' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может тревожить игроков. А для вас есть развлечение в качестве команды /agilliol 🤪');
     else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
     else if (messageText.startsWith('/changelimit') && !isAdmin) bot.sendMessage(chatId, 'Я, конечно, всё понимаю, ну кроме квантовой физики и степени твоей наглости 🤨');
-    else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨')
+    else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨');
+    else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/stiruptheundecided') && isAdmin) {}
+    else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/stiruptheundecided') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может пошевелить всех!');
 
     // for admin group
     else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
@@ -69,7 +71,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
-    else if (messageText === '/adminremoveplayer') {}
+    else if (messageText === '/adminremoveplayer') tagUndecidedPlayers(chatId, bot);
     else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
 });
 
