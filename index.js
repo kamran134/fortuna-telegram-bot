@@ -19,6 +19,7 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
+/*
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -73,6 +74,7 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
     else if (messageText === '/adminremoveplayer') tagUndecidedPlayers(chatId, bot);
     else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
+    else if (messageText === '/adminpaylist') showYourGroups(chatId, bot, 'PayList');
 });
 
 bot.on('callback_query', async (query) => {
@@ -94,4 +96,6 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForPayList_') && isAdmin) {}
 });
+*/
