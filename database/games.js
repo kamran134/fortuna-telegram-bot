@@ -107,14 +107,30 @@ async function changeGameLimit(pool, chatId, {label, limit}) {
         if (result && result.rows && Array.isArray(result.rows)) {
             return result.rows[0].label;
         } else {
-            console.error('CHANGE GAME LIMIT RESULT ERROR: ', error);
+            console.error('CHANGE GAME LIMIT RESULT ERROR');
             throw result;
         }
-    } catch (e) {
-        console.error('CHANGE GAME LIMIT IN DATABASE ERROR: ', error);
-        throw error;
+    } catch (er) {
+        console.error('CHANGE GAME LIMIT IN DATABASE ERROR: ', er);
+        throw er;
     } finally {
         client.release();
+    }
+}
+
+async function checkGameStatus(pool, gameId) {
+    const client = await pool.connect();
+
+    try {
+        const result = await client.query(`SELECT status FROM games WHERE id = $1;`, [gameId]);
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].status;
+        } else {
+            console.error('THAT IS NOT ARRAY');
+        }
+    } catch (e) {
+        console.error('CHECK GAME STATUS RESULT ERROR: ', e);
     }
 }
 
@@ -124,5 +140,6 @@ module.exports = {
     getGamesTimes,
     deactiveGame,
     deleteGame,
-    changeGameLimit
+    changeGameLimit,
+    checkGameStatus
 }

@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase } = require('../database');
+const { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase } = require('../database');
 
 async function appointmentToTheGame(query, bot) {
     const chatId = query.message.chat.id;
@@ -7,13 +7,20 @@ async function appointmentToTheGame(query, bot) {
     const gameId = query.data.replace('appointment_', '');
 
     try {
-        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: true });
+        const examStatus = await checkGameStatusFromDatabase(gameId);
 
-        if (!gameLabel) {
-            bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
-            return;
-        } else {
-            bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
+        if (examStatus) {
+            const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: true });
+
+            if (!gameLabel) {
+                bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
+                return;
+            } else {
+                bot.sendMessage(chatId, `@${user.username} вы записались на ${gameLabel}!`)
+            }
+        }
+        else {
+            bot.sendMessage(chatId, `@${user.username} куда ты прёшь? Игра закрыта!`)
         }
     } catch (error) {
         console.error('APPOINTMENT ERROR: ', error);
