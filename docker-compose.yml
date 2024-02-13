@@ -11,6 +11,8 @@ services:
     volumes:
       - ~/pg_data:/var/lib/postgresql/data #- db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - postgres_network
   web:
     image: fortuna:latest
     build: .
@@ -18,5 +20,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
-#volumes:
-#  db-data:
+
+networks:
+  postgres_network:
+    driver: bridge
