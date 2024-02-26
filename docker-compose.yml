@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db:
+  db-fortuna:
     image: postgres:latest
     restart: always
     ports:
@@ -19,7 +19,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      - db-fortuna
 
 networks:
   postgres_network:

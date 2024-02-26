@@ -7,7 +7,7 @@ const { adminGroupAdd, getGroups } = require('./adminGroup');
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
     user: 'postgres',
-    host: 'fortuna-telegram-bot-db-1',
+    host: 'db-fortuna',
     database: 'fortuna',
     password: 'plk_S2%92',
     port: 5432,
