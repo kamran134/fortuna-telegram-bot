@@ -171,8 +171,7 @@ async function showPayListInSelectedGroup(query, bot) {
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
                 const users = usersByGame[game_id].users.map(
-                    user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}
-                        ${user.ind}. ${user.first_name} ${user.last_name}${user.payed ? '✅ заплатил' : '❌ НЕ заплатил'}`).join('\n');
+                    user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}${user.ind}. ${user.first_name} ${user.last_name}${user.payed ? '✅ заплатил' : '❌ НЕ заплатил'}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
