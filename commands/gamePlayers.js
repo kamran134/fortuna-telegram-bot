@@ -44,7 +44,7 @@ async function getGamePlayers(msg, bot) {
                 const placeLeft = usersByGame[game_id].users_limit - usersByGame[game_id].users.length;
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
-                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.ind}. ${user.first_name} ${user.last_name}${user.confirmed_attendance ? ' ✅' : ' ❓'}`).join('\n');
+                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'}${user.ind}. ${user.first_name} ${user.last_name}`).join('\n');
                 const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
