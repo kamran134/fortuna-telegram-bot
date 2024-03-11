@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS game_users (
     user_id BIGINT REFERENCES users(id),
     game_id BIGINT REFERENCES games(id),
     participate_time TIMESTAMP,
-    confirmed_attendance BOOLEAN,
+    confirmed_attendance BOOLEAN DEFAULT FALSE,
     payed BOOLEAN,
     PRIMARY KEY(user_id, game_id)
 );

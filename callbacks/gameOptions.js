@@ -1,7 +1,7 @@
 const moment = require("moment");
 const { startGame } = require("../commands");
 const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase } = require("../database");
-const { tagUsersBuCommas } = require("../commands/common");
+const { tagUsersByCommas } = require("../commands/common");
 
 async function deactiveGame(query, bot) {
     const gameId = query.data.split('_')[1];
@@ -115,7 +115,7 @@ async function tagGamePlayersInSelectedGroup(query, bot) {
             if (msg.chat.id === adminChatId) {
                 try {
                     const gamePlayers = await getGamePlayersFromDataBase(selectedGroupChatId);
-                    resultMessage = tagUsersBuCommas(gamePlayers) + ', ' + msg.text;
+                    resultMessage = tagUsersByCommas(gamePlayers) + ', ' + msg.text;
                     waitForInput = false;
                     bot.sendMessage(selectedGroupChatId, resultMessage, {parse_mode: 'HTML'});
                     return;
@@ -128,6 +128,63 @@ async function tagGamePlayersInSelectedGroup(query, bot) {
             bot.sendMessage(adminChatId, 'Произошла ошибка при создании игры');
         }
     });
+}
+
+async function showPayListInSelectedGroup(query, bot) {
+    const adminChatId = query.message.chat.id;
+    const selectedGroupChatId = parseInt(query.data.split('_')[1]);
+
+    try {
+        const gamePlayers = await getGamePlayersFromDataBase(selectedGroupChatId);
+
+        if (!gamePlayers || gamePlayers.length === 0) {
+            bot.sendMessage(adminChatId, `Нет записавшихся на игру. Капец.`);
+        } else {
+            let i = 1;
+
+            gamePlayers.forEach(gamePlayer => {
+                if (!usersByGame[gamePlayer.game_id]) {
+                    i = 1;
+                    usersByGame[gamePlayer.game_id] = {
+                        users: [{
+                            ind: i, last_name: gamePlayer.last_name, first_name: gamePlayer.first_name, 
+                            username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance
+                        }],
+                        game_date: gamePlayer.game_date,
+                        users_limit: gamePlayer.users_limit
+                    };
+                } else usersByGame[gamePlayer.game_id] = {
+                    users: [...usersByGame[gamePlayer.game_id].users, {ind: i, last_name: gamePlayer.last_name,
+                        first_name: gamePlayer.first_name, username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance}
+                    ],
+                    game_date: gamePlayer.game_date,
+                    users_limit: gamePlayer.users_limit
+                };
+    
+                i++;
+            });
+
+            for (const game_id of Object.keys(usersByGame)) {
+                if (!game_id) return;
+
+                const placeLeft = usersByGame[game_id].users_limit - usersByGame[game_id].users.length;
+                const gameUsersLimit = usersByGame[game_id].users_limit;
+
+                const users = usersByGame[game_id].users.map(
+                    user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}
+                        ${user.ind}. ${user.first_name} ${user.last_name}${user.payed ? '✅ заплатил' : '❌ НЕ заплатил'}`).join('\n');
+                const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
+                                `Участники:\n${users}\n\n` +
+                                `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
+
+                resultMessage.push(message);
+            }
+
+            bot.sendMessage(adminChatId, resultMessage.join('\n\n————————————————————————————————\n————————————————————————————————\n\n'));
+        }
+    } catch (error) {
+        console.error("Get pay list error: ", error);
+    }
 }
 
 module.exports = {
