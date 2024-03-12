@@ -1,6 +1,6 @@
 const moment = require('moment');
 const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase, getUndecidedPlayersFromDataBase } = require('../database');
-const { tagUsers, tagUsersBuCommas } = require('./common');
+const { tagUsers, tagUsersByCommas } = require('./common');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -68,7 +68,7 @@ async function tagGamePlayers(chatId, bot) {
         if (!gamePlayers || gamePlayers.length === 0) {
             bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
         } else {
-            resultMessage = tagUsersBuCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
+            resultMessage = tagUsersByCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
             bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
         }
     } catch (error) {
@@ -85,7 +85,7 @@ async function tagUndecidedPlayers(chatId, bot) {
         if (!gamePlayers || gamePlayers.length === 0) {
             bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
         } else {
-            resultMessage = tagUsersBuCommas(gamePlayers) + `, ну шо, товарищи? Пришло время определиться! Играть будем или нет?`;
+            resultMessage = tagUsersByCommas(gamePlayers) + `, ну шо, товарищи? Пришло время определиться! Играть будем или нет?`;
             bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
         }
     } catch (error) {
