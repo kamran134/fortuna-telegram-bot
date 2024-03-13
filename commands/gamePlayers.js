@@ -23,15 +23,16 @@ async function getGamePlayers(msg, bot) {
                     usersByGame[gamePlayer.game_id] = {
                         users: [{
                             ind: i, last_name: gamePlayer.last_name, first_name: gamePlayer.first_name, 
-                            username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance
+                            username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance,
+                            is_guest: gamePlayer.is_guest
                         }],
                         game_date: gamePlayer.game_date,
                         game_label: gamePlayer.label,
                         users_limit: gamePlayer.users_limit
                     };
                 } else usersByGame[gamePlayer.game_id] = {
-                    users: [...usersByGame[gamePlayer.game_id].users, {ind: i, last_name: gamePlayer.last_name,
-                        first_name: gamePlayer.first_name, username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance}
+                    users: [...usersByGame[gamePlayer.game_id].users, {ind: i, last_name: gamePlayer.last_name, first_name: gamePlayer.first_name, 
+                        username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance, is_guest: gamePlayer.is_guest }
                     ],
                     game_date: gamePlayer.game_date,
                     game_label: gamePlayer.label,
@@ -47,7 +48,7 @@ async function getGamePlayers(msg, bot) {
                 const placeLeft = usersByGame[game_id].users_limit - usersByGame[game_id].users.length;
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
-                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'} ${user.first_name} ${user.last_name}`).join('\n');
+                const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'} ${user.first_name} ${user.last_name} ${user.is_guest ? '(гость)' : ''}`).join('\n');
                 const message = `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')} ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
