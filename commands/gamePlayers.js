@@ -1,6 +1,7 @@
 const moment = require('moment');
 const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase, getUndecidedPlayersFromDataBase } = require('../database');
 const { tagUsers, tagUsersByCommas } = require('./common');
+const { skloneniye } = require('../common/skloneniye');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -25,6 +26,7 @@ async function getGamePlayers(msg, bot) {
                             username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance
                         }],
                         game_date: gamePlayer.game_date,
+                        game_label: gamePlayer.label,
                         users_limit: gamePlayer.users_limit
                     };
                 } else usersByGame[gamePlayer.game_id] = {
@@ -32,6 +34,7 @@ async function getGamePlayers(msg, bot) {
                         first_name: gamePlayer.first_name, username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance}
                     ],
                     game_date: gamePlayer.game_date,
+                    game_label: gamePlayer.label,
                     users_limit: gamePlayer.users_limit
                 };
     
@@ -45,7 +48,7 @@ async function getGamePlayers(msg, bot) {
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
                 const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'} ${user.first_name} ${user.last_name}`).join('\n');
-                const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
+                const message = `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')} ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
 
@@ -127,7 +130,7 @@ async function addGuest(msg, bot) {
                 try {
                     await addGuestToGame(gameOptions);
         
-                    bot.sendMessage(chatId, `Вы записали ${fullname} на ${gameLabel}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
+                    bot.sendMessage(chatId, `Вы записали ${fullname} на ${skloneniye(gameLabel, 'винительный')}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
                 } catch (error) {
                     console.error('ADD GUEST TO GAME ERROR: ', error);
                 }

@@ -2,6 +2,7 @@ const moment = require('moment');
 const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase } = require('../database');
 const { tagUsersByCommas } = require('./common');
 const { Markup } = require('telegraf');
+const { skloneniye } = require('../common/skloneniye')
 
 async function startGame(msg, bot) {
     const chatId = msg.chat.id;
@@ -34,7 +35,7 @@ async function startGame(msg, bot) {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
 
                 if (gameId && gameId > 0) {
-                    bot.sendMessage(chatId, `Игра создана на ${gameOptions.date}\nс ${gameOptions.start} до ${gameOptions.end}.\n` +
+                    bot.sendMessage(chatId, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана. ${gameOptions.date}\nс ${gameOptions.start} до ${gameOptions.end}.\n` +
                         `Место: ${gameOptions.location}\n\n${taggedUsers}`, {
                         parse_mode: 'HTML',
                         reply_markup: {
@@ -87,9 +88,9 @@ async function showGames(chatId, bot, isDelete = false) {
             }
 
             gameButtons = games.map(game => [
-                {text: `+ на ${game.label}`, callback_data: `appointment_${game.id}`},
-                {text: `+/- на ${game.label}`, callback_data: `notconfirmed_${game.id}`},
-                {text: `- на ${game.label}`, callback_data: `decline_${game.id}`}
+                {text: `+ на ${skloneniye(game.label, 'винительный')}`, callback_data: `appointment_${game.id}`},
+                {text: `+/- на ${skloneniye(game.label, 'винительный')}`, callback_data: `notconfirmed_${game.id}`},
+                {text: `- на ${skloneniye(game.label, 'винительный')}`, callback_data: `decline_${game.id}`}
             ]);
 
             const gamesString = games.map((game, index) =>
@@ -126,7 +127,7 @@ async function deactiveGames(msg, bot) {
             ).join('\n----------------------------------\n');
 
             gameDeactiveButtons = games.map(game => ({
-                text: `Закрыть игру на ${game.label} (для админов)`,
+                text: `Закрыть игру на ${skloneniye(game.label, 'винительный')} (для админов)`,
                 callback_data: `deactivegame_${game.id}`}));
 
             // gameDeactiveButtons = games.map(game => Markup.callbackButton(`Закрыть игру на ${game.label} (для админов)`, `deactivegame_${game.id}`));
@@ -163,7 +164,7 @@ async function changeGameLimit(msg, bot) {
             const label = await changeGameLimitFromDataBase(chatId, limitOptions);
 
             if (label) {
-                bot.sendMessage(chatId, `Изменено количество игроков на игру в ${label}!`);
+                bot.sendMessage(chatId, `Изменено количество игроков на игру в ${skloneniye(label, 'винительный')}!`);
             } else {
                 bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
             }

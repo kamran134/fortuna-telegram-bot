@@ -2,6 +2,7 @@ const moment = require("moment");
 const { startGame } = require("../commands");
 const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase } = require("../database");
 const { tagUsersByCommas } = require("../commands/common");
+const { skloneniye } = require("../common/skloneniye");
 
 async function deactiveGame(query, bot) {
     const gameId = query.data.split('_')[1];
@@ -11,7 +12,7 @@ async function deactiveGame(query, bot) {
         const label = await deactiveGameInDatabase(gameId);
 
         if (label) {
-            bot.sendMessage(chatId, `Игра закрыта (${label})!`);
+            bot.sendMessage(chatId, `Игра на ${skloneniye(label, 'винительный')} закрыта!`);
         } else {
             bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
         }
@@ -76,7 +77,7 @@ async function showGamesInSelectedGroup(query, bot) {
             ).join('\n----------------------------------\n');
 
             gameDeactiveButtons = games.map(game => ({
-                text: `Закрыть игру на ${game.label} (для админов)`,
+                text: `Закрыть игру на ${skloneniye(game.label, 'винительный')} (для админов)`,
                 callback_data: `deactivegame_${game.id}`}));
 
             bot.sendMessage(adminChatId, gamesString, {
@@ -151,6 +152,7 @@ async function showPayListInSelectedGroup(query, bot) {
                             username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance
                         }],
                         game_date: gamePlayer.game_date,
+                        game_label: gamePlayer.label,
                         users_limit: gamePlayer.users_limit
                     };
                 } else usersByGame[gamePlayer.game_id] = {
@@ -158,6 +160,7 @@ async function showPayListInSelectedGroup(query, bot) {
                         first_name: gamePlayer.first_name, username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance}
                     ],
                     game_date: gamePlayer.game_date,
+                    game_label: gamePlayer.label,
                     users_limit: gamePlayer.users_limit
                 };
     
@@ -172,7 +175,7 @@ async function showPayListInSelectedGroup(query, bot) {
 
                 const users = usersByGame[game_id].users.map(
                     user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}${user.ind}. ${user.first_name} ${user.last_name}${user.payed ? '✅ заплатил' : '❌ НЕ заплатил'}`).join('\n');
-                const message = `Игра на ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
+                const message = `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')}. ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
                                 `Участники:\n${users}\n\n` +
                                 `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
 
