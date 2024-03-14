@@ -56,7 +56,7 @@ async function getGamePlayers(msg, bot) {
                 resultMessage.push(message);
             }
 
-            bot.sendMessage(msg.chat.id, resultMessage.join('\n\n————————————————————————————————\n————————————————————————————————\n\n'));
+            bot.sendMessage(msg.chat.id, resultMessage.join('\n\n🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸\n\n'));
         }
     } catch (error) {
         console.error('GET GAME PLAYERS SERVICE ERROR', error);
