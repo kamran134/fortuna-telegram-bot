@@ -4,12 +4,10 @@ async function getGames(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
 
-        console.log('Get games result: ', JSON.stringify(result));
-
         if (result && result.rows) {
             return result.rows;
         } else {
-            console.log('Get games error');
+            console.error('Get games error');
             return undefined;
         }
     } catch(error) {
@@ -22,15 +20,13 @@ async function getGamesTimes(pool, chatId) {
     try {
         const result = await pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
 
-        console.log('Get games times result: ', JSON.stringify(result));
-
         if (result && result.rows && Array.isArray(result.rows)) {
             return result.rows;
         } else {
             console.error('GET GAMES TIMES RESULT ERROR', result);
         }
     } catch (error) {
-        console.log('GET GAMES TIMES ERROR: ', error);
+        console.error('GET GAMES TIMES ERROR: ', error);
         throw error;
     }
 }
@@ -40,8 +36,6 @@ async function addGame(pool, chatId, {date, start, end, users_limit, location, l
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, users_limit, place, chat_id, status, ` +
             `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, label) DO NOTHING RETURNING id;`, 
             [moment(date, 'DD.MM.YYYY').toISOString(), start, end, users_limit, location, chatId, label]);
-
-        console.log('Add game result: ', JSON.stringify(result));
 
         if (result && result.rows && result.rows.length > 0) {
             return result.rows[0].id;

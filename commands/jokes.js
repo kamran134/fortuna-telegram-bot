@@ -7,8 +7,6 @@ async function agilliOl(msg, bot) {
     try {
         const randomUser = await getRandomUserFromDatabase(chatId);
 
-        console.log('Random user: ', JSON.stringify(randomUser));
-
         if (randomUser) {
             bot.sendMessage(chatId, `@${randomUser.username ? randomUser.username :
                 '<a href="tg://user?id=${user.user_id}">' + randomUser.first_name + '</a>'}, ağıllı ol! ☝️`,

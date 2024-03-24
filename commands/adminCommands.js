@@ -72,7 +72,7 @@ async function showYourGroups(adminChatId, bot, command) {
             });
         }
     } catch (error) {
-        console.log('START GAME ERROR: ', error);
+        console.error('START GAME ERROR: ', error);
     }
 }
 
@@ -94,8 +94,6 @@ async function editUser(msg, bot) {
             if (chatMember) {
                 const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-                console.log('\n\nisAdmin', isAdmin, '\n\n');
-    
                 if (isAdmin) {
                     const user = await editUserInDatabase({ userId, firstName, lastName, fullnameAz });
     

@@ -4,7 +4,6 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
           'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',
           [first_name, last_name, userId, chatId, username]
         );
-        console.log(JSON.stringify(result));
     } catch (error) {
         console.error('ADD USERS:', error);
         throw error;
@@ -15,8 +14,6 @@ async function getUsers(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
         if (result) {
-            console.log('RESULT: ', JSON.stringify(result));
-
             if (Array.isArray(result.rows)) return result.rows;
             else return undefined;
         } else {
@@ -33,8 +30,6 @@ async function getAllUsers(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE;', [chatId]);
         if (result) {
-            console.log('RESULT: ', JSON.stringify(result));
-
             if (Array.isArray(result.rows)) return result.rows;
             else return undefined;
         } else {
@@ -49,8 +44,6 @@ async function getAllUsers(pool, chatId) {
 
 async function getUserChat(pool, userId) {
     try {
-        console.log('\n\n\nuserID\n', userId, '\n\n\n');
-        
         const result = await pool.query('SELECT chat_id FROM users WHERE id = $1', [userId]);
         if (result) {
             if (Array.isArray(result.rows)) return result.rows[0];
@@ -124,12 +117,10 @@ async function getAzList(pool, chatId, gameLabel) {
             `WHERE u.chat_id = $1 AND gu.game_id = (SELECT MAX(g.id) FROM games g WHERE LOWER(g.label) = LOWER($2));`,
             [chatId, gameLabel]);
         
-        console.log('Get az list result', JSON.stringify(result));
-
         if (result && result.rows && Array.isArray(result.rows)) {
             return result.rows;
         } else {
-            console.log('GET AZ LIST RESULT ERROR', result);
+            console.error('GET AZ LIST RESULT ERROR', result);
             throw result;
         }
     } catch (error) {

@@ -74,8 +74,6 @@ async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
             `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +
             `RETURNING (SELECT g.label FROM games g WHERE g.id = $3);`, [userId, chatId, gameId]);
         
-        console.log('REMOVE GAME PLAYER RESULT: ', JSON.stringify(result));
-        
         if (result && result.rows && result.rowCount === 0) {
             return undefined;
         } else if (result && result.rows) {

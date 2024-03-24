@@ -55,7 +55,7 @@ async function startGameInSelectedGroup(query, bot) {
                 }
             }
         } catch (error) {
-            console.log('CREATE GAME ERROR: ', error);
+            console.error('CREATE GAME ERROR: ', error);
             bot.sendMessage(adminChatId, 'Произошла ошибка при создании игры');
         }
     });
