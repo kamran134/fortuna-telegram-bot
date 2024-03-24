@@ -1,6 +1,6 @@
 version: '3'
 services:
-  db-fortuna:
+  db:
     image: postgres:latest
     restart: always
     ports:
@@ -11,18 +11,19 @@ services:
     volumes:
       - ~/pg_data:/var/lib/postgresql/data #- db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - postgres_network
+#    networks:
+#      - postgres_network
   web:
     image: fortuna:latest
     build: .
     ports:
       - "8000:8000"
     depends_on:
-      - db-fortuna
-    networks:
-      - postgres_network
+      -db
+#      - db-fortuna
+#    networks:
+#      - postgres_network
 
-networks:
-  postgres_network:
-    driver: bridge
+#networks:
+#  postgres_network:
+#    driver: bridge
