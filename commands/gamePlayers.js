@@ -131,7 +131,7 @@ async function addGuest(msg, bot) {
                 try {
                     await addGuestToGame(gameOptions);
         
-                    bot.sendMessage(chatId, `Вы записали ${fullname} на ${skloneniye(gameLabel, 'винительный')}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
+                    bot.sendMessage(chatId, `Вы записали ${guestOptions.first_name} ${guestOptions.last_name} на ${skloneniye(gameLabel, 'винительный')}!` + (!confirmed_attendance ? ' Но это не точно :(' : ''));
                 } catch (error) {
                     console.error('ADD GUEST TO GAME ERROR: ', error);
                 }
