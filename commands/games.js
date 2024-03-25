@@ -53,26 +53,26 @@ async function startGame(msg, bot) {
                         }
                     });
 
-                users.forEach(user => {
-                    bot.sendMessage(user.user_id, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана.\n` +
-                        `Дата: ${gameOptions.date}\nВремя: с ${gameOptions.start} до ${gameOptions.end}.\n` +
-                        `Место: ${gameOptions.location}`, {
-                        parse_mode: 'HTML',
-                        reply_markup: {
-                            inline_keyboard: [
-                                [
-                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${gameId}`},
-                                ],
-                                [
-                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notconfirmed_${gameId}`},
-                                ],
-                                [
-                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${gameId}`}
+                    users.forEach(user => {
+                        bot.sendMessage(user.user_id, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана.\n` +
+                            `Дата: ${gameOptions.date}\nВремя: с ${gameOptions.start} до ${gameOptions.end}.\n` +
+                            `Место: ${gameOptions.location}`, {
+                            parse_mode: 'HTML',
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `privateAppointment_${chatId}_${gameId}`},
+                                    ],
+                                    [
+                                        {text: 'Dəqiq deyil / Не точно', callback_data: `privateNotconfirmed_${chatId}_${gameId}`},
+                                    ],
+                                    [
+                                        {text: 'İmtina etmək / Отказаться от игры', callback_data: `privateDecline_${chatId}_${gameId}`}
+                                    ]
                                 ]
-                            ]
-                        }
+                            }
+                        });
                     });
-                });
                 } else {
                     bot.sendMessage(userId, 'Что-то пошло не так и игра не создалась. Читай логи!');
                 }
@@ -100,6 +100,8 @@ async function showGames(chatId, bot, isDelete = false) {
 
     try {
         const games = await getGamesFromDatabase(chatId);
+
+        console.log('labels: ' + games.map(game => game.label));
 
         if (games && games.length > 0) {
             if (isDelete) {

@@ -7,7 +7,8 @@ const {
 } = require('./commands');
 const adminCommands = require('./commands/adminCommands');
 const {
-    appointmentToTheGame, declineAppointment, notConfirmedAttendance, 
+    appointmentToTheGame, notConfirmedAttendance, declineAppointment,
+    privateAppointmentToTheGame, privateNotConfirmedAttendance, privateDeclineAppointment,
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
     showUsersInSelectedGroup, tagGamePlayersInSelectedGroup
 } = require('./callbacks');
@@ -85,6 +86,9 @@ bot.on('callback_query', async (query) => {
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
     else if (query.data.startsWith('notconfirmed_')) notConfirmedAttendance(query, bot);
     else if (query.data.startsWith('decline_')) declineAppointment(query, bot);
+    else if (query.data.startsWith('privateAppointment_')) privateAppointmentToTheGame(query, bot);
+    else if (query.data.startsWith('privateNotconfirmed_')) privateNotConfirmedAttendance(query, bot);
+    else if (query.data.startsWith('privateDecline_')) privateDeclineAppointment(query, bot);
     else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
     else if (query.data.startsWith('deactivegame_') && !isAdmin) 
         bot.sendMessage(chatId, `Бый! Только админ может деактивировать игру. Так что, <a href="tg://user?id=${query.from.id}">${query.from.first_name}</a> ağıllı ol ☝🏻`, 

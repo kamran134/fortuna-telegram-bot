@@ -65,8 +65,74 @@ async function declineAppointment(query, bot) {
     }
 }
 
+async function privateAppointmentToTheGame(query, bot) {
+    const chatId = query.data.split('_')[1];
+    const gameId = query.data.split('_')[2];
+    const user = query.from;
+    
+    try {
+        const examStatus = await checkGameStatusFromDatabase(gameId);
+
+        if (examStatus) {
+            const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: true });
+
+            if (!gameLabel) {
+                bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
+                return;
+            } else {
+                bot.sendMessage(chatId, `@${user.username} вы записались на ${skloneniye(gameLabel, 'винительный')}!`)
+            }
+        }
+        else {
+            bot.sendMessage(chatId, `@${user.username} куда ты прёшь? Игра закрыта!`)
+        }
+    } catch (error) {
+        console.error('APPOINTMENT ERROR: ', error);
+    }
+}
+
+async function privateNotConfirmedAttendance(query, bot) {
+    const chatId = query.data.split('_')[1];
+    const gameId = query.data.split('_')[2];
+    const user = query.from;
+    
+    try {
+        const gameLabel = await addGamePlayerByIdToDatabase({ gameId, chatId, userId: user.id, confirmed_attendance: false });
+
+        if (!gameLabel) {
+            bot.sendMessage(chatId, `Пока вы записывались, игра отменилась кажется. Во всяком случае нет такой игры 🫣`);
+            return;
+        } else {
+            bot.sendMessage(chatId, `@${user.username} вы записались на ${skloneniye(gameLabel, 'винительный')}! Но это не точно 😒`);
+        }
+    } catch (error) {
+        console.error('NOT CONFIRMED ATTENDANCE ERROR: ', error);
+    }
+}
+
+async function privateDeclineAppointment(query, bot) {
+    const chatId = query.data.split('_')[1];
+    const gameId = query.data.split('_')[2];
+    const user = query.from;
+
+    try {
+        const gameLabel = await removeGamePlayerByIdFromDatabase({ gameId, chatId, userId: user.id });
+
+        if (gameLabel) {
+            bot.sendMessage(chatId, `@${user.username} удирает с игры на ${skloneniye(gameLabel, 'винительный')}. Бейте предателя! 😡`);
+        } else {
+            bot.sendMessage(chatId, `@${user.username} минусует 🥲`);
+        }
+    } catch (error) {
+        console.error('DECLINE APPOINTMENT ERROR: ', error);
+    }
+}
+
 module.exports = {
     appointmentToTheGame,
     notConfirmedAttendance,
-    declineAppointment
+    declineAppointment,
+    privateAppointmentToTheGame,
+    privateNotConfirmedAttendance,
+    privateDeclineAppointment
 }
