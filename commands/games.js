@@ -52,6 +52,27 @@ async function startGame(msg, bot) {
                             ]
                         }
                     });
+
+                users.forEach(user => {
+                    bot.sendMessage(user.user_id, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана.\n` +
+                        `Дата: ${gameOptions.date}\nВремя: с ${gameOptions.start} до ${gameOptions.end}.\n` +
+                        `Место: ${gameOptions.location}`, {
+                        parse_mode: 'HTML',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [
+                                    {text: 'Oyuna yazılmaq / Записаться на игру', callback_data: `appointment_${gameId}`},
+                                ],
+                                [
+                                    {text: 'Dəqiq deyil / Не точно', callback_data: `notconfirmed_${gameId}`},
+                                ],
+                                [
+                                    {text: 'İmtina etmək / Отказаться от игры', callback_data: `decline_${gameId}`}
+                                ]
+                            ]
+                        }
+                    });
+                });
                 } else {
                     bot.sendMessage(userId, 'Что-то пошло не так и игра не создалась. Читай логи!');
                 }
