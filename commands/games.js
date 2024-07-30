@@ -28,15 +28,18 @@ async function startGame(msg, bot) {
         const users = await getUsersFromDatabase(chatId);
 
         if (users && users.length > 0) {
-            //taggedUsers = tagUsersForGame(users);
             taggedUsers = tagUsersByCommas(users);
 
             try {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
 
                 if (gameId && gameId > 0) {
-                    bot.sendMessage(chatId, `Создана игра на ${skloneniye(gameOptions.label, 'винительный')}. ${gameOptions.date}\nс ${gameOptions.start} до ${gameOptions.end}.\n` +
-                        `Место: ${gameOptions.location}\n\n${taggedUsers}`, {
+                    bot.sendMessage(chatId, 
+                        `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!`
+                        `📢 Объявлена игра на ${skloneniye(gameOptions.label, 'винительный')}!\n` +
+                        `🗓 Tarix / Дата: ${gameOptions.date}\n` +
+                        `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
+                        `📍 Məkan / Место: ${gameOptions.location}\n\n${taggedUsers}`, {
                         parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
@@ -130,7 +133,7 @@ async function showGames(chatId, bot, isDelete = false) {
                 }
             });
         } else {
-            bot.sendMessage(chatId, 'А игр ещё нет 😓');   
+            bot.sendMessage(chatId, 'Hələki oyun-zad yoxdur / А игр ещё нет 😓');   
         }
     } catch (error) {
         console.error('SHOW GAME ERROR', error);

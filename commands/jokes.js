@@ -9,7 +9,7 @@ async function agilliOl(msg, bot) {
 
         if (randomUser) {
             bot.sendMessage(chatId, `@${randomUser.username ? randomUser.username :
-                '<a href="tg://user?id=${user.user_id}">' + randomUser.first_name + '</a>'}, ağıllı ol! ☝️`,
+                '<a href="tg://user?id=${user.user_id}">' + randomUser.first_name + '</a>'}, ağıllı ol! 🧠`,
                 {parse_mode: 'HTML'});
         } else {
             bot.sendMessage(chatId, 'Печально, когда некому говорить "Ağıllı ol" 🥲');

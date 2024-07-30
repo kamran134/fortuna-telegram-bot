@@ -1,7 +1,7 @@
 const moment = require('moment');
 const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase, getUndecidedPlayersFromDataBase } = require('../database');
 const { tagUsers, tagUsersByCommas } = require('./common');
-const { skloneniye } = require('../common/skloneniye');
+const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye');
 
 async function getGamePlayers(msg, bot) {
     const chatId = msg.chat.id;
@@ -13,7 +13,7 @@ async function getGamePlayers(msg, bot) {
         const gamePlayers = await getGamePlayersFromDataBase(chatId);
 
         if (!gamePlayers || gamePlayers.length === 0) {
-            bot.sendMessage(chatId, `Нет записавшихся на игру. Капец.`);
+            bot.sendMessage(chatId, `Oyuna yazılan yoxdur. Dəhşət. \n Нет записавшихся на игру. Капец.`);
         } else {
             let i = 1;
 
@@ -27,6 +27,9 @@ async function getGamePlayers(msg, bot) {
                             is_guest: gamePlayer.is_guest
                         }],
                         game_date: gamePlayer.game_date,
+                        game_starts: gamePlayer.game_starts,
+                        game_ends: gamePlayer.game_ends,
+                        game_place: gamePlayer.place,
                         game_label: gamePlayer.label,
                         users_limit: gamePlayer.users_limit
                     };
@@ -35,6 +38,9 @@ async function getGamePlayers(msg, bot) {
                         username: gamePlayer.username, confirmed_attendance: gamePlayer.confirmed_attendance, is_guest: gamePlayer.is_guest }
                     ],
                     game_date: gamePlayer.game_date,
+                    game_starts: gamePlayer.game_starts,
+                    game_ends: gamePlayer.game_ends,
+                    game_place: gamePlayer.place,
                     game_label: gamePlayer.label,
                     users_limit: gamePlayer.users_limit
                 };
@@ -49,9 +55,13 @@ async function getGamePlayers(msg, bot) {
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
                 const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'} ${user.first_name} ${user.last_name} ${user.is_guest ? '(гость)' : ''}`).join('\n');
-                const message = `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')} ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}:\n\n` +
-                                `Участники:\n${users}\n\n` +
-                                `Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
+                const message = `${skloneniyeAzFull(usersByGame[game_id].game_label, 'именительный')} oyunu\n` + 
+                                `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')}\n` + 
+                                `🗓 Tarix / Дата: ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}\n` +
+                                `⏳ Vaxt / Время: ${usersByGame[game_id].game_starts} - ${usersByGame[game_id].game_ends}\n` +
+                                `📍 Məkan / Место: ${usersByGame[game_id].game_place}\n\n` +
+                                `🤾🏻🤾‍♀️ İştirakçılar / Участники:\n${users}\n\n` +
+                                `⚠️ Qalan yer sayı / Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
 
                 resultMessage.push(message);
             }

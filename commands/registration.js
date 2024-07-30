@@ -25,7 +25,7 @@ async function getRegistered(msg, bot, command) {
             bot.sendMessage(chatId, 'Нет зарегистрированных пользователей. Капец!');
         } else {
             const usersString = command === 'tag' ? tagUsers(users) : listUsers(users);
-            bot.sendMessage(chatId, 'Зарегистрированные участники:\n\n' + usersString, {parse_mode: 'HTML'});
+            bot.sendMessage(chatId, 'Qeydiyyatdan keçmiş iştirakçılar\nЗарегистрированные участники:\n\n' + usersString, {parse_mode: 'HTML'});
         }
     } catch (error) {
         console.error('REGISTERED ERROR', error);
