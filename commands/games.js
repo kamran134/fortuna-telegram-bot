@@ -33,10 +33,13 @@ async function startGame(msg, bot) {
             try {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
 
+                const gameDayAz = skloneniyeAzFull(gameOptions.label, 'дательный');
+                const gameDayRu = skloneniye(gameOptions.label, 'винительный');
+                
                 if (gameId && gameId > 0) {
                     bot.sendMessage(chatId,
-                        `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!\n` +
-                        `📢 Объявлена игра на ${skloneniye(gameOptions.label, 'винительный')}!\n` +
+                        `📢 ${gameDayAz.charAt(0).toUpperCase() + gameDayAz.slice(1)} oyun elan edildi!\n` +
+                        `📢 Объявлена игра на ${gameDayRu}!\n` +
                         `🗓 Tarix / Дата: ${gameOptions.date}\n` +
                         `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
                         `📍 Məkan / Место: ${gameOptions.location}\n\n${taggedUsers}`, {
@@ -58,8 +61,8 @@ async function startGame(msg, bot) {
 
                     users.forEach(user => {
                         bot.sendMessage(user.user_id,
-                            `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!\n` +
-                            `📢 Объявлена игра на ${skloneniye(gameOptions.label, 'винительный')}!\n` +
+                            `📢 ${gameDayAz.charAt(0).toUpperCase() + gameDayAz.slice(1)} oyun elan edildi!\n` +
+                            `📢 Объявлена игра на ${gameDayRu}!\n` +
                             `🗓 Tarix / Дата: ${gameOptions.date}\n` +
                             `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
                             `📍 Məkan / Место: ${gameOptions.location}`, {
