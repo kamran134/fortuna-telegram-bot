@@ -1,24 +1,40 @@
 const moment = require("moment");
 const { startGame } = require("../commands");
-const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase } = require("../database");
+const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase, getJokeFromDataBase } = require("../database");
 const { tagUsersByCommas } = require("../commands/common");
 const { skloneniye } = require("../common/skloneniye");
+const { JokeTypes } = require("../common/jokeTypes");
 
-async function deactiveGame(query, bot) {
+async function deactiveGame(query, bot, isAdmin) {
     const gameId = query.data.split('_')[1];
     const chatId = query.message.chat.id;
+    const {id, first_name} = query.from;
 
-    try {
-        const label = await deactiveGameInDatabase(gameId);
-
-        if (label) {
-            bot.sendMessage(chatId, `Игра на ${skloneniye(label, 'винительный')} закрыта!`);
-        } else {
-            bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
+    if (isAdmin) {
+        try {
+            const label = await deactiveGameInDatabase(gameId);
+    
+            if (label) {
+                bot.sendMessage(chatId, `Игра на ${skloneniye(label, 'винительный')} закрыта!`);
+            } else {
+                bot.sendMessage(chatId, 'Кажется, такой игры больше нет');
+            }
+        } catch (error) {
+            console.error('DEACTIVE GAME ERROR: ', error);
         }
-    } catch (error) {
-        console.error('DEACTIVE GAME ERROR: ', error);
     }
+    else {
+        let joke = await getJokeFromDataBase(JokeTypes.DEACTIVE_GAME);
+
+        joke = joke.replace('[name]', `<a href="tg://user?id=${id}">${first_name}</a>`);
+
+        bot.sendMessage(chatId, `Только одмэн может закрыть игру. ${joke}`, 
+        {
+            parse_mode: 'HTML',
+            reply_to_message_id: query.data.message_id
+        });
+    }
+    
 }
 
 async function startGameInSelectedGroup(query, bot) {

@@ -3,6 +3,7 @@ const { addUser, getUsers, addGuest, getRandomUser, getAzList, editUser, getUser
 const { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } = require('./games');
 const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } = require('./gamePlayers');
 const { adminGroupAdd, getGroups } = require('./adminGroup');
+const { getJoke } = require('./jokes');
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -102,6 +103,10 @@ function checkGameStatusFromDatabase(gameId) {
     return checkGameStatus(pool, gameId);
 }
 
+function getJokeFromDataBase(jokeType) {
+    return getJoke(pool, jokeType);
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
@@ -124,5 +129,6 @@ module.exports = {
     removeGamePlayerByIdFromDatabase,
     getInactiveUsersFromDatabase,
     changeGameLimitFromDataBase,
-    checkGameStatusFromDatabase
+    checkGameStatusFromDatabase,
+    getJokeFromDataBase
 }

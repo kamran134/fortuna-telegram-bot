@@ -38,7 +38,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/showgames') showGames(chatId, bot);
     else if (messageText === '/deletegame') {}
     else if (messageText === '/deactivegame' && isAdmin) deactiveGames(msg, bot);
-    else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может деактивировать игру. А для вас есть специальная команда: /agilliol :D');
+    else if (messageText === '/deactivegame' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может закрыть игру. А для вас есть специальная команда: /agilliol :D');
     else if (messageText === 'приффки') bot.sendMessage(chatId, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ. (Что за ванилька из начала нулевых?)');
     else if (messageText === 'привет') bot.sendMessage(chatId, 'Привет, ' + msg.from.first_name + '. Играть будем?');
     else if (messageText === '/list') getGamePlayers(msg, bot);
@@ -53,11 +53,11 @@ bot.on('message', async (msg) => {
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
-    else if (messageText.includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
+    else if (messageText.toLowerCase().includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
     else if (messageText === '/saysomethingtoinactive' && isAdmin) saySomethingToInactive(msg, bot);
     else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
     else if (messageText === '/deleteplayer' && isAdmin) showGames(chatId, bot, true);
-    else if (messageText === '/deleteplater' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
+    else if (messageText === '/deleteplayer' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
     else if (messageText === '/taggamers' && isAdmin) tagGamePlayers(chatId, bot);
     else if (messageText === '/taggamers' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может тревожить игроков. А для вас есть развлечение в качестве команды /agilliol 🤪');
     else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
@@ -89,13 +89,7 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('privateAppointment_')) privateAppointmentToTheGame(query, bot);
     else if (query.data.startsWith('privateNotconfirmed_')) privateNotConfirmedAttendance(query, bot);
     else if (query.data.startsWith('privateDecline_')) privateDeclineAppointment(query, bot);
-    else if (query.data.startsWith('deactivegame_') && isAdmin) deactiveGame(query, bot);
-    else if (query.data.startsWith('deactivegame_') && !isAdmin) 
-        bot.sendMessage(chatId, `Бый! Только админ может деактивировать игру. Так что, <a href="tg://user?id=${query.from.id}">${query.from.first_name}</a> ağıllı ol ☝🏻`, 
-        {
-            parse_mode: 'HTML',
-            reply_to_message_id: query.data.message_id
-        });
+    else if (query.data.startsWith('deactivegame_')) deactiveGame(query, bot, isAdmin);
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
