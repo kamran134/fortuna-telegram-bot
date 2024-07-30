@@ -73,7 +73,7 @@ async function showGamesInSelectedGroup(query, bot) {
         if (games && games.length > 0) {
             const gamesString = games.map((game, index) =>
                 `Игра №${(index + 1)}\n` +
-                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
+                `    🗓Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
             ).join('\n----------------------------------\n');
 
             gameDeactiveButtons = games.map(game => ({
