@@ -1,9 +1,11 @@
 async function getJoke(pool, jokeType) {
+    console.log('jokeType: ', jokeType)
+    
     try {
         const result = await pool.query(`SELECT * FROM jokes WHERE type = $1 ORDER BY RANDOM() LIMIT 1;`, [jokeType]);
 
         if (result && result.rows) {
-            return result.rows[0];
+            return result.rows[0].joke;
         } else {
             console.error('Get joke error');
             return undefined;

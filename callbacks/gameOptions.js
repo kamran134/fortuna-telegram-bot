@@ -24,15 +24,21 @@ async function deactiveGame(query, bot, isAdmin) {
         }
     }
     else {
-        let joke = await getJokeFromDataBase(JokeTypes.DEACTIVE_GAME);
+        try {
+            let joke = await getJokeFromDataBase(JokeTypes.DEACTIVE_GAME);
 
-        joke = joke.replace('[name]', `<a href="tg://user?id=${id}">${first_name}</a>`);
+            console.log('joke: ', joke);
 
-        bot.sendMessage(chatId, `Только одмэн может закрыть игру. ${joke}`, 
-        {
-            parse_mode: 'HTML',
-            reply_to_message_id: query.data.message_id
-        });
+            joke = joke.replace('[name]', `<a href="tg://user?id=${id}">${first_name}</a>`);
+
+            bot.sendMessage(chatId, `Только одмэн может закрыть игру. ${joke}`, 
+            {
+                parse_mode: 'HTML',
+                reply_to_message_id: query.data.message_id
+            });
+        } catch (error) {
+            console.error('DEACTIVE FOR NON ADMIN ERROR: ', error);
+        }
     }
     
 }
