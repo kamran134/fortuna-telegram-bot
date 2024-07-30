@@ -55,7 +55,10 @@ async function getGamePlayers(msg, bot) {
                 const gameUsersLimit = usersByGame[game_id].users_limit;
 
                 const users = usersByGame[game_id].users.map(user => `${user.ind === (gameUsersLimit + 1) ? '\n--------------Wait list--------------\n' : ''}\t${user.confirmed_attendance ? ' ✅' : ' ❓'} ${user.first_name} ${user.last_name} ${user.is_guest ? '(гость)' : ''}`).join('\n');
-                const message = `${skloneniyeAzFull(usersByGame[game_id].game_label, 'именительный')} oyunu\n` + 
+                
+                const gameDayAz = skloneniyeAzFull(usersByGame[game_id].game_label, 'именительный');
+                
+                const message = `${gameDayAz.split().charAt(0).toUpperCase() + gameDayAz.split().slice(1)} oyunu\n` + 
                                 `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')}\n` + 
                                 `🗓 Tarix / Дата: ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}\n` +
                                 `⏳ Vaxt / Время: ${usersByGame[game_id].game_starts} - ${usersByGame[game_id].game_ends}\n` +
