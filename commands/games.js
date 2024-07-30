@@ -119,7 +119,7 @@ async function showGames(chatId, bot, isDelete = false) {
 
             const gamesString = games.map((game, index) =>
                 `🏐 Oyun № ${(index + 1)} / Игра №${(index + 1)}\n` +
-                `🗓 Tarix / Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${skloneniyeAzFull(game.label, 'дательный')} ${game.label})\n` +
+                `🗓 Tarix / Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${skloneniyeAzFull(game.label, 'именительный')} / ${game.label})\n` +
                 `⏳ Vaxt / Время: ${moment(game.game_starts, 'HH:mm:ss').format('HH:mm')} — ${moment(game.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
                 `📍 Məkan / Место: ${game.place}`, {parse_mode: 'MarkdownV2'}
             ).join('\n----------------------------------\n');
