@@ -59,12 +59,12 @@ async function getGamePlayers(msg, bot) {
                 const gameDayAz = skloneniyeAzFull(usersByGame[game_id].game_label, 'именительный');
                 
                 const message = `${gameDayAz.charAt(0).toUpperCase() + gameDayAz.slice(1)} oyunu\n` + 
-                                `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')}\n` + 
-                                `🗓 Tarix / Дата: ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}\n` +
-                                `⏳ Vaxt / Время: ${usersByGame[game_id].game_starts} - ${usersByGame[game_id].game_ends}\n` +
-                                `📍 Məkan / Место: ${usersByGame[game_id].game_place}\n\n` +
-                                `🤾🏻🤾‍♀️ İştirakçılar / Участники:\n${users}\n\n` +
-                                `⚠️ Qalan yer sayı / Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
+                    `Игра на ${skloneniye(usersByGame[game_id].game_label, 'винительный')}\n` + 
+                    `🗓 Tarix / Дата: ${moment(usersByGame[game_id].game_date).format("DD.MM.YYYY")}\n` +
+                    `⏳ Vaxt / Время: ${moment(usersByGame[game_id].game_starts, 'HH:mm:ss').format('HH:mm')} - ${moment(usersByGame[game_id].game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
+                    `📍 Məkan / Место: ${usersByGame[game_id].game_place}\n\n` +
+                    `👤 İştirakçılar / Участники:\n${users}\n\n` +
+                    `⚠️ Qalan yer sayı / Осталось мест: ${(placeLeft >= 0 ? placeLeft : 0)}`;
 
                 resultMessage.push(message);
             }
