@@ -34,8 +34,8 @@ async function startGame(msg, bot) {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
 
                 if (gameId && gameId > 0) {
-                    bot.sendMessage(chatId, 
-                        `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!`
+                    bot.sendMessage(chatId,
+                        `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!\n` +
                         `📢 Объявлена игра на ${skloneniye(gameOptions.label, 'винительный')}!\n` +
                         `🗓 Tarix / Дата: ${gameOptions.date}\n` +
                         `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
@@ -58,7 +58,7 @@ async function startGame(msg, bot) {
 
                     users.forEach(user => {
                         bot.sendMessage(user.user_id,
-                            `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!`
+                            `📢 ${skloneniyeAzFull(gameOptions.label, 'дательный')} oyun elan edildi!\n` +
                             `📢 Объявлена игра на ${skloneniye(gameOptions.label, 'винительный')}!\n` +
                             `🗓 Tarix / Дата: ${gameOptions.date}\n` +
                             `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
