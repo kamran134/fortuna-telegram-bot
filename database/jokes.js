@@ -16,7 +16,7 @@ async function getJoke(pool, jokeType) {
 
 async function addJoke(pool, joke, jokeType) {
     try {
-        const result = await pool.query(`INSERT INTO jokes (joke, type) VALUES ('$1', $2);`, [joke, jokeType]);
+        const result = await pool.query(`INSERT INTO jokes (joke, type) VALUES ($1, $2);`, [joke, jokeType]);
         return result;
     } catch (error) {
         console.error('ADD JOKE ERROR: ', error);
