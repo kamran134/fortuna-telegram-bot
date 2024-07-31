@@ -24,7 +24,58 @@ async function addJoke(pool, joke, jokeType) {
     }
 }
 
+async function deleteJoke(pool, jokeId) {
+    try {
+        const result = await pool.query(`DELETE FROM jokes WHERE id = $1;`, [jokeId]);
+        return result;
+    } catch (error) {
+        console.error('DELETE JOKE ERROR: ', error);
+        throw error;
+    }
+}
+
+async function getJokes(pool, jokeType) {
+    try {
+        let queryString = `SELECT * FROM jokes`;
+        let args = [];
+
+        if (jokeType && jokeType > 0) {
+            queryString += ` WHERE type = $1;`
+            args.push(jokeType);
+        }
+        else queryString += `;`;
+
+        const result = await pool.query(queryString, args);
+        if (result && result.rows) {
+            return result.rows;
+        } else {
+            console.error('Get jokes error');
+            return undefined;
+        }
+    } catch (error) {
+        console.error('GET JOKES ERROR: ', error);
+        throw error;
+    }
+}
+
+async function updateJoke(pool, jokeId, joke, jokeType) {
+    try {
+        if (jokeType && jokeType > 0) {
+            const result = await pool.query(`UPDATE jokes SET joke = $1, type = $2 WHERE id = $3;`, [joke, jokeType, jokeId]);
+            return result;
+        } else {
+            const result = await pool.query(`UPDATE jokes SET joke = $1, WHERE id = $2;`, [joke, jokeId]);
+            return result;
+        }
+    } catch (error) {
+        console.error('UPDATE JOKE ERROR: ', error);
+    }
+}
+
 module.exports = {
     getJoke,
-    addJoke
+    addJoke,
+    deleteJoke,
+    getJokes,
+    updateJoke
 }

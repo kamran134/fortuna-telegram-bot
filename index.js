@@ -13,6 +13,7 @@ const {
     showUsersInSelectedGroup, tagGamePlayersInSelectedGroup
 } = require('./callbacks');
 const { inactive, saySomethingToInactive, tagUndecidedPlayers } = require('./commands/gamePlayers');
+const { deleteJoke, listJokes, editJoke } = require('./commands/jokes');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -74,6 +75,9 @@ bot.on('message', async (msg) => {
     else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
     else if (messageText === '/adminpaylist') showYourGroups(chatId, bot, 'PayList');
     else if (messageText.startsWith('/adminaddjoke')) addJoke(msg, bot);
+    else if (messageText.startsWith('/admindeletejoke')) deleteJoke(msg, bot);
+    else if (messageText.startsWith('/adminlistjokes')) listJokes(msg, bot);
+    else if (messageText.startsWith('/admineditjoke')) editJoke(msg, bot);
 });
 
 bot.on('callback_query', async (query) => {
