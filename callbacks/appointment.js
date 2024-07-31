@@ -1,5 +1,6 @@
 const moment = require('moment');
-const { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase } = require('../database');
+const { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase, getJokeFromDataBase } = require('../database');
+const { JokeTypes } = require('../common/jokeTypes');
 const { skloneniye } = require('../common/skloneniye');
 
 async function appointmentToTheGame(query, bot) {
@@ -56,7 +57,9 @@ async function declineAppointment(query, bot) {
         const gameLabel = await removeGamePlayerByIdFromDatabase({ gameId, chatId, userId: user.id });
 
         if (gameLabel) {
-            bot.sendMessage(chatId, `@${user.username} удирает с игры на ${skloneniye(gameLabel, 'винительный')}. Бейте предателя! 😡`);
+            const joke = await getJokeFromDataBase(JokeTypes.LEFT_GAME);
+
+            bot.sendMessage(chatId, `@${user.username} удирает с игры на ${skloneniye(gameLabel, 'винительный')}. ${joke}`);
         } else {
             bot.sendMessage(chatId, `@${user.username} минусует 🥲`);
         }
