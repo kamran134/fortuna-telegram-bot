@@ -41,14 +41,9 @@ async function addJoke(msg, bot) {
     if (checkCreatorId(userId)) {
         try {
             const parts = msg.text.replace('/adminaddjoke ', '').split('/');
-            if (parts.length == 2) {
-                const [joke, jokeType] = parts;
-                await addJokeToDataBase(joke, jokeType);
-    
-                bot.sendMessage(chatId, `Ваша гениальная "шутка" добавлена в базу данных. Полюбуйтесь на неё ещё раз: ${joke}`);
-            } else {
-                bot.sendMessage(chatId, `Дед, ты что-то напортачил. Вот какой формат: /adminaddjoke [шутка]/[номер категории шутки]`);
-            }
+            const [joke, jokeType = 0] = parts;
+            await addJokeToDataBase(joke, jokeType);
+            bot.sendMessage(chatId, `Ваша гениальная "шутка" добавлена в базу данных. Полюбуйтесь на неё ещё раз: ${joke}`);
             
         } catch (error) {
             bot.sendMessage(chatId, `Ваша гениальная "шутка" не добавилась. Возможно она слишком тупая. А возможно возникла вот такая ошибка: ${error}`);
@@ -66,8 +61,8 @@ async function deleteJoke(msg, bot) {
         const jokeId = +msg.text.replace('/admindeletejoke ', '');
         if (Number.isInteger(jokeId)) {
             try {
-                const result = await deleteJokeFromDataBase(jokeId);
-                return result;
+                await deleteJokeFromDataBase(jokeId);
+                bot.sendMessage(chatId, 'Видимо шутка была не очень. Вы её успешно удалили!');
             } catch (error) {
                 bot.sendMessage(chatId, `Не удалось удалить шутку. Либо она слишком гениальна, либо есть ошибка. Например, такая: ${error}`);
             }
@@ -108,23 +103,12 @@ async function editJoke(msg, bot) {
         const parts = msg.text.replace('/admineditjoke ', '').split('/');
 
         try {
-            if (parts.length == 3) {
-                const [id, joke, jokeType] = parts;
-                if (Number.isInteger(+id) && Number.isInteger(+jokeType)) {
-                    const result = await updateJokeInDataBase(id, joke, jokeType);
-                    return result;
-                } else {
-                    bot.sendMessage(chatId, 'Либо id-шка, либо категория шуток не целочисленное выражение. Исправь!');
-                }
-            }
-            else if (parts.length == 2) {
-                const [id, joke] = parts;
-                if (Number.isInteger(+id)) {
-                    const result = await updateJokeInDataBase(id, joke, 0);
-                    return result;
-                } else {
-                    bot.sendMessage(chatId, 'Какое-то левое id ты написал');
-                }
+            const [id, joke, jokeType = 0] = parts;
+            if (Number.isInteger(+id) && Number.isInteger(+jokeType)) {
+                await updateJokeInDataBase(id, joke, jokeType);
+                bot.sendMessage(chatId, 'Видимо шутка была не очень. Вы её сделали очень!');
+            } else {
+                bot.sendMessage(chatId, 'Либо id-шка, либо категория шуток не целочисленное выражение. Исправь!');
             }
         } catch (error) {
             bot.sendMessage(chatId, `Эта шутка не подлежит редактированию из-за гениальности, либо у вас вот эта ошибка: ${error}`);
