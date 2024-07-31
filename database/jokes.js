@@ -40,10 +40,10 @@ async function getJokes(pool, jokeType) {
         let args = [];
 
         if (jokeType && jokeType > 0) {
-            queryString += ` WHERE type = $1;`
+            queryString += ` WHERE type = $1 ORDER BY id ASC;`
             args.push(jokeType);
         }
-        else queryString += `;`;
+        else queryString += ` ORDER BY id ASC;`;
 
         const result = await pool.query(queryString, args);
         if (result && result.rows) {
@@ -64,7 +64,7 @@ async function updateJoke(pool, jokeId, joke, jokeType) {
             const result = await pool.query(`UPDATE jokes SET joke = $1, type = $2 WHERE id = $3;`, [joke, jokeType, jokeId]);
             return result;
         } else {
-            const result = await pool.query(`UPDATE jokes SET joke = $1, WHERE id = $2;`, [joke, jokeId]);
+            const result = await pool.query(`UPDATE jokes SET joke = $1 WHERE id = $2;`, [joke, jokeId]);
             return result;
         }
     } catch (error) {
