@@ -8,12 +8,23 @@ async function getJoke(pool, jokeType) {
             console.error('Get joke error');
             return undefined;
         }
-    } catch(error) {
-        console.error('GET JOKE: ', error);
+    } catch (error) {
+        console.error('GET JOKE ERROR: ', error);
+        throw error;
+    }
+}
+
+async function addJoke(pool, joke, jokeType) {
+    try {
+        const result = await pool.query(`INSERT INTO jokes (joke, type) VALUES ('$1', $2);`, [joke, jokeType]);
+        return result;
+    } catch (error) {
+        console.error('ADD JOKE ERROR: ', error);
         throw error;
     }
 }
 
 module.exports = {
-    getJoke
+    getJoke,
+    addJoke
 }

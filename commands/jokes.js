@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { getGamesTimesFromDatabase, getRandomUserFromDatabase } = require('../database');
+const { getGamesTimesFromDatabase, getRandomUserFromDatabase, addJokeToDataBase } = require('../database');
 
 async function agilliOl(msg, bot) {
     const chatId = msg.chat.id;
@@ -34,7 +34,32 @@ async function whatTime(msg, bot) {
     }
 }
 
+async function addJoke(msg, bot) {
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+    
+    if (userId === 963292126 || userId === 112254199) {
+        try {
+            const parts = msg.text.replace('/adminaddjoke ', '').split('/');
+            if (parts.length == 2) {
+                const [joke, jokeType] = parts;
+                await addJokeToDataBase(joke, jokeType);
+    
+                bot.sendMessage(chatId, `Ваша гениальная "шутка" добавлена в базу данных. Полюбуйтесь на неё ещё раз: ${joke}`);
+            } else {
+                bot.sendMessage(chatId, `Дед, ты что-то напортачил. Вот какой формат: /adminaddjoke [шутка]/[номер категории шутки]`);
+            }
+            
+        } catch (error) {
+            bot.sendMessage(chatId, `Ваша гениальная "шутка" не добавилась. Возможно она слишком тупая. А возможно возникла вот такая ошибка: ${error}`);
+        }
+    } else {
+        bot.sendMessage(chatId, `Такую ответственную работу, как пополнить базу шутками мы могли доверить только истинным юмористам. Поэтому никто кроме создателей бота не могут увлекаться этим!`);
+    }
+}
+
 module.exports = {
     agilliOl,
-    whatTime
+    whatTime,
+    addJoke
 }

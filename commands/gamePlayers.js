@@ -1,5 +1,14 @@
 const moment = require('moment');
-const { getGamePlayersFromDataBase, addGuestToDatabase, addGuestToGame, getAzListFromDatabase, getInactiveUsersFromDatabase, getUndecidedPlayersFromDataBase } = require('../database');
+const {
+    getGamePlayersFromDataBase,
+    addGuestToDatabase,
+    addGuestToGame,
+    getAzListFromDatabase,
+    getInactiveUsersFromDatabase,
+    getUndecidedPlayersFromDataBase,
+    getJokeFromDataBase 
+} = require('../database');
+const { JokeTypes } = require('../common/jokeTypes');
 const { tagUsers, tagUsersByCommas } = require('./common');
 const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye');
 
@@ -76,20 +85,30 @@ async function getGamePlayers(msg, bot) {
     }
 }
 
-async function tagGamePlayers(chatId, bot) {
+async function tagGamePlayers(chatId, bot, isAdmin) {
     let resultMessage = '';
     
-    try {
-        const gamePlayers = await getGamePlayersFromDataBase(chatId);
-
-        if (!gamePlayers || gamePlayers.length === 0) {
-            bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
-        } else {
-            resultMessage = tagUsersByCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
-            bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
+    if (isAdmin) {
+        try {
+            const gamePlayers = await getGamePlayersFromDataBase(chatId);
+    
+            if (!gamePlayers || gamePlayers.length === 0) {
+                bot.sendMessage(chatId, `Нет записавшихся на игру. Тревожить некого.`);
+            } else {
+                resultMessage = tagUsersByCommas(gamePlayers) + `, у одмэна к вам дело, ща напишет. Не перебивайте!`;
+                bot.sendMessage(chatId, resultMessage, {parse_mode: 'HTML'});
+            }
+        } catch (error) {
+            console.error('GET GAME PLAYERS SERVICE ERROR:', error);
         }
-    } catch (error) {
-        console.error('GET GAME PLAYERS SERVICE ERROR', error);
+    }
+    else {
+        try {
+            const joke = await getJokeFromDataBase(JokeTypes.TAG_REGISTERED);
+            bot.sendMessage(chatId, 'Только одмэн может тегать игроков! ' + joke);
+        } catch (error) {
+            console.error('GET GAME PLAYERS JOKE ERROR:', error);
+        }
     }
 }
 

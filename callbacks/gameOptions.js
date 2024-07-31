@@ -27,8 +27,6 @@ async function deactiveGame(query, bot, isAdmin) {
         try {
             let joke = await getJokeFromDataBase(JokeTypes.DEACTIVE_GAME);
 
-            console.log('joke: ', joke);
-
             joke = joke.replace('[name]', `<a href="tg://user?id=${id}">${first_name}</a>`);
 
             bot.sendMessage(chatId, `Только одмэн может закрыть игру. ${joke}`, 
