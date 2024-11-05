@@ -10,7 +10,7 @@ const {
     appointmentToTheGame, notConfirmedAttendance, declineAppointment,
     privateAppointmentToTheGame, privateNotConfirmedAttendance, privateDeclineAppointment,
     deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
-    showUsersInSelectedGroup, tagGamePlayersInSelectedGroup
+    showUsersInSelectedGroup, showLastUserInSelectedGroup, searchUserInSelectedGroup, tagGamePlayersInSelectedGroup
 } = require('./callbacks');
 const { inactive, saySomethingToInactive, tagUndecidedPlayers } = require('./commands/gamePlayers');
 const { deleteJoke, listJokes, editJoke } = require('./commands/jokes');
@@ -70,6 +70,8 @@ bot.on('message', async (msg) => {
     else if (messageText === '/adminstartgame' && isAdmin) showYourGroups(chatId, bot, 'Start');
     else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
+    else if (messageText === '/adminsearchUser' && isAdmin) showYourGroups(chatId, bot, 'SearchUser');
+    else if (messageText === '/adminshowlastuser' && isAdmin) showYourGroups(chatId, bot, 'ShowLastUser');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
     else if (messageText === '/adminremoveplayer') tagUndecidedPlayers(chatId, bot);
     else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
@@ -95,6 +97,8 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForShowLastUser_') && isAdmin) showLastUserInSelectedGroup(query, bot);
+    else if (query.data.startsWith('selectedGroupForSearchUser_') && isAdmin) searchUserInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForPayList_') && isAdmin) {}
 });

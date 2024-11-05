@@ -13,5 +13,7 @@ module.exports = {
     startGameInSelectedGroup: gameOptions.startGameInSelectedGroup,
     showGamesInSelectedGroup: gameOptions.showGamesInSelectedGroup,
     showUsersInSelectedGroup: users.showUsersInSelectedGroup,
+    showLastUserInSelectedGroup: users.showLastUserInSelectedGroup,
+    searchUserInSelectedGroup: users.searchUsersInSelectedGroup,
     tagGamePlayersInSelectedGroup: gameOptions.tagGamePlayersInSelectedGroup
 }
