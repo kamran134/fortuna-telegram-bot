@@ -80,6 +80,7 @@ async function searchUsersInSelectedGroup(query, bot) {
                     ).join('\n----------------------------------\n');
         
                     await sendMessage(bot, adminChatId, usersString + "\n\nДля редактирования данных кого-то введите команду '/adminedituser [ID]/[имя]/[фамилия]/[полное имя на азербайджанском]'");
+                    waitForInput = false;
                 } else {
                     bot.sendMessage(adminChatId, 'Ты не можешь редактировать игроков, если игроков игр нет');
                 }
