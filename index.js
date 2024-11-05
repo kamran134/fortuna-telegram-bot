@@ -70,7 +70,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/adminstartgame' && isAdmin) showYourGroups(chatId, bot, 'Start');
     else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
     else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
-    else if (messageText === '/adminsearchUser' && isAdmin) showYourGroups(chatId, bot, 'SearchUser');
+    else if (messageText === '/adminsearchuser' && isAdmin) showYourGroups(chatId, bot, 'SearchUser');
     else if (messageText === '/adminshowlastuser' && isAdmin) showYourGroups(chatId, bot, 'ShowLastUser');
     else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
     else if (messageText === '/adminremoveplayer') tagUndecidedPlayers(chatId, bot);
