@@ -34,7 +34,7 @@ async function getGamesTimes(pool, chatId) {
 async function addGame(pool, chatId, {date, start, end, users_limit, location, label}) {
     try {
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, users_limit, place, chat_id, status, ` +
-            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, label) DO NOTHING RETURNING id;`, 
+            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, game_starts, game_ends, place) DO NOTHING RETURNING id;`, 
             [moment(date, 'DD.MM.YYYY').toISOString(), start, end, users_limit, location, chatId, label]);
 
         if (result && result.rows && result.rows.length > 0) {
