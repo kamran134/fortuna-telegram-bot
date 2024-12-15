@@ -1,8 +1,9 @@
 const moment = require('moment');
-const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase } = require('../database');
+const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase, getJokeFromDataBase } = require('../database');
+const { JokeTypes } = require('../common/jokeTypes');
 const { tagUsersByCommas } = require('./common');
 const { Markup } = require('telegraf');
-const { skloneniye } = require('../common/skloneniye')
+const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye')
 
 async function startGame(msg, bot) {
     const chatId = msg.chat.id;
@@ -13,7 +14,6 @@ async function startGame(msg, bot) {
     
     // Если указаны все данные, сохраняем их
     if (parts.length === 6) {
-
         const gameOptions = {
             date: parts[0],
             start: parts[1],
@@ -28,15 +28,21 @@ async function startGame(msg, bot) {
         const users = await getUsersFromDatabase(chatId);
 
         if (users && users.length > 0) {
-            //taggedUsers = tagUsersForGame(users);
             taggedUsers = tagUsersByCommas(users);
 
             try {
                 const gameId = await addGameToDatabase(chatId, gameOptions);
 
+                const gameDayAz = skloneniyeAzFull(gameOptions.label, 'дательный');
+                const gameDayRu = skloneniye(gameOptions.label, 'винительный');
+                
                 if (gameId && gameId > 0) {
-                    bot.sendMessage(chatId, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана. ${gameOptions.date}\nс ${gameOptions.start} до ${gameOptions.end}.\n` +
-                        `Место: ${gameOptions.location}\n\n${taggedUsers}`, {
+                    bot.sendMessage(chatId,
+                        `📢 ${gameDayAz.charAt(0).toUpperCase() + gameDayAz.slice(1)} oyun elan edildi!\n` +
+                        `📢 Объявлена игра на ${gameDayRu}!\n` +
+                        `🗓 Tarix / Дата: ${gameOptions.date}\n` +
+                        `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
+                        `📍 Məkan / Место: ${gameOptions.location}\n\n${taggedUsers}`, {
                         parse_mode: 'HTML',
                         reply_markup: {
                             inline_keyboard: [
@@ -54,9 +60,12 @@ async function startGame(msg, bot) {
                     });
 
                     users.forEach(user => {
-                        bot.sendMessage(user.user_id, `Игра на ${skloneniye(gameOptions.label, 'винительный')} создана.\n` +
-                            `Дата: ${gameOptions.date}\nВремя: с ${gameOptions.start} до ${gameOptions.end}.\n` +
-                            `Место: ${gameOptions.location}`, {
+                        bot.sendMessage(user.user_id,
+                            `📢 ${gameDayAz.charAt(0).toUpperCase() + gameDayAz.slice(1)} oyun elan edildi!\n` +
+                            `📢 Объявлена игра на ${gameDayRu}!\n` +
+                            `🗓 Tarix / Дата: ${gameOptions.date}\n` +
+                            `⏳ Vaxt / Время: ${gameOptions.start} — ${gameOptions.end}.\n` +
+                            `📍 Məkan / Место: ${gameOptions.location}`, {
                             parse_mode: 'HTML',
                             reply_markup: {
                                 inline_keyboard: [
@@ -101,8 +110,6 @@ async function showGames(chatId, bot, isDelete = false) {
     try {
         const games = await getGamesFromDatabase(chatId);
 
-        console.log('labels: ' + games.map(game => game.label));
-
         if (games && games.length > 0) {
             if (isDelete) {
                 gameButtons = games.map(game => [
@@ -117,10 +124,10 @@ async function showGames(chatId, bot, isDelete = false) {
             ]);
 
             const gamesString = games.map((game, index) =>
-                `Игра №${(index + 1)}\n` +
-                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n` +
-                `    Время: с ${moment(game.game_starts, 'HH:mm:ss').format('HH:mm')} по ${moment(game.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
-                `    Место: ${game.place}`, {parse_mode: 'MarkdownV2'}
+                `🏐 Oyun № ${(index + 1)} / Игра №${(index + 1)}\n` +
+                `🗓 Tarix / Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${skloneniyeAzFull(game.label, 'именительный')} / ${game.label})\n` +
+                `⏳ Vaxt / Время: ${moment(game.game_starts, 'HH:mm:ss').format('HH:mm')} — ${moment(game.game_ends, 'HH:mm:ss').format('HH:mm')}\n` +
+                `📍 Məkan / Место: ${game.place}`, {parse_mode: 'MarkdownV2'}
             ).join('\n----------------------------------\n');
 
             bot.sendMessage(chatId, gamesString, {
@@ -129,46 +136,59 @@ async function showGames(chatId, bot, isDelete = false) {
                 }
             });
         } else {
-            bot.sendMessage(chatId, 'А игр ещё нет :(');   
+            bot.sendMessage(chatId, 'Hələki oyun-zad yoxdur / А игр ещё нет 😓');   
         }
     } catch (error) {
         console.error('SHOW GAME ERROR', error);
     }
 }
 
-async function deactiveGames(msg, bot) {
+async function deactiveGames(msg, bot, isAdmin) {
     const chatId = msg.chat.id;
     let gameDeactiveButtons = [];
 
-    try {
-        const games = await getGamesFromDatabase(chatId);
-
-        if (games && games.length > 0) {
-            const gamesString = games.map((game, index) =>
-                `Игра №${(index + 1)}\n` +
-                `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
-            ).join('\n----------------------------------\n');
-
-            gameDeactiveButtons = games.map(game => ({
-                text: `Закрыть игру на ${skloneniye(game.label, 'винительный')} (для админов)`,
-                callback_data: `deactivegame_${game.id}`}));
-
-            // gameDeactiveButtons = games.map(game => Markup.callbackButton(`Закрыть игру на ${game.label} (для админов)`, `deactivegame_${game.id}`));
-
-            const inlineKeyboard = Markup.inlineKeyboard(gameDeactiveButtons);
-
-            bot.sendMessage(chatId, gamesString, {
-                reply_markup: {
-                    inline_keyboard: [gameDeactiveButtons]
-                    //inline_keyboard: inlineKeyboard
-                }
-            });
-        } else {
-            bot.sendMessage(chatId, 'Ты не можешь деактивировать игру, если активных игр нет');
+    if (isAdmin) {
+        try {
+            const games = await getGamesFromDatabase(chatId);
+    
+            if (games && games.length > 0) {
+                const gamesString = games.map((game, index) =>
+                    `Игра №${(index + 1)}\n` +
+                    `    Дата: ${moment(game.game_date).format('DD.MM.YYYY')} (${game.label})\n`
+                ).join('\n----------------------------------\n');
+    
+                gameDeactiveButtons = games.map(game => ({
+                    text: `Закрыть игру на ${skloneniye(game.label, 'винительный')} (для админов)`,
+                    callback_data: `deactivegame_${game.id}`}));
+    
+                const inlineKeyboard = Markup.inlineKeyboard(gameDeactiveButtons);
+    
+                bot.sendMessage(chatId, gamesString, {
+                    reply_markup: {
+                        inline_keyboard: [gameDeactiveButtons]
+                    }
+                });
+            } else {
+                bot.sendMessage(chatId, 'Ты не можешь деактивировать игру, если активных игр нет');
+            }
+        } catch (error) {
+            console.error('DEACTIVE GAME ERROR: ', error);
         }
-    } catch (error) {
-        console.error('DEACTIVE GAME ERROR', error);
     }
+    else {
+        try {
+            let joke = await getJokeFromDataBase(JokeTypes.DEACTIVE_GAME);
+            joke = joke.replace('[name]', `<a href="tg://user?id=${id}">${first_name}</a>`);
+            
+            bot.sendMessage(chatId, `Только одмэн может закрыть игру. ${joke}`, 
+            {
+                parse_mode: 'HTML'
+            });
+        } catch (error) {
+            console.error('DEACTIVE GAME JOKE ERROR: ', error);
+        }
+    }
+    
 }
 
 async function changeGameLimit(msg, bot) {

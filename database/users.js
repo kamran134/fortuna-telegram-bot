@@ -5,7 +5,7 @@ async function addUser(pool, {from: {first_name, last_name, id: userId, username
           [first_name, last_name, userId, chatId, username]
         );
     } catch (error) {
-        console.error('ADD USERS:', error);
+        console.error('ADDING USERS: ', error);
         throw error;
     }
 }
@@ -23,6 +23,44 @@ async function getUsers(pool, chatId) {
     } catch (error) {
         console.error('GETTING USERS: ', error);
         throw error;
+    }
+}
+
+async function getLastUser(pool, chatId) {
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active ORDER BY id DESC LIMIT 1;', [chatId]);
+        if (result) {
+            if (Array.isArray(result.rows)) return result.rows[0];
+            else return undefined;
+        }
+    } catch (error) {
+        console.error('GETTING LAST USER: ', error);
+    }
+}
+
+async function searchUser(pool, chatId, searchString) {
+    try {
+        const query = `
+            SELECT * 
+            FROM users 
+            WHERE chat_id = $1 
+              AND is_guest = FALSE 
+              AND active 
+              AND (first_name ILIKE $2 
+                   OR last_name ILIKE $2 
+                   OR username ILIKE $2)
+            ORDER BY id DESC;
+        `;
+        const result = await pool.query(query, [chatId, `%${searchString}%`]);
+        
+        if (result && Array.isArray(result.rows)) {
+            return result.rows;
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error('SEARCHING USERS: ', error);
+        return [];
     }
 }
 
@@ -167,6 +205,8 @@ async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
 module.exports = {
     addUser,
     getUsers,
+    getLastUser,
+    searchUser,
     getAllUsers,
     getUserChat,
     addGuest,

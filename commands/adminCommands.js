@@ -68,7 +68,6 @@ async function showYourGroups(adminChatId, bot, command) {
                 reply_markup: {
                     inline_keyboard: [...groupsButtons]
                 }
-                //reply_markup: inlineKeyboard
             });
         }
     } catch (error) {

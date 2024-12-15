@@ -1,8 +1,9 @@
 const { Pool } = require('pg');
-const { addUser, getUsers, addGuest, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers } = require('./users');
+const { addUser, getUsers, getLastUser, searchUser, addGuest, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers } = require('./users');
 const { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } = require('./games');
 const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } = require('./gamePlayers');
 const { adminGroupAdd, getGroups } = require('./adminGroup');
+const { getJoke, addJoke, deleteJoke, getJokes, updateJoke } = require('./jokes');
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -20,6 +21,14 @@ function addUserToDatabase(msg) {
 
 function getUsersFromDatabase(chatId) {
     return getUsers(pool, chatId);
+}
+
+function getLastUserFromDatabase(chatId) {
+    return getLastUser(pool, chatId);
+}
+
+function searchUserInDatabase(chatId, searchString) {
+    return searchUser(pool, chatId, searchString);
 }
 
 function getUserChatFromDatabase(userId) {
@@ -102,9 +111,31 @@ function checkGameStatusFromDatabase(gameId) {
     return checkGameStatus(pool, gameId);
 }
 
+function getJokeFromDataBase(jokeType) {
+    return getJoke(pool, jokeType);
+}
+
+function addJokeToDataBase(joke, jokeType) {
+    return addJoke(pool, joke, jokeType);
+}
+
+function deleteJokeFromDataBase(jokeId) {
+    return deleteJoke(pool, jokeId);
+}
+
+function getJokesFromDataBase(jokeType) {
+    return getJokes(pool, jokeType);
+}
+
+function updateJokeInDataBase(jokeId, joke, jokeType) {
+    return updateJoke(pool, jokeId, joke, jokeType);
+}
+
 module.exports = {
     addUserToDatabase,
     getUsersFromDatabase,
+    getLastUserFromDatabase,
+    searchUserInDatabase,
     getUserChatFromDatabase,
     addGameToDatabase,
     getGamesFromDatabase,
@@ -124,5 +155,10 @@ module.exports = {
     removeGamePlayerByIdFromDatabase,
     getInactiveUsersFromDatabase,
     changeGameLimitFromDataBase,
-    checkGameStatusFromDatabase
+    checkGameStatusFromDatabase,
+    getJokeFromDataBase,
+    addJokeToDataBase,
+    deleteJokeFromDataBase,
+    getJokesFromDataBase,
+    updateJokeInDataBase
 }

@@ -61,6 +61,134 @@ function skloneniye(weekDay, padezh) {
     return skloneniya[weekDay][padezh] || weekDay;
 }
 
+function skloneniyeAz(weekDay, padezh) {
+    const skloneniya = {
+        'понедельник': {
+            'именительный': 'bazar ertəsi',
+            'родительный': 'bazar ertəsinin',
+            'дательный': 'bazar ertəsinə',
+            'винительный': 'bazar ertəsini',
+            'местный': 'bazar ertəsində',
+            'исходный': 'bazar ertəsindən'
+        },
+        'вторник': {
+            'именительный': 'çərşənbə axşamı',
+            'родительный': 'çərşənbə axşamının',
+            'дательный': 'çərşənbə axşamına',
+            'винительный': 'çərşənbə axşamını',
+            'местный': 'çərşənbə axşamında',
+            'исходный': 'çərşənbə axşamından'
+        },
+        'среда': {
+            'именительный': 'çərşənbə',
+            'родительный': 'çərşənbənin',
+            'дательный': 'çərşənbəyə',
+            'винительный': 'çərşənbəni',
+            'местный': 'çərşənbədə',
+            'исходный': 'çərşənbədən'
+        },
+        'четверг': {
+            'именительный': 'cümə axşamı',
+            'родительный': 'cümə axşamının',
+            'дательный': 'cümə axşamına',
+            'винительный': 'cümə axşamını',
+            'местный': 'cümə axşamında',
+            'исходный': 'cümə axşamından'
+        },
+        'пятница': {
+            'именительный': 'cümə',
+            'родительный': 'cümənin',
+            'дательный': 'cüməyə',
+            'винительный': 'cüməni',
+            'местный': 'cümədə',
+            'исходный': 'cümədən'
+        },
+        'суббота': {
+            'именительный': 'şənbə',
+            'родительный': 'şənbənin',
+            'дательный': 'şənbəyə',
+            'винительный': 'şənbəni',
+            'местный': 'şənbədə',
+            'исходный': 'şənbədən'
+        },
+        'воскресенье': {
+            'именительный': 'bazar',
+            'родительный': 'bazarın',
+            'дательный': 'bazara',
+            'винительный': 'bazarı',
+            'местный': 'bazarda',
+            'исходный': 'bazardan'
+        }
+    }
+    
+    return skloneniya[weekDay][padezh] || weekDay;
+}
+
+function skloneniyeAzFull(weekDay, padezh) {
+    const skloneniya = {
+        'понедельник': {
+            'именительный': 'bazar ertəsi',
+            'родительный': 'bazar ertəsinin',
+            'дательный': 'bazar ertəsinə',
+            'винительный': 'bazar ertəsini',
+            'местный': 'bazar ertəsində',
+            'исходный': 'bazar ertəsindən'
+        },
+        'вторник': {
+            'именительный': 'çərşənbə axşamı',
+            'родительный': 'çərşənbə axşamının',
+            'дательный': 'çərşənbə axşamına',
+            'винительный': 'çərşənbə axşamını',
+            'местный': 'çərşənbə axşamında',
+            'исходный': 'çərşənbə axşamından'
+        },
+        'среда': {
+            'именительный': 'çərşənbə günü',
+            'родительный': 'çərşənbə gününün',
+            'дательный': 'çərşənbə gününə',
+            'винительный': 'çərşənbə gününü',
+            'местный': 'çərşənbə günündə',
+            'исходный': 'çərşənbə günündən'
+        },
+        'четверг': {
+            'именительный': 'cümə axşamı',
+            'родительный': 'cümə axşamının',
+            'дательный': 'cümə axşamına',
+            'винительный': 'cümə axşamını',
+            'местный': 'cümə axşamında',
+            'исходный': 'cümə axşamından'
+        },
+        'пятница': {
+            'именительный': 'cümə günü',
+            'родительный': 'cümə gününün',
+            'дательный': 'cümə gününə',
+            'винительный': 'cümə gününü',
+            'местный': 'cümə günündə',
+            'исходный': 'cümə günündən'
+        },
+        'суббота': {
+            'именительный': 'şənbə günü',
+            'родительный': 'şənbə gününün',
+            'дательный': 'şənbə gününə',
+            'винительный': 'şənbə gününü',
+            'местный': 'şənbə günündə',
+            'исходный': 'şənbə günündən'
+        },
+        'воскресенье': {
+            'именительный': 'bazar günü',
+            'родительный': 'bazar gününün',
+            'дательный': 'bazar gününə',
+            'винительный': 'bazar gününü',
+            'местный': 'bazar günündə',
+            'исходный': 'bazar günündən'
+        }
+    }
+    
+    return skloneniya[weekDay][padezh] || weekDay;
+}
+
 module.exports = {
-    skloneniye
+    skloneniye,
+    skloneniyeAz,
+    skloneniyeAzFull
 }

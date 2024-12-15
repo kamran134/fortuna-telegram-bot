@@ -17,6 +17,7 @@ module.exports = {
     tagGamePlayers: gamePlayers.tagGamePlayers,
     agilliOl: jokes.agilliOl,
     whatTime: jokes.whatTime,
+    addJoke: jokes.addJoke,
     connectTo: adminCommands.connectTo,
     showGroups: adminCommands.showGroups,
     showYourGroups: adminCommands.showYourGroups
