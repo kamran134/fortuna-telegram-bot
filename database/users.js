@@ -1,4 +1,4 @@
-async function addUser(pool, {from: {first_name, last_name, id: userId, username}, chat: {id: chatId}}) {
+async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
     try {
         const result = await pool.query(
           'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',

@@ -2,11 +2,10 @@ const { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase } = require
 const { tagUsers, listUsers } = require('./common');
 const { JokeTypes } = require('../common/jokeTypes');
 
-async function register(msg, bot) {
-    const chatId = msg.chat.id;
-
+async function register(chatAndUser, bot) {
+    const { chatId } = chatAndUser;
     try {
-        await addUserToDatabase(msg);
+        await addUserToDatabase(chatAndUser);
         bot.sendMessage(chatId, "✅ Siz uğurla sistemdə qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в системе");
     } catch (error) {
         console.error('REGISTRATION ERROR: ', error);

@@ -1,9 +1,7 @@
 const moment = require('moment');
 const { getGamesTimesFromDatabase, getRandomUserFromDatabase, addJokeToDataBase, deleteJokeFromDataBase, getJokesFromDataBase, updateJokeInDataBase } = require('../database');
 
-async function agilliOl(msg, bot) {
-    const chatId = msg.chat.id;
-
+async function agilliOl(chatId, bot) {
     try {
         const randomUser = await getRandomUserFromDatabase(chatId);
 

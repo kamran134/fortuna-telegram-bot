@@ -14,9 +14,9 @@ const pool = new Pool({
     port: 5432,
 });
 
-function addUserToDatabase(msg) {
-    const { from: { first_name, last_name, id: userId, username }, chat: { id: chatId } } = msg;
-    return addUser(pool, { from: { first_name, last_name, id: userId, username }, chat: { id: chatId } });
+function addUserToDatabase(chatAndUser) {
+    // const { user: { first_name, last_name, id: userId, username }, chatId } = msg;
+    return addUser(pool, chatAndUser);
 }
 
 function getUsersFromDatabase(chatId) {

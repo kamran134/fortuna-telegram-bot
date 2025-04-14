@@ -12,9 +12,7 @@ const { JokeTypes } = require('../common/jokeTypes');
 const { tagUsers, tagUsersByCommas } = require('./common');
 const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye');
 
-async function getGamePlayers(msg, bot) {
-    const chatId = msg.chat.id;
-
+async function getGamePlayers(chatId, bot) {
     const usersByGame = {};
     const resultMessage = [];
 
@@ -78,7 +76,7 @@ async function getGamePlayers(msg, bot) {
                 resultMessage.push(message);
             }
 
-            bot.sendMessage(msg.chat.id, resultMessage.join('\n\n🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸\n\n'));
+            bot.sendMessage(chatId, resultMessage.join('\n\n🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸\n\n'));
         }
     } catch (error) {
         console.error('GET GAME PLAYERS SERVICE ERROR', error);

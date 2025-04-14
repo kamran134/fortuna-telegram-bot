@@ -60,11 +60,12 @@ bot.on('new_chat_members', async (msg) => {
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
+    const user = msg.from;
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
     const chatMember = await bot.getChatMember(chatId, userId);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    if (messageText === '/register') register(msg, bot);
+    if (messageText === '/register') register({ chatId, user }, bot);
     else if (messageText === '/menu') showMenu(msg, bot);
     else if (messageText === '/tagregistered') getRegistered(msg, bot, 'tag', isAdmin);
     else if (messageText === '/showregistered') getRegistered(msg, bot, 'show', isAdmin);
@@ -75,7 +76,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/deactivegame') deactiveGames(msg, bot, isAdmin);
     else if (messageText === 'приффки') bot.sendMessage(chatId, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ. (Что за ванилька из начала нулевых?)');
     else if (messageText === 'привет') bot.sendMessage(chatId, 'Привет, ' + msg.from.first_name + '. Играть будем?');
-    else if (messageText === '/list') getGamePlayers(msg, bot);
+    else if (messageText === '/list') getGamePlayers(chatId, bot);
     else if (messageText === 'Пока') bot.sendMessage(chatId, 'До свидания, ' + msg.from.first_name);
     else if (messageText.startsWith('/addguest') && isAdmin) addGuest(msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
@@ -84,7 +85,7 @@ bot.on('message', async (msg) => {
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(chatId, 'Эта информация не для маглов!');
     else if (messageText === '/алохамора') bot.sendMessage(chatId, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
-    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(msg, bot);
+    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(chatId, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
     else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
     else if (messageText.toLowerCase().includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
@@ -119,7 +120,9 @@ bot.on('message', async (msg) => {
 
 bot.on('callback_query', async (query) => {
     const chatId = query.message.chat.id;
-    const chatMember = await bot.getChatMember(chatId, query.from.id);
+    const userId = query.from.id;
+    const user = query.from;
+    const chatMember = await bot.getChatMember(chatId, userId);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
@@ -136,8 +139,8 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('selectedGroupForSearchUser_') && isAdmin) searchUserInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForPayList_') && isAdmin) {}
-    else if (query.data === 'showgames') showGames(query.message.chat.id, bot);
-    else if (query.data === 'list') getGamePlayers(query, bot);
-    else if (query.data === 'register') register(query, bot);
-    else if (query.data === 'agilliol') agilliOl(query, bot);
+    else if (query.data === 'showgames') showGames(chatId, bot);
+    else if (query.data === 'list') getGamePlayers(chatId, bot);
+    else if (query.data === 'register') register({ chatId, user }, bot);
+    else if (query.data === 'agilliol') agilliOl(chatId, bot);
 });
