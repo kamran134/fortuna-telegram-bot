@@ -44,7 +44,7 @@ bot.on('new_chat_members', async (msg) => {
                     first_name: firstName,
                     last_name: lastName
                 },
-                text: '/register' // Имитируем, что пользователь отправил команду /register
+                // text: '/register' // Имитируем, что пользователь отправил команду /register
             }, bot);
 
             // Опционально: Можно отправить приветственное сообщение новому пользователю
