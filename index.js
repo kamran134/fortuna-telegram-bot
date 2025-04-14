@@ -14,6 +14,7 @@ const {
 } = require('./callbacks');
 const { inactive, saySomethingToInactive, tagUndecidedPlayers } = require('./commands/gamePlayers');
 const { deleteJoke, listJokes, editJoke } = require('./commands/jokes');
+const { showMenu } = require('./commands/common');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -64,6 +65,7 @@ bot.on('message', async (msg) => {
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
     if (messageText === '/register') register(msg, bot);
+    else if (messageText === '/menu') showMenu(msg, bot);
     else if (messageText === '/tagregistered') getRegistered(msg, bot, 'tag', isAdmin);
     else if (messageText === '/showregistered') getRegistered(msg, bot, 'show', isAdmin);
     else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
@@ -134,4 +136,8 @@ bot.on('callback_query', async (query) => {
     else if (query.data.startsWith('selectedGroupForSearchUser_') && isAdmin) searchUserInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
     else if (query.data.startsWith('selectedGroupForPayList_') && isAdmin) {}
+    else if (query.data === 'showgames') showGames(query.message.chat.id, bot);
+    else if (query.data === 'list') getGamePlayers(query, bot);
+    else if (query.data === 'register') register(query, bot);
+    else if (query.data === 'agilliol') agilliOl(query, bot);
 });
