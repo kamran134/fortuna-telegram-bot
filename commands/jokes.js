@@ -1,7 +1,7 @@
-const moment = require('moment');
-const { getGamesTimesFromDatabase, getRandomUserFromDatabase, addJokeToDataBase, deleteJokeFromDataBase, getJokesFromDataBase, updateJokeInDataBase } = require('../database');
+import moment from 'moment';
+import { getGamesTimesFromDatabase, getRandomUserFromDatabase, addJokeToDataBase, deleteJokeFromDataBase, getJokesFromDataBase, updateJokeInDataBase } from '../database/index.js';
 
-async function agilliOl(chatId, bot) {
+export async function agilliOl(chatId, bot) {
     try {
         const randomUser = await getRandomUserFromDatabase(chatId);
 
@@ -17,7 +17,7 @@ async function agilliOl(chatId, bot) {
     }
 }
 
-async function whatTime(msg, bot) {
+export async function whatTime(msg, bot) {
     const chatId = msg.chat.id;
 
     try {
@@ -32,7 +32,7 @@ async function whatTime(msg, bot) {
     }
 }
 
-async function addJoke(msg, bot) {
+export async function addJoke(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     
@@ -51,7 +51,7 @@ async function addJoke(msg, bot) {
     }
 }
 
-async function deleteJoke(msg, bot) {
+export async function deleteJoke(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
 
@@ -72,7 +72,7 @@ async function deleteJoke(msg, bot) {
     }
 }
 
-async function listJokes(msg, bot) {
+export async function listJokes(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
 
@@ -93,7 +93,7 @@ async function listJokes(msg, bot) {
     }
 }
 
-async function editJoke(msg, bot) {
+export async function editJoke(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
 
@@ -116,15 +116,6 @@ async function editJoke(msg, bot) {
     }
 }
 
-function checkCreatorId(userId) {
+async function checkCreatorId(userId) {
     return (userId === 963292126 || userId === 112254199);
-}
-
-module.exports = {
-    agilliOl,
-    whatTime,
-    addJoke,
-    deleteJoke,
-    listJokes,
-    editJoke
 }

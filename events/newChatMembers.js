@@ -1,4 +1,4 @@
-import { register } from "./commands";
+import { register } from "../commands/index.js";
 
 export const newChatMembers = async (msg, bot) => {
     const chatId = msg.chat.id;

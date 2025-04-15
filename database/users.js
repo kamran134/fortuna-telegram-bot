@@ -1,4 +1,4 @@
-async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
+export async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
     try {
         const result = await pool.query(
           'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',
@@ -10,7 +10,7 @@ async function addUser(pool, { user: { first_name, last_name, id: userId, userna
     }
 }
 
-async function getUsers(pool, chatId) {
+export async function getUsers(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
         if (result) {
@@ -26,7 +26,7 @@ async function getUsers(pool, chatId) {
     }
 }
 
-async function getLastUser(pool, chatId) {
+export async function getLastUser(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active ORDER BY id DESC LIMIT 1;', [chatId]);
         if (result) {
@@ -38,7 +38,7 @@ async function getLastUser(pool, chatId) {
     }
 }
 
-async function searchUser(pool, chatId, searchString) {
+export async function searchUser(pool, chatId, searchString) {
     try {
         const query = `
             SELECT * 
@@ -64,7 +64,7 @@ async function searchUser(pool, chatId, searchString) {
     }
 }
 
-async function getAllUsers(pool, chatId) {
+export async function getAllUsers(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE;', [chatId]);
         if (result) {
@@ -80,7 +80,7 @@ async function getAllUsers(pool, chatId) {
     }
 }
 
-async function getUserChat(pool, userId) {
+export async function getUserChat(pool, userId) {
     try {
         const result = await pool.query('SELECT chat_id FROM users WHERE id = $1', [userId]);
         if (result) {
@@ -96,7 +96,7 @@ async function getUserChat(pool, userId) {
     }
 }
 
-async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
+export async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
     try {
         const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, first_name, last_name, active) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, TRUE) RETURNING id`,
             [chatId, first_name, last_name]);
@@ -111,7 +111,7 @@ async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
     }
 }
 
-async function getRandomUser(pool, chatId) {
+export async function getRandomUser(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = TRUE ORDER BY RANDOM() LIMIT 1;`, 
             [chatId]);
@@ -127,7 +127,7 @@ async function getRandomUser(pool, chatId) {
     }
 }
 
-async function getInactiveUsers(pool, chatId) {
+export async function getInactiveUsers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT u.user_id, u.first_name, u.last_name, u.username, COUNT(gu.game_id) AS game_count 
         FROM users u 
@@ -148,7 +148,7 @@ async function getInactiveUsers(pool, chatId) {
     }
 }
 
-async function getAzList(pool, chatId, gameLabel) {
+export async function getAzList(pool, chatId, gameLabel) {
     try {
         const result = await pool.query(`SELECT u.fullname_az FROM users u ` +
             `LEFT JOIN game_users gu ON gu.user_id = u.id ` +
@@ -167,7 +167,7 @@ async function getAzList(pool, chatId, gameLabel) {
     }
 }
 
-async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
+export async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
     try {
         const updateFields = [];
         const values = [];
@@ -202,7 +202,7 @@ async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
     }
 }
 
-async function removeUser(pool, chatId, userId) {
+export async function removeUser(pool, chatId, userId) {
     try {
         const result = await pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = $2', [userId, chatId]);
         return result.rowCount > 0;
@@ -210,19 +210,4 @@ async function removeUser(pool, chatId, userId) {
         console.error('REMOVE USER ERROR: ', error);
         throw error;
     }
-}
-
-module.exports = {
-    addUser,
-    getUsers,
-    getLastUser,
-    searchUser,
-    getAllUsers,
-    getUserChat,
-    addGuest,
-    getRandomUser,
-    getInactiveUsers,
-    getAzList,
-    editUser,
-    removeUser
 }

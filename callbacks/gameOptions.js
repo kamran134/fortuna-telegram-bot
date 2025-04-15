@@ -1,11 +1,11 @@
-const moment = require("moment");
-const { startGame } = require("../commands");
-const { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase, getJokeFromDataBase } = require("../database");
-const { tagUsersByCommas } = require("../commands/common");
-const { skloneniye } = require("../common/skloneniye");
-const { JokeTypes } = require("../common/jokeTypes");
+import moment from "moment";
+import { startGame } from "../commands/index.js";
+import { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase, getJokeFromDataBase } from "../database/index.js";
+import { tagUsersByCommas } from "../commands/common.js";
+import { skloneniye } from "../common/skloneniye.js";
+import { JokeTypes } from "../common/jokeTypes.js";
 
-async function deactiveGame(query, bot, isAdmin) {
+export async function deactiveGame(query, bot, isAdmin) {
     const gameId = query.data.split('_')[1];
     const chatId = query.message.chat.id;
     const {id, first_name} = query.from;
@@ -41,7 +41,7 @@ async function deactiveGame(query, bot, isAdmin) {
     
 }
 
-async function startGameInSelectedGroup(query, bot) {
+export async function startGameInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -81,7 +81,7 @@ async function startGameInSelectedGroup(query, bot) {
     });
 }
 
-async function showGamesInSelectedGroup(query, bot) {
+export async function showGamesInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -113,7 +113,7 @@ async function showGamesInSelectedGroup(query, bot) {
     }
 }
 
-async function tagGamePlayersInSelectedGroup(query, bot) {
+export async function tagGamePlayersInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -151,7 +151,7 @@ async function tagGamePlayersInSelectedGroup(query, bot) {
     });
 }
 
-async function showPayListInSelectedGroup(query, bot) {
+export async function showPayListInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -207,11 +207,4 @@ async function showPayListInSelectedGroup(query, bot) {
     } catch (error) {
         console.error("Get pay list error: ", error);
     }
-}
-
-module.exports = {
-    deactiveGame,
-    startGameInSelectedGroup,
-    showGamesInSelectedGroup,
-    tagGamePlayersInSelectedGroup
 }

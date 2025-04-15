@@ -1,4 +1,4 @@
-async function getJoke(pool, jokeType) {
+export async function getJoke(pool, jokeType) {
     try {
         const result = await pool.query(`SELECT * FROM jokes WHERE type = $1 ORDER BY RANDOM() LIMIT 1;`, [jokeType]);
 
@@ -14,7 +14,7 @@ async function getJoke(pool, jokeType) {
     }
 }
 
-async function addJoke(pool, joke, jokeType) {
+export async function addJoke(pool, joke, jokeType) {
     try {
         const result = await pool.query(`INSERT INTO jokes (joke, type) VALUES ($1, $2);`, [joke, jokeType]);
         return result;
@@ -24,7 +24,7 @@ async function addJoke(pool, joke, jokeType) {
     }
 }
 
-async function deleteJoke(pool, jokeId) {
+export async function deleteJoke(pool, jokeId) {
     try {
         const result = await pool.query(`DELETE FROM jokes WHERE id = $1;`, [jokeId]);
         return result;
@@ -34,7 +34,7 @@ async function deleteJoke(pool, jokeId) {
     }
 }
 
-async function getJokes(pool, jokeType) {
+export async function getJokes(pool, jokeType) {
     try {
         let queryString = `SELECT * FROM jokes`;
         let args = [];
@@ -58,7 +58,7 @@ async function getJokes(pool, jokeType) {
     }
 }
 
-async function updateJoke(pool, jokeId, joke, jokeType) {
+export async function updateJoke(pool, jokeId, joke, jokeType) {
     try {
         if (jokeType && jokeType > 0) {
             const result = await pool.query(`UPDATE jokes SET joke = $1, type = $2 WHERE id = $3;`, [joke, jokeType, jokeId]);
@@ -70,12 +70,4 @@ async function updateJoke(pool, jokeId, joke, jokeType) {
     } catch (error) {
         console.error('UPDATE JOKE ERROR: ', error);
     }
-}
-
-module.exports = {
-    getJoke,
-    addJoke,
-    deleteJoke,
-    getJokes,
-    updateJoke
 }

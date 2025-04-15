@@ -1,4 +1,4 @@
-const JokeTypes = {
+export const JokeTypes = {
     LEFT_GAME: 1,
     TAG_REGISTERED: 2,
     START_GAME: 3,
@@ -7,8 +7,4 @@ const JokeTypes = {
     SAY_SOMETHING_TO_INACTIVE: 6,
     DELETE_PLAYER: 7,
     TAG_UNDECIDED: 8
-}
-
-module.exports = {
-    JokeTypes
 }

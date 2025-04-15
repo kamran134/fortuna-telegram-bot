@@ -1,5 +1,5 @@
-const moment = require('moment');
-const {
+import moment from 'moment';
+import {
     getGamePlayersFromDataBase,
     addGuestToDatabase,
     addGuestToGame,
@@ -7,12 +7,12 @@ const {
     getInactiveUsersFromDatabase,
     getUndecidedPlayersFromDataBase,
     getJokeFromDataBase 
-} = require('../database');
-const { JokeTypes } = require('../common/jokeTypes');
-const { tagUsers, tagUsersByCommas } = require('./common');
-const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye');
+} from '../database/index.js';
+import { JokeTypes } from '../common/jokeTypes.js';
+import { tagUsers, tagUsersByCommas } from './common.js';
+import { skloneniye, skloneniyeAzFull }from '../common/skloneniye.js';
 
-async function getGamePlayers(chatId, bot) {
+export async function getGamePlayers(chatId, bot) {
     const usersByGame = {};
     const resultMessage = [];
 
@@ -83,7 +83,7 @@ async function getGamePlayers(chatId, bot) {
     }
 }
 
-async function tagGamePlayers(chatId, bot, isAdmin) {
+export async function tagGamePlayers(chatId, bot, isAdmin) {
     let resultMessage = '';
     
     if (isAdmin) {
@@ -110,7 +110,7 @@ async function tagGamePlayers(chatId, bot, isAdmin) {
     }
 }
 
-async function tagUndecidedPlayers(chatId, bot) {
+export async function tagUndecidedPlayers(chatId, bot) {
     let resultMessage = '';
     
     try {
@@ -127,7 +127,7 @@ async function tagUndecidedPlayers(chatId, bot) {
     }
 }
 
-async function addGuest(msg, bot) {
+export async function addGuest(msg, bot) {
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
     const chatId = msg.chat.id;
     const query = messageText.replace('/addguest ', '');
@@ -176,7 +176,7 @@ async function addGuest(msg, bot) {
     }
 }
 
-async function getAzList(msg, bot) {
+export async function getAzList(msg, bot) {
     const chatId = msg.chat.id;
     const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') :
         msg.text ? msg.text.toLowerCase() : '';
@@ -197,7 +197,7 @@ async function getAzList(msg, bot) {
     }
 }
 
-async function saySomethingToInactive(msg, bot) {
+export async function saySomethingToInactive(msg, bot) {
     const chatId = msg.chat.id;
 
     try {
@@ -211,16 +211,6 @@ async function saySomethingToInactive(msg, bot) {
     }
 }
 
-async function getGamePlayersForDelete(msg, bot) {
+export async function getGamePlayersForDelete(msg, bot) {
     const chatId = msg.chat.id;
-}
-
-module.exports = {
-    getGamePlayers,
-    tagGamePlayers,
-    tagUndecidedPlayers,
-    getGamePlayersForDelete,
-    addGuest,
-    getAzList,
-    saySomethingToInactive
 }

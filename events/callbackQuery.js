@@ -1,5 +1,7 @@
-import { appointmentToTheGame, deactiveGame, declineAppointment, notConfirmedAttendance, privateAppointmentToTheGame, privateDeclineAppointment, privateNotConfirmedAttendance, searchUserInSelectedGroup, showGamesInSelectedGroup, showLastUserInSelectedGroup, showUsersInSelectedGroup, startGameInSelectedGroup, tagGamePlayersInSelectedGroup } from "./callbacks";
-import { getGamePlayers, showGames, register, agilliOl } from "./commands";
+import { appointmentToTheGame, deactiveGame, declineAppointment, notConfirmedAttendance, privateAppointmentToTheGame, 
+    privateDeclineAppointment, privateNotConfirmedAttendance, searchUserInSelectedGroup, showGamesInSelectedGroup, 
+    showLastUserInSelectedGroup, showUsersInSelectedGroup, startGameInSelectedGroup, tagGamePlayersInSelectedGroup } from "../callbacks/index.js";
+import { getGamePlayers, showGames, register, agilliOl } from "../commands/index.js";
 
 export const callbackQuery = async (query, bot) => {
     const chatId = query.message.chat.id;

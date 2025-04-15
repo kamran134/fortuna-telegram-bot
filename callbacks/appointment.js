@@ -1,9 +1,8 @@
-const moment = require('moment');
-const { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase, getJokeFromDataBase } = require('../database');
-const { JokeTypes } = require('../common/jokeTypes');
-const { skloneniye } = require('../common/skloneniye');
+import { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase, getJokeFromDataBase } from '../database/index.js';
+import { JokeTypes } from '../common/jokeTypes.js';
+import { skloneniye } from '../common/skloneniye.js';
 
-async function appointmentToTheGame(query, bot) {
+export async function appointmentToTheGame(query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('appointment_', '');
@@ -29,7 +28,7 @@ async function appointmentToTheGame(query, bot) {
     }
 }
 
-async function notConfirmedAttendance(query, bot) {
+export async function notConfirmedAttendance(query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('notconfirmed_', '');
@@ -48,7 +47,7 @@ async function notConfirmedAttendance(query, bot) {
     }
 }
 
-async function declineAppointment(query, bot) {
+export async function declineAppointment(query, bot) {
     const chatId = query.message.chat.id;
     const user = query.from;
     const gameId = query.data.replace('decline_', '');
@@ -68,7 +67,7 @@ async function declineAppointment(query, bot) {
     }
 }
 
-async function privateAppointmentToTheGame(query, bot) {
+export async function privateAppointmentToTheGame(query, bot) {
     const chatId = query.data.split('_')[1];
     const gameId = query.data.split('_')[2];
     const user = query.from;
@@ -94,7 +93,7 @@ async function privateAppointmentToTheGame(query, bot) {
     }
 }
 
-async function privateNotConfirmedAttendance(query, bot) {
+export async function privateNotConfirmedAttendance(query, bot) {
     const chatId = query.data.split('_')[1];
     const gameId = query.data.split('_')[2];
     const user = query.from;
@@ -113,7 +112,7 @@ async function privateNotConfirmedAttendance(query, bot) {
     }
 }
 
-async function privateDeclineAppointment(query, bot) {
+export async function privateDeclineAppointment(query, bot) {
     const chatId = query.data.split('_')[1];
     const gameId = query.data.split('_')[2];
     const user = query.from;
@@ -129,13 +128,4 @@ async function privateDeclineAppointment(query, bot) {
     } catch (error) {
         console.error('DECLINE APPOINTMENT ERROR: ', error);
     }
-}
-
-module.exports = {
-    appointmentToTheGame,
-    notConfirmedAttendance,
-    declineAppointment,
-    privateAppointmentToTheGame,
-    privateNotConfirmedAttendance,
-    privateDeclineAppointment
 }

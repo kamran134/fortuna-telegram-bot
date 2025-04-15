@@ -1,6 +1,6 @@
-const { getUsersFromDatabase, getLastUserFromDatabase, searchUserInDatabase } = require("../database");
+import { getUsersFromDatabase, getLastUserFromDatabase, searchUserInDatabase } from "../database/index.js";
 
-async function sendMessage(bot, chatId, message) {
+export async function sendMessage(bot, chatId, message) {
     try {
       const maxLength = 4096;
       const messageLength = message.length;
@@ -19,7 +19,7 @@ async function sendMessage(bot, chatId, message) {
     }
 }
 
-async function showUsersInSelectedGroup(query, bot) {
+export async function showUsersInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -41,7 +41,7 @@ async function showUsersInSelectedGroup(query, bot) {
     }
 }
 
-async function showLastUserInSelectedGroup(query, bot) {
+export async function showLastUserInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -55,7 +55,7 @@ async function showLastUserInSelectedGroup(query, bot) {
     }
 }
 
-async function searchUsersInSelectedGroup(query, bot) {
+export async function searchUserInSelectedGroup(query, bot) {
     const adminChatId = query.message.chat.id;
     const selectedGroupChatId = parseInt(query.data.split('_')[1]);
 
@@ -89,10 +89,4 @@ async function searchUsersInSelectedGroup(query, bot) {
             }
         }
     });
-}
-
-module.exports = {
-    showUsersInSelectedGroup,
-    showLastUserInSelectedGroup,
-    searchUsersInSelectedGroup
 }

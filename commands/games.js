@@ -1,11 +1,11 @@
-const moment = require('moment');
-const { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase, getJokeFromDataBase } = require('../database');
-const { JokeTypes } = require('../common/jokeTypes');
-const { tagUsersByCommas } = require('./common');
-const { Markup } = require('telegraf');
-const { skloneniye, skloneniyeAzFull } = require('../common/skloneniye')
+import moment from 'moment';
+import { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase, getJokeFromDataBase } from '../database/index.js';
+import { JokeTypes } from '../common/jokeTypes.js';
+import { tagUsersByCommas } from './common.js';
+import { Markup } from 'telegraf';
+import { skloneniye, skloneniyeAzFull } from '../common/skloneniye.js';
 
-async function startGame(msg, bot) {
+export async function startGame(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
     
@@ -99,12 +99,12 @@ async function startGame(msg, bot) {
     }
 }
 
-function tagUsersForGame(users) {
+export function tagUsersForGame(users) {
     return users.map((user, index) => user.username ? `${(index + 1)}. @${user.username}` :
         `${(index + 1)}. <a href="tg://user?id=${user.user_id}">${user.first_name}</a>`).join('\n');
 }
 
-async function showGames(chatId, bot, isDelete = false) {
+export async function showGames(chatId, bot, isDelete = false) {
     let gameButtons = [];
 
     try {
@@ -143,7 +143,7 @@ async function showGames(chatId, bot, isDelete = false) {
     }
 }
 
-async function deactiveGames(msg, bot, isAdmin) {
+export async function deactiveGames(msg, bot, isAdmin) {
     const chatId = msg.chat.id;
     let gameDeactiveButtons = [];
 
@@ -191,7 +191,7 @@ async function deactiveGames(msg, bot, isAdmin) {
     
 }
 
-async function changeGameLimit(msg, bot) {
+export async function changeGameLimit(msg, bot) {
     const chatId = msg.chat.id;
     const parts = msg.text.replace('/changelimit ', '').split('/');
     
@@ -217,11 +217,4 @@ async function changeGameLimit(msg, bot) {
     } else {
         bot.sendMessage(chatId, 'Неверный формат. Правильный формат: \`\/changelimit [название игры]\/[новый лимит]');
     }
-}
-
-module.exports = {
-    startGame,
-    showGames,
-    deactiveGames,
-    changeGameLimit
 }

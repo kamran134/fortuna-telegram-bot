@@ -1,6 +1,6 @@
-const moment = require('moment');
+import moment from "moment";
 
-async function getGames(pool, chatId) {
+export async function getGames(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
 
@@ -16,7 +16,7 @@ async function getGames(pool, chatId) {
     }
 }
 
-async function getGamesTimes(pool, chatId) {
+export async function getGamesTimes(pool, chatId) {
     try {
         const result = await pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
 
@@ -31,7 +31,7 @@ async function getGamesTimes(pool, chatId) {
     }
 }
 
-async function addGame(pool, chatId, {date, start, end, users_limit, location, label}) {
+export async function addGame(pool, chatId, {date, start, end, users_limit, location, label}) {
     try {
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, users_limit, place, chat_id, status, ` +
             `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, game_starts, game_ends, place) DO NOTHING RETURNING id;`, 
@@ -48,7 +48,7 @@ async function addGame(pool, chatId, {date, start, end, users_limit, location, l
     }
 }
 
-async function deactiveGame(pool, gameId) {
+export async function deactiveGame(pool, gameId) {
     const client = await pool.connect();
 
     try {
@@ -68,7 +68,7 @@ async function deactiveGame(pool, gameId) {
     }
 }
 
-async function deleteGame(pool, gameId) {
+export async function deleteGame(pool, gameId) {
     const client = await pool.connect();
 
     try {
@@ -92,7 +92,7 @@ async function deleteGame(pool, gameId) {
     }
 }
 
-async function changeGameLimit(pool, chatId, {label, limit}) {
+export async function changeGameLimit(pool, chatId, {label, limit}) {
     const client = await pool.connect();
 
     try {
@@ -112,7 +112,7 @@ async function changeGameLimit(pool, chatId, {label, limit}) {
     }
 }
 
-async function checkGameStatus(pool, gameId) {
+export async function checkGameStatus(pool, gameId) {
     const client = await pool.connect();
 
     try {
@@ -126,14 +126,4 @@ async function checkGameStatus(pool, gameId) {
     } catch (e) {
         console.error('CHECK GAME STATUS RESULT ERROR: ', e);
     }
-}
-
-module.exports = {
-    getGames,
-    addGame,
-    getGamesTimes,
-    deactiveGame,
-    deleteGame,
-    changeGameLimit,
-    checkGameStatus
 }

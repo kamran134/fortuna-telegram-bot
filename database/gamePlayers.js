@@ -1,6 +1,6 @@
-const moment = require('moment');
+import moment from "moment";
 
-async function getGamePlayers(pool, chatId) {
+export async function getGamePlayers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, users.is_guest, ` +
             `games.label, games.game_date, games.game_starts, games.game_ends, games.place, game_users.game_id, game_users.confirmed_attendance, games.users_limit, game_users.payed FROM game_users ` +
@@ -20,7 +20,7 @@ async function getGamePlayers(pool, chatId) {
     }
 }
 
-async function getUndecidedPlayers(pool, chatId) {
+export async function getUndecidedPlayers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, games.game_date, ` +
             `game_users.game_id, game_users.confirmed_attendance, games.users_limit FROM game_users ` +
@@ -39,7 +39,7 @@ async function getUndecidedPlayers(pool, chatId) {
     }
 }
 
-async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
+export async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
     try {
         await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) ` +
             `VALUES ((SELECT MAX(id) FROM games g WHERE LOWER(g.label) = LOWER($1) AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
@@ -51,7 +51,7 @@ async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed
     }
 }
 
-async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance }) {
+export async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance }) {
     try {
         const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, $5) ` +
             `ON CONFLICT (user_id, game_id) DO UPDATE SET confirmed_attendance = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, 
@@ -68,7 +68,7 @@ async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_atten
     }
 }
 
-async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
+export async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
     try {
         const result = await pool.query(`DELETE FROM game_users WHERE ` +
             `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +
@@ -86,12 +86,4 @@ async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
         console.error('REMOVE GAMER PLAYER ERROR: ', error);
         throw error;
     }
-}
-
-module.exports = {
-    getGamePlayers,
-    getUndecidedPlayers,
-    addGamePlayerByLabel,
-    addGamePlayerById,
-    removeGamePlayerById
 }

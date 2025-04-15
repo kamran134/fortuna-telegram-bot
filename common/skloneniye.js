@@ -1,4 +1,4 @@
-function skloneniye(weekDay, padezh) {
+export function skloneniye(weekDay, padezh) {
     const skloneniya = {
         'понедельник': {
             'именительный': 'понедельник',
@@ -61,7 +61,7 @@ function skloneniye(weekDay, padezh) {
     return skloneniya[weekDay][padezh] || weekDay;
 }
 
-function skloneniyeAz(weekDay, padezh) {
+export function skloneniyeAz(weekDay, padezh) {
     const skloneniya = {
         'понедельник': {
             'именительный': 'bazar ertəsi',
@@ -124,7 +124,7 @@ function skloneniyeAz(weekDay, padezh) {
     return skloneniya[weekDay][padezh] || weekDay;
 }
 
-function skloneniyeAzFull(weekDay, padezh) {
+export function skloneniyeAzFull(weekDay, padezh) {
     const skloneniya = {
         'понедельник': {
             'именительный': 'bazar ertəsi',
@@ -185,10 +185,4 @@ function skloneniyeAzFull(weekDay, padezh) {
     }
     
     return skloneniya[weekDay][padezh] || weekDay;
-}
-
-module.exports = {
-    skloneniye,
-    skloneniyeAz,
-    skloneniyeAzFull
 }

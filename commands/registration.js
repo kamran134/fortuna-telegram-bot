@@ -1,8 +1,8 @@
-const { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } = require('../database');
-const { tagUsers, listUsers } = require('./common');
-const { JokeTypes } = require('../common/jokeTypes');
+import { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } from '../database/index.js';
+import { tagUsers, listUsers } from './common.js';
+import { JokeTypes } from '../common/jokeTypes.js';
 
-async function register(chatAndUser, bot) {
+export async function register(chatAndUser, bot) {
     const { chatId } = chatAndUser;
     try {
         await addUserToDatabase(chatAndUser);
@@ -12,7 +12,7 @@ async function register(chatAndUser, bot) {
     }
 }
 
-async function getRegistered(msg, bot, command, isAdmin) {
+export async function getRegistered(msg, bot, command, isAdmin) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
 
@@ -45,7 +45,7 @@ async function getRegistered(msg, bot, command, isAdmin) {
     
 }
 
-async function unregister(msg, bot) {
+export async function unregister(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from.id;
 
@@ -55,10 +55,4 @@ async function unregister(msg, bot) {
     } catch (error) {
         console.error('UNREGISTRATION ERROR: ', error);
     }
-}
-
-module.exports = {
-    register,
-    getRegistered,
-    unregister
 }

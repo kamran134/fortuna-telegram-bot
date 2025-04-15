@@ -1,8 +1,10 @@
-import { register, showMenu, getRegistered, startGame, showGames, deactiveGames, getGamePlayers, addGuest, whatTime, agilliOl, getAzList, tagGamePlayers, changeGameLimit, connectTo, showGroups, showYourGroups, addJoke } from "./commands";
-import { editUser } from "./commands/adminCommands";
-import { saySomethingToInactive, tagUndecidedPlayers } from "./commands/gamePlayers";
-import { editJoke, listJokes } from "./commands/jokes";
-import { deleteJoke } from "./database/jokes";
+import { 
+    register, showMenu, getRegistered, startGame, showGames, deactiveGames, getGamePlayers, 
+    addGuest, whatTime, agilliOl, getAzList, tagGamePlayers, 
+    changeGameLimit, connectTo, showGroups, showYourGroups, addJoke } from "../commands/index.js";
+import { editUser } from "../commands/adminCommands.js";
+import { saySomethingToInactive, tagUndecidedPlayers } from "../commands/gamePlayers.js";
+import { editJoke, listJokes, deleteJoke } from "../commands/jokes.js";
 
 export const onMessage = async (msg, bot) => {
     const chatId = msg.chat.id;

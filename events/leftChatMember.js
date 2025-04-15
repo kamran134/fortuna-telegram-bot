@@ -1,4 +1,4 @@
-import { unregister } from "./commands/registration";
+import { unregister } from "../commands/registration.js";
 
 export const leftChatMember = async (msg, bot) => {
     const chatId = msg.chat.id;

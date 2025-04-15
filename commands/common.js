@@ -1,20 +1,20 @@
-function tagUsers(users) {
+export function tagUsers(users) {
     return Array.isArray(users) ? users.map(user =>
         user.username ? `@${user.username}` : 
         `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name}</a>`).join(', ') : '';
 }
 
-function listUsers(users) {
+export function listUsers(users) {
     return users.map((user, index) => `${(index + 1)}. ${user.username} — ${user.first_name} ${user.last_name}`).join('\n');
 }
 
-function tagUsersByCommas(users) {
+export function tagUsersByCommas(users) {
     return Array.isArray(users) ? users.map(user => 
         user.username ? `@${user.username}` :
         `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name}</a>`).join(', ') : '';
 }
 
-function showMenu(msg, bot) {
+export function showMenu(msg, bot) {
     const keyboard = {
         inline_keyboard: [
             [
@@ -32,11 +32,4 @@ function showMenu(msg, bot) {
         reply_markup: keyboard,
         // parse_mode: 'HTML'
     });
-}
-
-module.exports = {
-    tagUsers,
-    listUsers,
-    tagUsersByCommas,
-    showMenu
 }

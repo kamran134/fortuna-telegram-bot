@@ -1,4 +1,4 @@
-async function adminGroupAdd(pool, { chatId, adminChatId, groupName }) {
+export async function adminGroupAdd(pool, { chatId, adminChatId, groupName }) {
     try {
         const result = await pool.query(`INSERT INTO admin_groups (chat_id, admin_chat_id, group_name) VALUES ($1, $2, $3);`,
             [chatId, adminChatId, groupName]);
@@ -13,7 +13,7 @@ async function adminGroupAdd(pool, { chatId, adminChatId, groupName }) {
     }
 }
 
-async function getGroups(pool, adminChatId) {
+export async function getGroups(pool, adminChatId) {
     try {
         const result = await pool.query(`SELECT * FROM admin_groups WHERE admin_chat_id = $1;`, [adminChatId]);
 
@@ -27,9 +27,4 @@ async function getGroups(pool, adminChatId) {
         console.error('GET GROUPS ERROR: ', error);
         throw error;
     }
-}
-
-module.exports = {
-    adminGroupAdd,
-    getGroups
 }

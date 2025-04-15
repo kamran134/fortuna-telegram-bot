@@ -1,7 +1,6 @@
-const { addGroupAdminToDatabase, getGroupsFromDataBase, editUserInDatabase, getUserChatFromDatabase } = require('../database');
-const { Markup } = require('telegraf');
+import { addGroupAdminToDatabase, getGroupsFromDataBase, editUserInDatabase, getUserChatFromDatabase } from '../database/index.js';
 
-async function connectTo(msg, bot) {
+export async function connectTo(msg, bot) {
     const messageText = msg.text.replace('@fortunaVolleybalBot', '');
     const chatId = messageText.replace('/connectto ', '');
     const adminChatId = msg.chat.id;
@@ -38,7 +37,7 @@ async function connectTo(msg, bot) {
     
 }
 
-async function showGroups(adminChatId, bot) {
+export async function showGroups(adminChatId, bot) {
     try {
         const groups = await getGroupsFromDataBase(adminChatId);
 
@@ -54,7 +53,7 @@ async function showGroups(adminChatId, bot) {
     }
 }
 
-async function showYourGroups(adminChatId, bot, command) {
+export async function showYourGroups(adminChatId, bot, command) {
     try {
         const groups = await getGroupsFromDataBase(adminChatId);
 
@@ -75,7 +74,7 @@ async function showYourGroups(adminChatId, bot, command) {
     }
 }
 
-async function editUser(msg, bot) {
+export async function editUser(msg, bot) {
     const chatId = msg.chat.id;
     const adminId = msg.from.id;
     const userOptionsString = msg.text.replace('/adminedituser ', '').replace('/adminedituser@fortunaVolleybalBot ', '');
@@ -117,7 +116,7 @@ async function editUser(msg, bot) {
     }
 }
 
-async function sendMessageToTheGamers(msg, bot) {
+export async function sendMessageToTheGamers(msg, bot) {
     try {
         const chatId = msg.chat.id;
         const adminId = msg.from.id;
@@ -134,11 +133,4 @@ async function sendMessageToTheGamers(msg, bot) {
     } catch (error) {
         console.error('ADMIN SEND MESSAGE ERROR: ', error);
     }
-}
-
-module.exports = {
-    connectTo,
-    showGroups,
-    showYourGroups,
-    editUser
 }

@@ -1,9 +1,13 @@
-const { Pool } = require('pg');
-const { addUser, getUsers, getLastUser, searchUser, addGuest, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser } = require('./users');
-const { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } = require('./games');
-const { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } = require('./gamePlayers');
-const { adminGroupAdd, getGroups } = require('./adminGroup');
-const { getJoke, addJoke, deleteJoke, getJokes, updateJoke } = require('./jokes');
+// import { Pool } from 'pg';
+
+import pgk from 'pg';
+import { addUser, getUsers, getLastUser, searchUser, addGuest, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser } from './users.js';
+import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games.js';
+import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
+import { adminGroupAdd, getGroups } from './adminGroup.js';
+import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes.js';
+
+const { Pool } = pgk;
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
@@ -14,156 +18,123 @@ const pool = new Pool({
     port: 5432,
 });
 
-function addUserToDatabase(chatAndUser) {
+export function addUserToDatabase(chatAndUser) {
     // const { user: { first_name, last_name, id: userId, username }, chatId } = msg;
     return addUser(pool, chatAndUser);
 }
 
-function getUsersFromDatabase(chatId) {
+export function getUsersFromDatabase(chatId) {
     return getUsers(pool, chatId);
 }
 
-function getLastUserFromDatabase(chatId) {
+export function getLastUserFromDatabase(chatId) {
     return getLastUser(pool, chatId);
 }
 
-function searchUserInDatabase(chatId, searchString) {
+export function searchUserInDatabase(chatId, searchString) {
     return searchUser(pool, chatId, searchString);
 }
 
-function getUserChatFromDatabase(userId) {
+export function getUserChatFromDatabase(userId) {
     return getUserChat(pool, userId);
 }
 
-function addGameToDatabase(chatId, gameOptions) {
+export function addGameToDatabase(chatId, gameOptions) {
     return addGame(pool, chatId, gameOptions);
 }
 
-function getGamesFromDatabase(chatId) {
+export function getGamesFromDatabase(chatId) {
     return getGames(pool, chatId);
 }
 
-function getGamePlayersFromDataBase(chatId) {
+export function getGamePlayersFromDataBase(chatId) {
     return getGamePlayers(pool, chatId);
 }
 
-function getUndecidedPlayersFromDataBase(chatId) {
+export function getUndecidedPlayersFromDataBase(chatId) {
     return getUndecidedPlayers(pool, chatId);
 }
 
-function addGuestToDatabase(guestOptions) {
+export function addGuestToDatabase(guestOptions) {
     return addGuest(pool, guestOptions);
 }
 
-function addGuestToGame(gameOptions) {
+export function addGuestToGame(gameOptions) {
     return addGamePlayerByLabel(pool, gameOptions)
 }
 
-function getGamesTimesFromDatabase(chatId) {
+export function getGamesTimesFromDatabase(chatId) {
     return getGamesTimes(pool, chatId);
 }
 
-function getRandomUserFromDatabase(chatId) {
+export function getRandomUserFromDatabase(chatId) {
     return getRandomUser(pool, chatId);
 }
 
-function getAzListFromDatabase(chatId, gameLabel) {
+export function getAzListFromDatabase(chatId, gameLabel) {
     return getAzList(pool, chatId, gameLabel);
 }
 
-function addGroupAdminToDatabase({ chatId, adminChatId, groupName }) {
+export function addGroupAdminToDatabase({ chatId, adminChatId, groupName }) {
     return adminGroupAdd(pool, { chatId, adminChatId, groupName });
 }
 
-function getGroupsFromDataBase(adminChatId) {
+export function getGroupsFromDataBase(adminChatId) {
     return getGroups(pool, adminChatId);
 }
 
-function addGamePlayerByIdToDatabase({ gameId, chatId, userId, confirmed_attendance }) {
+export function addGamePlayerByIdToDatabase({ gameId, chatId, userId, confirmed_attendance }) {
     return addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance });
 }
 
-function deactiveGameInDatabase(gameId) {
+export function deactiveGameInDatabase(gameId) {
     return deactiveGame(pool, gameId);
 }
 
-function deleteGameFromDatabase(gameId) {
+export function deleteGameFromDatabase(gameId) {
     return deleteGame(pool, gameId);
 }
 
-function editUserInDatabase({ userId, firstName, lastName, fullnameAz }) {
+export function editUserInDatabase({ userId, firstName, lastName, fullnameAz }) {
     return editUser(pool, {userId, firstName, lastName, fullnameAz });
 }
 
-function removeGamePlayerByIdFromDatabase({ gameId, chatId, userId }) {
+export function removeGamePlayerByIdFromDatabase({ gameId, chatId, userId }) {
     return removeGamePlayerById(pool, { gameId, chatId, userId });
 }
 
-function getInactiveUsersFromDatabase(chatId) {
+export function getInactiveUsersFromDatabase(chatId) {
     return getInactiveUsers(pool, chatId)
 }
 
-function changeGameLimitFromDataBase(chatId, {label, limit}) {
+export function changeGameLimitFromDataBase(chatId, {label, limit}) {
     return changeGameLimit(pool, chatId, {label, limit});
 }
 
-function checkGameStatusFromDatabase(gameId) {
+export function checkGameStatusFromDatabase(gameId) {
     return checkGameStatus(pool, gameId);
 }
 
-function getJokeFromDataBase(jokeType) {
+export function getJokeFromDataBase(jokeType) {
     return getJoke(pool, jokeType);
 }
 
-function addJokeToDataBase(joke, jokeType) {
+export function addJokeToDataBase(joke, jokeType) {
     return addJoke(pool, joke, jokeType);
 }
 
-function deleteJokeFromDataBase(jokeId) {
+export function deleteJokeFromDataBase(jokeId) {
     return deleteJoke(pool, jokeId);
 }
 
-function getJokesFromDataBase(jokeType) {
+export function getJokesFromDataBase(jokeType) {
     return getJokes(pool, jokeType);
 }
 
-function updateJokeInDataBase(jokeId, joke, jokeType) {
+export function updateJokeInDataBase(jokeId, joke, jokeType) {
     return updateJoke(pool, jokeId, joke, jokeType);
 }
 
-function removeUserFromDatabase(chatId, userId) {
+export function removeUserFromDatabase(chatId, userId) {
     return removeUser(pool, chatId, userId);
-}
-
-module.exports = {
-    addUserToDatabase,
-    getUsersFromDatabase,
-    getLastUserFromDatabase,
-    searchUserInDatabase,
-    getUserChatFromDatabase,
-    addGameToDatabase,
-    getGamesFromDatabase,
-    getGamePlayersFromDataBase,
-    getUndecidedPlayersFromDataBase,
-    addGuestToDatabase,
-    addGuestToGame,
-    getGamesTimesFromDatabase,
-    getRandomUserFromDatabase,
-    getAzListFromDatabase,
-    addGroupAdminToDatabase,
-    getGroupsFromDataBase,
-    addGamePlayerByIdToDatabase,
-    deactiveGameInDatabase,
-    deleteGameFromDatabase,
-    editUserInDatabase,
-    removeGamePlayerByIdFromDatabase,
-    getInactiveUsersFromDatabase,
-    changeGameLimitFromDataBase,
-    checkGameStatusFromDatabase,
-    getJokeFromDataBase,
-    addJokeToDataBase,
-    deleteJokeFromDataBase,
-    getJokesFromDataBase,
-    updateJokeInDataBase,
-    removeUserFromDatabase
 }
