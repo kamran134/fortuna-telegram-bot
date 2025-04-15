@@ -202,6 +202,16 @@ async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
     }
 }
 
+async function removeUser(pool, chatId, userId) {
+    try {
+        const result = await pool.query('DELETE FROM users WHERE user_id = $1 AND chat_id = $2', [userId, chatId]);
+        return result.rowCount > 0;
+    } catch (error) {
+        console.error('REMOVE USER ERROR: ', error);
+        throw error;
+    }
+}
+
 module.exports = {
     addUser,
     getUsers,
@@ -213,5 +223,6 @@ module.exports = {
     getRandomUser,
     getInactiveUsers,
     getAzList,
-    editUser
+    editUser,
+    removeUser
 }

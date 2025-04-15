@@ -3,8 +3,10 @@ const games = require('./games');
 const gamePlayers = require('./gamePlayers');
 const jokes = require('./jokes');
 const adminCommands = require('./adminCommands');
+const common = require('./common');
 
 module.exports = {
+    showMenu: common.showMenu,
     register: registration.register,
     getRegistered: registration.getRegistered,
     startGame: games.startGame,
@@ -20,5 +22,5 @@ module.exports = {
     addJoke: jokes.addJoke,
     connectTo: adminCommands.connectTo,
     showGroups: adminCommands.showGroups,
-    showYourGroups: adminCommands.showYourGroups
+    showYourGroups: adminCommands.showYourGroups,
 }

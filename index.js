@@ -1,20 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
 
-const {
-    register, getRegistered, startGame, showGames, deactiveGames,
-    getGamePlayers, addGuest, whatTime, agilliOl, addJoke, getAzList,
-    connectTo, showGroups, showYourGroups, tagGamePlayers, changeGameLimit
-} = require('./commands');
-const adminCommands = require('./commands/adminCommands');
-const {
-    appointmentToTheGame, notConfirmedAttendance, declineAppointment,
-    privateAppointmentToTheGame, privateNotConfirmedAttendance, privateDeclineAppointment,
-    deactiveGame, startGameInSelectedGroup, showGamesInSelectedGroup,
-    showUsersInSelectedGroup, showLastUserInSelectedGroup, searchUserInSelectedGroup, tagGamePlayersInSelectedGroup
-} = require('./callbacks');
-const { inactive, saySomethingToInactive, tagUndecidedPlayers } = require('./commands/gamePlayers');
-const { deleteJoke, listJokes, editJoke } = require('./commands/jokes');
-const { showMenu } = require('./commands/common');
+const { onMessage } = require('./onMessage');
+const { callbackQuery } = require('./callbackQuery');
+const { newChatMembers } = require('./newChatMembers');
+const { leftChatMember } = require('./leftChatMember');
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
@@ -23,124 +12,18 @@ const token = '5853539307:AAGIfxr3O_mu-uN07fqYCirWzxTHs-UqrJY';
 const bot = new TelegramBot(token, { polling: true });
 
 bot.on('new_chat_members', async (msg) => {
-    const chatId = msg.chat.id;
-    const newMembers = msg.new_chat_members;
+    newChatMembers(msg, bot);
+});
 
-    for (const member of newMembers) {
-        // Проверяем, не является ли новый участник ботом (чтобы избежать зацикливания)
-        if (!member.is_bot) {
-            const userId = member.id;
-            const username = member.username;
-            const firstName = member.first_name;
-            const lastName = member.last_name;
-
-            // Вызываем функцию register, передавая объект message, имитирующий сообщение от нового пользователя
-            register({
-                chat: {
-                    id: chatId
-                },
-                from: {
-                    id: userId,
-                    username: username,
-                    first_name: firstName,
-                    last_name: lastName
-                },
-                // text: '/register' // Имитируем, что пользователь отправил команду /register
-            }, bot);
-
-            // Опционально: Можно отправить приветственное сообщение новому пользователю
-            bot.sendMessage(chatId, `✅\nXoş gördük, ${firstName}! Siz avtomatik qeydiyyatdan keçdiniz.\nДобро пожаловать, ${firstName}! Вы автоматически зарегистрированы.`, {
-                reply_to_message_id: msg.message_id // Отвечаем на сообщение о добавлении пользователя
-            });
-        }
-    }
+bot.on('left_chat_member', async (msg) => {
+    await leftChatMember(msg, bot);
 });
 
 // Слушаем сообщения
 bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    const userId = msg.from.id;
-    const user = msg.from;
-    const messageText = msg.text && msg.text.startsWith('/') ? msg.text.toLowerCase().replace('@fortunavolleybalbot', '') : msg.text ? msg.text.toLowerCase() : '';
-    const chatMember = await bot.getChatMember(chatId, userId);
-    const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
-
-    if (messageText === '/register') register({ chatId, user }, bot);
-    else if (messageText === '/menu') showMenu(msg, bot);
-    else if (messageText === '/tagregistered') getRegistered(msg, bot, 'tag', isAdmin);
-    else if (messageText === '/showregistered') getRegistered(msg, bot, 'show', isAdmin);
-    else if (messageText.startsWith('/startgame') && isAdmin) startGame(msg, bot);
-    else if (messageText.startsWith('/startgame') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может создать игру. Be clever!', {reply_to_message_id: msg.message_id});
-    else if (messageText === '/showgames') showGames(chatId, bot);
-    else if (messageText === '/deletegame') {}
-    else if (messageText === '/deactivegame') deactiveGames(msg, bot, isAdmin);
-    else if (messageText === 'приффки') bot.sendMessage(chatId, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ. (Что за ванилька из начала нулевых?)');
-    else if (messageText === 'привет') bot.sendMessage(chatId, 'Привет, ' + msg.from.first_name + '. Играть будем?');
-    else if (messageText === '/list') getGamePlayers(chatId, bot);
-    else if (messageText === 'Пока') bot.sendMessage(chatId, 'До свидания, ' + msg.from.first_name);
-    else if (messageText.startsWith('/addguest') && isAdmin) addGuest(msg, bot);
-    else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
-    else if (messageText.includes('во ск')) whatTime(msg, bot);
-    else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(userId, `ID вашей группы ${chatId}`);
-    else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(chatId, 'Эта информация не для маглов!');
-    else if (messageText === '/алохамора') bot.sendMessage(chatId, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
-    else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
-    else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(chatId, bot);
-    else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
-    else if (messageText.startsWith('/azlist')) getAzList(msg, bot);
-    else if (messageText.toLowerCase().includes('твой бот')) bot.sendMessage(chatId, `Чтоооо? 😳`, { reply_to_message_id: msg.message_id });
-    else if (messageText === '/saysomethingtoinactive' && isAdmin) saySomethingToInactive(msg, bot);
-    else if (messageText === '/saysomethingtoinactive' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может отчитывать игроков!');
-    else if (messageText === '/deleteplayer' && isAdmin) showGames(chatId, bot, true);
-    else if (messageText === '/deleteplayer' && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может удалять игрока из игры. Может вам подойдёт команда /agilliol🤔');
-    else if (messageText === '/taggamers') tagGamePlayers(chatId, bot, isAdmin);
-    else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
-    else if (messageText.startsWith('/changelimit') && !isAdmin) bot.sendMessage(chatId, 'Я, конечно, всё понимаю, ну кроме квантовой физики и степени твоей наглости 🤨');
-    else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨');
-    else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && isAdmin) tagUndecidedPlayers(chatId, bot);
-    else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может пошевелить всех!');
-
-    // for admin group
-    else if (messageText.startsWith('/connectto') && isAdmin) connectTo(msg, bot);
-    else if (messageText === '/showgroups' && isAdmin) showGroups(chatId, bot);
-    else if (messageText === '/adminstartgame' && isAdmin) showYourGroups(chatId, bot, 'Start');
-    else if (messageText === '/admindeactivegame' && isAdmin) showYourGroups(chatId, bot, 'Deactive');
-    else if (messageText === '/adminshowusers' && isAdmin) showYourGroups(chatId, bot, 'ShowUsers');
-    else if (messageText === '/adminsearchuser' && isAdmin) showYourGroups(chatId, bot, 'SearchUser');
-    else if (messageText === '/adminshowlastuser' && isAdmin) showYourGroups(chatId, bot, 'ShowLastUser');
-    else if (messageText.startsWith('/adminedituser')) adminCommands.editUser(msg, bot);
-    else if (messageText === '/adminremoveplayer') tagUndecidedPlayers(chatId, bot);
-    else if (messageText.startsWith('/admintaggamers') && isAdmin) showYourGroups(chatId, bot, 'TagGamers');
-    else if (messageText === '/adminpaylist') showYourGroups(chatId, bot, 'PayList');
-    else if (messageText.startsWith('/adminaddjoke')) addJoke(msg, bot);
-    else if (messageText.startsWith('/admindeletejoke')) deleteJoke(msg, bot);
-    else if (messageText.startsWith('/adminlistjokes')) listJokes(msg, bot);
-    else if (messageText.startsWith('/admineditjoke')) editJoke(msg, bot);
+    await onMessage(msg, bot);
 });
 
 bot.on('callback_query', async (query) => {
-    const chatId = query.message.chat.id;
-    const userId = query.from.id;
-    const user = query.from;
-    const chatMember = await bot.getChatMember(chatId, userId);
-    const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
-
-    if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
-    else if (query.data.startsWith('notconfirmed_')) notConfirmedAttendance(query, bot);
-    else if (query.data.startsWith('decline_')) declineAppointment(query, bot);
-    else if (query.data.startsWith('privateAppointment_')) privateAppointmentToTheGame(query, bot);
-    else if (query.data.startsWith('privateNotconfirmed_')) privateNotConfirmedAttendance(query, bot);
-    else if (query.data.startsWith('privateDecline_')) privateDeclineAppointment(query, bot);
-    else if (query.data.startsWith('deactivegame_')) deactiveGame(query, bot, isAdmin);
-    else if (query.data.startsWith('selectedGroupForStart_') && isAdmin) startGameInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForDeactive_') && isAdmin) showGamesInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForShowUsers_') && isAdmin) showUsersInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForShowLastUser_') && isAdmin) showLastUserInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForSearchUser_') && isAdmin) searchUserInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForTagGamers_') && isAdmin) tagGamePlayersInSelectedGroup(query, bot);
-    else if (query.data.startsWith('selectedGroupForPayList_') && isAdmin) {}
-    else if (query.data === 'showgames') showGames(chatId, bot);
-    else if (query.data === 'list') getGamePlayers(chatId, bot);
-    else if (query.data === 'register') register({ chatId, user }, bot);
-    else if (query.data === 'agilliol') agilliOl(chatId, bot);
+    await callbackQuery(query, bot);
 });

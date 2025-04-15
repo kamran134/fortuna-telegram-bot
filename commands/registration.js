@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase } = require('../database');
+const { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } = require('../database');
 const { tagUsers, listUsers } = require('./common');
 const { JokeTypes } = require('../common/jokeTypes');
 
@@ -45,7 +45,20 @@ async function getRegistered(msg, bot, command, isAdmin) {
     
 }
 
+async function unregister(msg, bot) {
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+
+    try {
+        await removeUserFromDatabase(chatId, userId);
+        bot.sendMessage(chatId, "✅ Siz uğurla sistemdən qeydiyyatdan çıxardınız / Вы успешно удалены из системы");
+    } catch (error) {
+        console.error('UNREGISTRATION ERROR: ', error);
+    }
+}
+
 module.exports = {
     register,
-    getRegistered
+    getRegistered,
+    unregister
 }
