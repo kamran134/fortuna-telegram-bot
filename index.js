@@ -4,6 +4,9 @@ import { onMessage } from './events/onMessage.js';
 import { callbackQuery } from './events/callbackQuery.js';
 import { newChatMembers } from './events/newChatMembers.js';
 import { leftChatMember } from './events/leftChatMember.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // const { onMessage } = require('./onMessage');
 // const { callbackQuery } = require('./callbackQuery');
@@ -11,7 +14,7 @@ import { leftChatMember } from './events/leftChatMember.js';
 // const { leftChatMember } = require('./leftChatMember');
 
 // Устанавливаем токен, который вы получили от BotFather
-const token = '5853539307:AAEc9QTH3EhDSTtmZzSitOJCIfjoq99iOnU';
+const token = process.env.TELEGRAM_BOT_TOKEN;
 
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });

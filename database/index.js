@@ -6,15 +6,18 @@ import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameL
 import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
 import { adminGroupAdd, getGroups } from './adminGroup.js';
 import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const { Pool } = pgk;
 
 // Создаем пулл соединений к базе данных
 const pool = new Pool({
-    user: 'postgres',
+    user: process.env.DATABASE_USER,
     host: 'db',
-    database: 'fortuna',
-    password: 'plk_S2%92',
+    database: process.env.DATABASE_NAME,
+    password: process.env.DATABASE_PASSWORD,
     port: 5432,
 });
 
