@@ -5,8 +5,10 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
         if (checkUser.rows.length > 0) {
             // we add user to table group_users if not exists
             const checkGroupUser = await pool.query('SELECT * FROM group_users WHERE user_id = $1 AND chat_id = $2', [checkUser.rows[0].id, chatId]);
+            console.log('CHECK GROUP USER: ', checkGroupUser.rows.length);
+            console.log('CHECK USER: ', checkUser.rows[0]);
             if (checkGroupUser.rows.length === 0) {
-                await pool.query('INSERT INTO group_users (user_id, chat_id) VALUES ($1, $2)', [checkUser.rows[0].id, chatId]);
+                await pool.query(`INSERT INTO group_users (user_id, chat_id, chat_role) VALUES ($1, $2, 'game')`, [checkUser.rows[0].id, chatId]);
             } else {
                 console.log('User already exists in group_users', checkGroupUser.rows[0]);
                 return `İstifadəçi artıq qrupda var / Пользователь уже существует в группе`;
