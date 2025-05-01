@@ -14,7 +14,7 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
                 return `İstifadəçi artıq qrupda var / Пользователь уже существует в группе`;
             }
             // Optionally, you can update the user's information here if needed
-            return;
+            return '✅ Siz uğurla qrupa əlavə edildiniz / Вы успешно добавлены в группу';
         }
         
         const result = await pool.query(
