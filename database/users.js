@@ -1,5 +1,13 @@
 export async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
     try {
+        // check if user already exists
+        const checkUser = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+        if (checkUser.rows.length > 0) {
+            console.log('User already exists in the database', checkUser.rows[0]);
+            // Optionally, you can update the user's information here if needed
+            return;
+        }
+        
         const result = await pool.query(
           'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',
           [first_name, last_name, userId, chatId, username]
