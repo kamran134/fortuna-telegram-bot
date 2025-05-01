@@ -5,8 +5,8 @@ import { JokeTypes } from '../common/jokeTypes.js';
 export async function register(chatAndUser, bot) {
     const { chatId } = chatAndUser;
     try {
-        await addUserToDatabase(chatAndUser);
-        bot.sendMessage(chatId, "✅ Siz uğurla sistemdə qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в системе");
+        const result = await addUserToDatabase(chatAndUser);
+        bot.sendMessage(chatId, result);
     } catch (error) {
         console.error('REGISTRATION ERROR: ', error);
     }

@@ -3,7 +3,14 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
         // check if user already exists
         const checkUser = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
         if (checkUser.rows.length > 0) {
-            console.log('User already exists in the database', checkUser.rows[0]);
+            // we add user to table group_users if not exists
+            const checkGroupUser = await pool.query('SELECT * FROM group_users WHERE user_id = $1 AND chat_id = $2', [checkUser.rows[0].id, chatId]);
+            if (checkGroupUser.rows.length === 0) {
+                await pool.query('INSERT INTO group_users (user_id, chat_id) VALUES ($1, $2)', [checkUser.rows[0].id, chatId]);
+            } else {
+                console.log('User already exists in group_users', checkGroupUser.rows[0]);
+                return `İstifadəçi artıq qrupda var / Пользователь уже существует в группе`;
+            }
             // Optionally, you can update the user's information here if needed
             return;
         }
@@ -12,6 +19,18 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
           'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',
           [first_name, last_name, userId, chatId, username]
         );
+
+        console.log('ADD USER RESULT: ', result);
+        return '✅ Siz uğurla sistemdə qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в системе';
+        // if (result && result.rowCount > 0) {
+        //     await pool.query('INSERT INTO group_users (user_id, chat_id) VALUES ($1, $2)', [userId, chatId]);
+        //     return result.rows[0];
+        // }
+        // else {
+        //     console.error('ADD USER RESULT ERROR: ', result);
+        //     throw new Error('Failed to add user to database');
+        // }
+
     } catch (error) {
         console.error('ADDING USERS: ', error);
         throw error;
