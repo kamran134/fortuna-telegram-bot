@@ -16,9 +16,6 @@ dotenv.config();
 // Устанавливаем токен, который вы получили от BotFather
 const token = process.env.TELEGRAM_TOKEN;
 
-console.log(token);
-// Проверяем, что токен существует
-
 // Создаем экземпляр бота
 const bot = new TelegramBot(token, { polling: true });
 
