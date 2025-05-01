@@ -1,2 +1,7 @@
 node_modules/
-.env.env
+.env
+backup.dump
+backup_latest.sql
+db_backup.sql
+gitkey
+gitkey.pub
