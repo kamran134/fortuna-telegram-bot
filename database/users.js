@@ -18,21 +18,20 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
         }
         
         const result = await pool.query(
-          'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE);',
+          'INSERT INTO users (first_name, last_name, user_id, chat_id, username, is_guest, active) VALUES ($1, $2, $3, $4, $5, FALSE, TRUE) RETURNING id;',
           [first_name, last_name, userId, chatId, username]
         );
 
+        if (result && result.rows && Array.isArray(result.rows)) {
+            await pool.query(`INSERT INTO group_users (user_id, chat_id, chat_role) VALUES ($1, $2, 'game')`, [result.rows[0].id, chatId]);
+        }
+        else {
+            console.error('ADD USER RESULT ERROR: ', result);
+            throw new Error('Failed to add user to database');
+        }
+
         console.log('ADD USER RESULT: ', result);
         return '✅ Siz uğurla sistemdə qeydiyyatdan keçdiniz / Вы успешно зарегистрировались в системе';
-        // if (result && result.rowCount > 0) {
-        //     await pool.query('INSERT INTO group_users (user_id, chat_id) VALUES ($1, $2)', [userId, chatId]);
-        //     return result.rows[0];
-        // }
-        // else {
-        //     console.error('ADD USER RESULT ERROR: ', result);
-        //     throw new Error('Failed to add user to database');
-        // }
-
     } catch (error) {
         console.error('ADDING USERS: ', error);
         throw error;
