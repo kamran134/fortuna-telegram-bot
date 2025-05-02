@@ -83,6 +83,7 @@ export async function editUser(msg, bot) {
 
     try {
         const result = await getUserChatFromDatabase(userId);
+        console.log('RESULT: ', result);
 
         if (result) {
             userChatId = result.chat_id;
