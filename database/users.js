@@ -36,7 +36,10 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
 
 export async function getUsers(pool, chatId) {
     try {
-        const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
+        // const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
+        const result = 
+            await pool.query('SELECT * FROM group_users gu LEFT JOIN users u ON gu.user_id = u.id WHERE gu.chat_id = $1 AND u.is_guest = FALSE AND u.active = TRUE ORDER BY gu.id;', [chatId]);
+        
         if (result) {
             if (Array.isArray(result.rows)) return result.rows;
             else return undefined;
@@ -120,11 +123,26 @@ export async function getUserChat(pool, userId) {
     }
 }
 
-export async function addGuest(pool, {chatId, first_name, last_name, fullname}) {
+export async function addGuest_old(pool, {chatId, first_name, last_name}) {
     try {
         const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, first_name, last_name, active) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, TRUE) RETURNING id`,
             [chatId, first_name, last_name]);
-        
+
+        if (result && result.rows && Array.isArray(result.rows)) {
+            return result.rows[0].id;
+        } else {
+            console.error('ADD GUEST RESULT ERROR: ', result);
+        }
+    } catch (error) {
+        console.error('ADD GUEST ERROR: ', error);
+    }
+}
+
+export async function addGuest(pool, { game_id, first_name, last_name }) {
+    try {
+        const result = await pool.query(`INSERT INTO guests (first_name, last_name, game_id) VALUES ($1, $2, $3) RETURNING id`,
+            [first_name, last_name, game_id]);
+
         if (result && result.rows && Array.isArray(result.rows)) {
             return result.rows[0].id;
         } else {

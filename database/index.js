@@ -1,7 +1,7 @@
 // import { Pool } from 'pg';
 
 import pgk from 'pg';
-import { addUser, getUsers, getLastUser, searchUser, addGuest, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser } from './users.js';
+import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser } from './users.js';
 import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games.js';
 import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
 import { adminGroupAdd, getGroups } from './adminGroup.js';
@@ -59,7 +59,7 @@ export function getUndecidedPlayersFromDataBase(chatId) {
 }
 
 export function addGuestToDatabase(guestOptions) {
-    return addGuest(pool, guestOptions);
+    return addGuest_old(pool, guestOptions);
 }
 
 export function addGuestToGame(gameOptions) {
