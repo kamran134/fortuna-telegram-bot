@@ -36,7 +36,6 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
 
 export async function getUsers(pool, chatId) {
     try {
-        console.log('chatId: ', chatId);
         // const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
         const result = 
             await pool.query(`SELECT * FROM group_users gu 
