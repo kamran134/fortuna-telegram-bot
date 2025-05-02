@@ -38,7 +38,9 @@ export async function getUsers(pool, chatId) {
     try {
         // const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = true ORDER BY id;', [chatId]);
         const result = 
-            await pool.query('SELECT * FROM group_users gu LEFT JOIN users u ON gu.user_id = u.id WHERE gu.chat_id = $1 AND u.is_guest = FALSE AND u.active = TRUE ORDER BY gu.id;', [chatId]);
+            await pool.query(`SELECT * FROM group_users gu 
+                LEFT JOIN users u ON gu.user_id = u.id 
+                WHERE gu.chat_id = $1 AND u.is_guest = FALSE AND u.active = TRUE ORDER BY gu.user_id;`, [chatId]);
         
         if (result) {
             if (Array.isArray(result.rows)) return result.rows;
