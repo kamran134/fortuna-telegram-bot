@@ -4,7 +4,7 @@ import {
     changeGameLimit, connectTo, showGroups, showYourGroups, addJoke } from "../commands/index.js";
 import { editUser } from "../commands/adminCommands.js";
 import { saySomethingToInactive, tagUndecidedPlayers } from "../commands/gamePlayers.js";
-import { editJoke, listJokes, deleteJoke } from "../commands/jokes.js";
+import { editJoke, listJokes, deleteJoke, sayPrivate } from "../commands/jokes.js";
 
 export const onMessage = async (msg, bot) => {
     const chatId = msg.chat.id;
@@ -46,6 +46,7 @@ export const onMessage = async (msg, bot) => {
     else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
     else if (messageText.startsWith('/changelimit') && !isAdmin) bot.sendMessage(chatId, 'Я, конечно, всё понимаю, ну кроме квантовой физики и степени твоей наглости 🤨');
     else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨');
+    else if (messageText.startsWith('/sayprivate')) sayPrivate(msg, bot);
     else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && isAdmin) tagUndecidedPlayers(chatId, bot);
     else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может пошевелить всех!');
 

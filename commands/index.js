@@ -31,7 +31,7 @@ export { getGamePlayers, getAzList, addGuest, tagGamePlayers } from './gamePlaye
 export { agilliOl, whatTime, addJoke } from './jokes.js';
 export { connectTo, showGroups, showYourGroups } from './adminCommands.js';
 export { editUser } from './adminCommands.js';
-export { editJoke, listJokes } from './jokes.js';
+export { editJoke, listJokes, sayPrivate } from './jokes.js';
 export { deleteJoke } from '../database/jokes.js';
 export { tagUndecidedPlayers, saySomethingToInactive } from './gamePlayers.js';
 export { showMenu } from './common.js';

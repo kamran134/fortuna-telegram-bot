@@ -116,6 +116,61 @@ export async function editJoke(msg, bot) {
     }
 }
 
+export async function sayPrivate(msg, bot) {
+    const chatId = msg.chat.id;
+    const userId = msg.from.id;
+
+    const parts = msg.text.split(' ');
+    if (parts.length < 3) {
+        bot.sendMessage(chatId, '❌ Использование: /sayprivate @username сообщение или /sayprivate user_id сообщение');
+        return;
+    }
+
+    const target = parts[1];
+    const privateMsg = parts.slice(2).join(' ');
+
+    let targetId = null;
+    let displayName = target;
+
+    if (target.startsWith('@')) {
+        try {
+            const targetUser = await bot.getChat(target);
+            targetId = targetUser.id;
+            displayName = `@${targetUser.username || targetUser.first_name}`;
+        }
+        catch (error) {
+            console.error('Error fetching user by username:', error);
+            bot.sendMessage(chatId, '❌ Ошибка: Не удалось найти пользователя с таким именем.');
+            return;
+        }
+    } else if (!isNaN(target)) {
+        targetId = parseInt(target, 10);
+    }
+
+    if (!targetId) {
+        bot.sendMessage(chatId, '❌ Ошибка: Не удалось определить ID пользователя.');
+        return;
+    }
+
+    const callbackData = 'showPrivate_' + userId + '_' + targetId + '_' + encodeURIComponent(privateMsg);
+
+    // const callbackData = JSON.stringify({
+    //     type: 'show_private',
+    //     fromId: userId,
+    //     toId: targetId,
+    //     msg: privateMsg,
+    // });
+
+    bot.sendMessage(chatId, `Это сообщение для ${displayName}`, {
+        reply_to_message_id: msg.message_id,
+        reply_markup: {
+            inline_keyboard: [[
+                { text: '🔐 Посмотреть', callback_data: callbackData }
+            ]]
+        }
+    });
+}
+
 async function checkCreatorId(userId) {
     return (userId === 963292126 || userId === 112254199);
 }
