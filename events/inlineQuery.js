@@ -9,20 +9,21 @@ export const inlineQuery = async (query, bot) => {
 
     const parts = queryText.trim().split(' ');
 
-    if (parts.length < 2) {
+    if (parts.length < 3 || parts[0].toLowerCase() !== 'sayprivate') {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'help',
             title: 'Использование',
             input_message_content: {
-                message_text: '❌ Использование: @fortunaVolleybalBot sayprivate @username сообщение'
+                message_text: '❌ Использование: @botusername sayprivate @username сообщение'
             },
-            description: 'Например: @fortunaVolleybalBot sayprivate @user Привет!',
+            description: 'Например: @bot sayprivate @user Привет!',
         }]);
     }
 
-    const target = parts[0];
-    const privateMsg = parts.slice(1).join(' ');
+    const target = parts[1];
+    const privateMsg = parts.slice(2).join(' ');
+
     let targetId = null;
 
     try {
