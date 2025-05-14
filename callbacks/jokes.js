@@ -7,7 +7,12 @@ export async function sayPrivateButton(query, bot) {
 
         console.log('fromUserId: ', fromUserId, 'toId: ', toId, 'privateMsg: ', privateMsg, 'fromId: ', fromId);
 
-        if (fromUserId === toId || fromUserId === fromId) {
+        const normalizedFromUserId = String(fromUserId).trim();
+        const normalizedToId = String(toId).trim();
+        const normalizedFromId = String(fromId).trim();
+
+        if (normalizedFromUserId === normalizedToId ||
+            normalizedFromUserId === normalizedFromId) {
             console.log('\n\nRAVNO BLYAT\n\n');
             await bot.answerCallbackQuery({
                 callback_query_id: query.id,
