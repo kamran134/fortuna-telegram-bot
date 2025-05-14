@@ -21,7 +21,7 @@ const token = process.env.TELEGRAM_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
 bot.on('new_chat_members', async (msg) => {
-    newChatMembers(msg, bot);
+    await newChatMembers(msg, bot);
 });
 
 bot.on('left_chat_member', async (msg) => {

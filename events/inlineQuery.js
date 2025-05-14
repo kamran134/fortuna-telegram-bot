@@ -1,6 +1,9 @@
 import { getUserByUsernameFromDatabase } from "../database";
 
 export const inlineQuery = async (query, bot) => {
+
+    console.log('INLINE QUERY: ', query);
+
     const fromUser = query.from;
     const queryText = query.query;
 
