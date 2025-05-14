@@ -27,7 +27,7 @@ export const inlineQuery = async (query, bot) => {
     let targetId = null;
 
     try {
-        const targetUser = await getUserByUsernameFromDatabase(target);
+        const targetUser = await getUserByUsernameFromDatabase(target.slice(1));
         targetId = targetUser.id;
     } catch (e) {
         return bot.answerInlineQuery(query.id, [{
