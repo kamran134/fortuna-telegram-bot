@@ -135,7 +135,7 @@ export async function sayPrivate(msg, bot) {
     if (target.startsWith('@')) {
         try {
             const targetUser = await bot.getChat(target);
-            targetId = targetUser.id;
+            targetId = targetUser.user_id;
             displayName = `@${targetUser.username || targetUser.first_name}`;
         }
         catch (error) {
