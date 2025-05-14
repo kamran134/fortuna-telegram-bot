@@ -154,13 +154,6 @@ export async function sayPrivate(msg, bot) {
 
     const callbackData = 'showPrivate_' + userId + '_' + targetId + '_' + encodeURIComponent(privateMsg);
 
-    // const callbackData = JSON.stringify({
-    //     type: 'show_private',
-    //     fromId: userId,
-    //     toId: targetId,
-    //     msg: privateMsg,
-    // });
-
     bot.sendMessage(chatId, `Это сообщение для ${displayName}`, {
         reply_to_message_id: msg.message_id,
         reply_markup: {

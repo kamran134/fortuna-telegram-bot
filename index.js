@@ -4,6 +4,7 @@ import { onMessage } from './events/onMessage.js';
 import { callbackQuery } from './events/callbackQuery.js';
 import { newChatMembers } from './events/newChatMembers.js';
 import { leftChatMember } from './events/leftChatMember.js';
+import { inlineQuery } from './events/inlineQuery.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -35,4 +36,8 @@ bot.on('message', async (msg) => {
 
 bot.on('callback_query', async (query) => {
     await callbackQuery(query, bot);
+});
+
+bot.on('inline_query', async (query) => {
+    await inlineQuery(query, bot);
 });
