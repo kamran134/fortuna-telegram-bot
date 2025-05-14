@@ -1,12 +1,11 @@
 export async function sayPrivateButton(query, bot) {
     // const callbackData = 'showPrivate_' + userId + '_' + targetId + '_' + encodeURIComponent(privateMsg);
-    const [fromId, toId, privateMsg] = query.data.split('_').slice(1);
+    const [fromId, toId, rawMsg] = query.data.split('_').slice(1);
     const fromUserId = query.from.id;
 
+    const privateMsg = decodeURIComponent(rawMsg);
+
     try {
-
-        console.log('fromUserId: ', fromUserId, 'toId: ', toId, 'privateMsg: ', privateMsg, 'fromId: ', fromId);
-
         const normalizedFromUserId = String(fromUserId).trim();
         const normalizedToId = String(toId).trim();
         const normalizedFromId = String(fromId).trim();
