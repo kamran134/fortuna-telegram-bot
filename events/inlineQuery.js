@@ -1,4 +1,4 @@
-import { getUserByUsernameFromDatabase } from "../database";
+import { getUserByUsernameFromDatabase } from "../database/index.js";
 
 export const inlineQuery = async (query, bot) => {
 
