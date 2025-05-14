@@ -22,6 +22,14 @@ export async function sayPrivateButton(query, bot) {
     }
     catch (error) {
         console.error('Error in sayPrivateButton:', error);
-        bot.sendMessage(chatId, '❌ Ошибка: Не удалось обработать запрос.');
+        try {
+            await bot.answerCallbackQuery({
+                callback_query_id: query.id,
+                text: '❌ Произошла ошибка при обработке.',
+                show_alert: true
+            });
+        } catch (innerError) {
+            console.error('Ошибка при отправке answerCallbackQuery:', innerError);
+        }
     }
 }
