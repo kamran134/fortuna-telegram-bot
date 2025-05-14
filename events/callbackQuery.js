@@ -7,8 +7,13 @@ export const callbackQuery = async (query, bot) => {
     const chatId = ((query.message || {}).chat || {}).id;
     const userId = query.from.id;
     const user = query.from;
-    const chatMember = await bot.getChatMember(chatId, userId);
-    const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
+    let chatMember = null;
+    let isAdmin = false;
+
+    if (query.message) {
+        chatMember = await bot.getChatMember(chatId, userId);
+        isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
+    }
 
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
     else if (query.data.startsWith('notconfirmed_')) notConfirmedAttendance(query, bot);
