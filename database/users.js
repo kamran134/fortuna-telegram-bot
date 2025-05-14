@@ -69,6 +69,7 @@ export async function getLastUser(pool, chatId) {
 
 export async function getUserByUsername(pool, chatId, username) {
     try {
+        console.log('GET USER BY USERNAME: ', chatId, username);
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND username = $2 AND is_guest = FALSE AND active;', [chatId, username]);
         if (result) {
             if (Array.isArray(result.rows)) return result.rows[0];
