@@ -4,7 +4,7 @@ import { appointmentToTheGame, deactiveGame, declineAppointment, notConfirmedAtt
 import { getGamePlayers, showGames, register, agilliOl } from "../commands/index.js";
 
 export const callbackQuery = async (query, bot) => {
-    const chatId = query.message.chat.id;
+    const chatId = (query.message.chat || {}).id;
     const userId = query.from.id;
     const user = query.from;
     const chatMember = await bot.getChatMember(chatId, userId);
