@@ -4,6 +4,9 @@ export async function sayPrivateButton(query, bot) {
     const fromUserId = query.from.id;
 
     try {
+
+        console.log('fromUserId: ', fromUserId, 'toId: ', toId, 'privateMsg: ', privateMsg, 'fromId: ', fromId);
+
         if (fromUserId === toId || fromUserId === fromId) {
             await bot.answerCallbackQuery({
                 callback_query_id: query.id,
