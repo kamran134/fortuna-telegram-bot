@@ -1,7 +1,6 @@
 export async function sayPrivateButton(query, bot) {
     // const callbackData = 'showPrivate_' + userId + '_' + targetId + '_' + encodeURIComponent(privateMsg);
     const [fromId, toId, privateMsg] = query.data.split('_').slice(1);
-    const chatId = query.message.chat.id;
     const fromUserId = query.from.id;
 
     try {
