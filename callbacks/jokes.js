@@ -8,6 +8,7 @@ export async function sayPrivateButton(query, bot) {
         console.log('fromUserId: ', fromUserId, 'toId: ', toId, 'privateMsg: ', privateMsg, 'fromId: ', fromId);
 
         if (fromUserId === toId || fromUserId === fromId) {
+            console.log('\n\nRAVNO BLYAT\n\n');
             await bot.answerCallbackQuery({
                 callback_query_id: query.id,
                 text: `Это сообщение для ${fromId}: ${privateMsg}`,
