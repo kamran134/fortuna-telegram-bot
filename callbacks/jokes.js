@@ -18,7 +18,7 @@ export async function sayPrivateButton(query, bot) {
 
     const { from, to, message } = msgData;
 
-    if (fromUser.id === from || fromUser.id === to) {
+    if (fromUser.id === +from || fromUser.id === +to) {
         await bot.answerCallbackQuery({
             callback_query_id: query.id,
             text: `🔐 Сообщение: ${message}`,
