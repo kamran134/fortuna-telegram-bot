@@ -1,9 +1,9 @@
 import { getUserByUsernameFromDatabase } from "../database/index.js";
+import crypto from 'crypto';
+
+const privateMessage = {}; // временное хранилище для приватных сообщений
 
 export const inlineQuery = async (query, bot) => {
-
-    console.log('INLINE QUERY: ', query);
-
     const fromUser = query.from;
     const queryText = query.query;
 
@@ -28,7 +28,6 @@ export const inlineQuery = async (query, bot) => {
 
     try {
         const targetUser = await getUserByUsernameFromDatabase(target.slice(1));
-        console.log('\n\ntargetUser: ', targetUser);
         targetId = targetUser.user_id;
     } catch (e) {
         return bot.answerInlineQuery(query.id, [{
@@ -42,7 +41,16 @@ export const inlineQuery = async (query, bot) => {
         }]);
     }
 
-    const callbackData = `showPrivate_${fromUser.id}_${targetId}_${encodeURIComponent(privateMsg)}`;
+    const hash = crypto.createHash('md5').update(fromUser.id + targetId + privateMsg).digest('hex');
+
+    privateMessage[hash] = {
+        from: fromUser.id,
+        to: targetId,
+        message: privateMsg,
+    };
+
+    // const callbackData = `showPrivate_${fromUser.id}_${targetId}_${encodeURIComponent(privateMsg)}`;
+    const callbackData = `showPrivate_${hash}`;
 
     const result = {
         type: 'article',
@@ -61,3 +69,5 @@ export const inlineQuery = async (query, bot) => {
 
     bot.answerInlineQuery(query.id, [result], { cache_time: 0 });
 }
+
+export { privateMessage };

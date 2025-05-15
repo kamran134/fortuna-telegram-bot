@@ -1,10 +1,41 @@
+import { privateMessage } from "../events/inlineQuery.js";
+
 export async function sayPrivateButton(query, bot) {
-    // const callbackData = 'showPrivate_' + userId + '_' + targetId + '_' + encodeURIComponent(privateMsg);
-    const [fromId, toId, rawMsg] = query.data.split('_').slice(1);
-    const fromUserId = query.from.id;
+    // const [fromId, toId, rawMsg] = query.data.split('_').slice(1);
+    // const fromUserId = query.from.id;
+    const fromUser = query.from;
+    const hash = query.data.split('_')[1];
 
-    const privateMsg = decodeURIComponent(rawMsg);
+    const msgData = privateMessage[hash];
 
+    if (!msgData) {
+        return bot.answerCallbackQuery({
+            callback_query_id: query.id,
+            text: '❌ Ошибка: Сообщение не найдено.',
+            show_alert: true
+        });
+    }
+
+    const { from, to, message } = msgData;
+
+    if (fromUser.id === from || fromUser.id === to) {
+        await bot.answerCallbackQuery({
+            callback_query_id: query.id,
+            text: `🔐 Сообщение: ${message}`,
+            show_alert: true,
+        });
+    }
+    else {
+        await bot.answerCallbackQuery({
+            callback_query_id: query.id,
+            text: 'Это сообщение не для тебя 🙅‍♂️',
+            show_alert: true,
+        });
+    }
+
+    // const privateMsg = decodeURIComponent(rawMsg);
+
+    /*
     try {
         const normalizedFromUserId = String(fromUserId).trim();
         const normalizedToId = String(toId).trim();
@@ -12,7 +43,6 @@ export async function sayPrivateButton(query, bot) {
 
         if (normalizedFromUserId === normalizedToId ||
             normalizedFromUserId === normalizedFromId) {
-            console.log('\n\nRAVNO BLYAT\n\n');
             await bot.answerCallbackQuery({
                 callback_query_id: query.id,
                 text: `Это сообщение для ${fromId}: ${privateMsg}`,
@@ -39,4 +69,5 @@ export async function sayPrivateButton(query, bot) {
             console.error('Ошибка при отправке answerCallbackQuery:', innerError);
         }
     }
+    */
 }
