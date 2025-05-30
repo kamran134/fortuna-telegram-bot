@@ -1,7 +1,7 @@
 // import { Pool } from 'pg';
 
 import pgk from 'pg';
-import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser } from './users.js';
+import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser, getUserByUsername } from './users.js';
 import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games.js';
 import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
 import { adminGroupAdd, getGroups } from './adminGroup.js';
@@ -28,6 +28,10 @@ export function addUserToDatabase(chatAndUser) {
 
 export function getUsersFromDatabase(chatId) {
     return getUsers(pool, chatId);
+}
+
+export const getUserByUsernameFromDatabase = async (username) => {
+    return getUserByUsername(pool, username);
 }
 
 export function getLastUserFromDatabase(chatId) {

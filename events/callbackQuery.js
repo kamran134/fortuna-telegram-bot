@@ -1,14 +1,19 @@
 import { appointmentToTheGame, deactiveGame, declineAppointment, notConfirmedAttendance, privateAppointmentToTheGame, 
     privateDeclineAppointment, privateNotConfirmedAttendance, searchUserInSelectedGroup, showGamesInSelectedGroup, 
-    showLastUserInSelectedGroup, showUsersInSelectedGroup, startGameInSelectedGroup, tagGamePlayersInSelectedGroup } from "../callbacks/index.js";
+    showLastUserInSelectedGroup, showUsersInSelectedGroup, startGameInSelectedGroup, tagGamePlayersInSelectedGroup, sayPrivateButton } from "../callbacks/index.js";
 import { getGamePlayers, showGames, register, agilliOl } from "../commands/index.js";
 
 export const callbackQuery = async (query, bot) => {
-    const chatId = query.message.chat.id;
+    const chatId = ((query.message || {}).chat || {}).id;
     const userId = query.from.id;
     const user = query.from;
-    const chatMember = await bot.getChatMember(chatId, userId);
-    const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
+    let chatMember = null;
+    let isAdmin = false;
+
+    if (query.message) {
+        chatMember = await bot.getChatMember(chatId, userId);
+        isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
+    }
 
     if (query.data.startsWith('appointment_')) appointmentToTheGame(query, bot);
     else if (query.data.startsWith('notconfirmed_')) notConfirmedAttendance(query, bot);
@@ -28,4 +33,5 @@ export const callbackQuery = async (query, bot) => {
     else if (query.data === 'list') getGamePlayers(chatId, bot);
     else if (query.data === 'register') register({ chatId, user }, bot);
     else if (query.data === 'agilliol') agilliOl(chatId, bot);
+    else if (query.data.startsWith('showPrivate_')) sayPrivateButton(query, bot);
 }
