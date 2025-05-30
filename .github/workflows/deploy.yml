@@ -15,7 +15,7 @@ jobs:
 
       - name: Debug secret
         run: |
-          echo "FORTUNE_KAMATERA is set: ${{ secrets.FORTUNE_KAMATERA != '' }}"
+          echo "FORTUNE_KAMATERA is set: ${{ secrets.GHCR_PAT != '' }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.FORTUNE_KAMATERA }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -47,7 +47,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.PORT }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
             cd /root
-            echo "${{ secrets.FORTUNE_KAMATERA }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker-compose up -d web
             docker system prune -f -a
           EOF
