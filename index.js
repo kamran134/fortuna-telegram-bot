@@ -20,18 +20,47 @@ const bot = new TelegramBot(token);
 
 bot.setWebHook(webhookUrl, {
     certificate: fs.readFileSync('/root/cert.pem'),
+}).then(() => {
+    console.log('Webhook set successfully:', webhookUrl);
+}).catch(error => {
+    console.error('Failed to set webhook:', error);
 });
 
 const server = https.createServer({
     key: fs.readFileSync('/root/key.pem'),
     cert: fs.readFileSync('/root/cert.pem'),
 }, (req, res) => {
-    bot.processUpdate(JSON.parse(req.body));
-    res.writeHead(200);
-    res.end();
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+        try {
+            bot.processUpdate(JSON.parse(body));
+            res.writeHead(200);
+            res.end();
+        } catch (error) {
+            console.error('Error processing webhook update:', error);
+            res.writeHead(500);
+            res.end();
+        }
+    });
 });
 
 server.listen(8443);
+
+setInterval(async () => {
+    try {
+        const webhookInfo = await bot.getWebhookInfo();
+        console.log('Webhook status:', webhookInfo);
+        if (!webhookInfo.url) {
+            console.log('Webhook not set, registering...');
+            await bot.setWebHook('https://42n.space:8443/bot' + token, {
+                certificate: fs.readFileSync('/root/cert.pem'),
+            });
+        }
+    } catch (error) {
+        console.error('Webhook check failed:', error);
+    }
+}, 300000); // Проверять каждые 5 минут
 
 bot.on('new_chat_members', async (msg) => {
     await newChatMembers(msg, bot);
@@ -44,7 +73,7 @@ bot.on('left_chat_member', async (msg) => {
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     await onMessage(msg, bot);
-    
+
 });
 
 bot.on('callback_query', async (query) => {
