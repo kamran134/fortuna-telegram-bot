@@ -7,6 +7,5 @@ export const JokeTypes = {
     SAY_SOMETHING_TO_INACTIVE: 6,
     DELETE_PLAYER: 7,
     TAG_UNDECIDED: 8
-} as const;
-
-export type JokeTypesValues = typeof JokeTypes[keyof typeof JokeTypes]; 
+};
+//# sourceMappingURL=jokeTypes.js.map

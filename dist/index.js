@@ -7,21 +7,15 @@ import { inlineQuery } from './events/inlineQuery.js';
 import dotenv from 'dotenv';
 import https from 'https';
 import fs from 'fs';
-import { IncomingMessage, ServerResponse } from 'http';
-
 dotenv.config();
-
 // Устанавливаем токен, который вы получили от BotFather
 const token = process.env.TELEGRAM_TOKEN;
 if (!token) {
     throw new Error('TELEGRAM_TOKEN is not defined in environment variables');
 }
-
 const webhookUrl = 'https://42n.space:8443/bot' + token;
-
 // Создаем экземпляр бота
 const bot = new TelegramBot(token);
-
 bot.setWebHook(webhookUrl, {
     certificate: fs.readFileSync('/root/cert.pem', 'utf8'),
 }).then(() => {
@@ -29,11 +23,10 @@ bot.setWebHook(webhookUrl, {
 }).catch(error => {
     console.error('Failed to set webhook:', error);
 });
-
 const server = https.createServer({
     key: fs.readFileSync('/root/key.pem'),
     cert: fs.readFileSync('/root/cert.pem'),
-}, (req: IncomingMessage, res: ServerResponse) => {
+}, (req, res) => {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -41,16 +34,15 @@ const server = https.createServer({
             bot.processUpdate(JSON.parse(body));
             res.writeHead(200);
             res.end();
-        } catch (error) {
+        }
+        catch (error) {
             console.error('Error processing webhook update:', error);
             res.writeHead(500);
             res.end();
         }
     });
 });
-
 server.listen(8443);
-
 setInterval(async () => {
     try {
         const webhookInfo = await bot.getWebHookInfo();
@@ -61,28 +53,25 @@ setInterval(async () => {
                 certificate: fs.readFileSync('/root/cert.pem', 'utf8'),
             });
         }
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Webhook check failed:', error);
     }
 }, 300000); // Проверять каждые 5 минут
-
 bot.on('new_chat_members', async (msg) => {
     await newChatMembers(msg, bot);
 });
-
 bot.on('left_chat_member', async (msg) => {
     await leftChatMember(msg, bot);
 });
-
 // Слушаем сообщения
 bot.on('message', async (msg) => {
     await onMessage(msg, bot);
 });
-
 bot.on('callback_query', async (query) => {
     await callbackQuery(query, bot);
 });
-
 bot.on('inline_query', async (query) => {
     await inlineQuery(query, bot);
-}); 
+});
+//# sourceMappingURL=index.js.map

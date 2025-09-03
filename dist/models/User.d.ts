@@ -11,7 +11,6 @@ export interface User {
     confirmed_attendance?: boolean;
     payed?: boolean;
 }
-
 export interface ChatMember {
     user: User;
     status: 'creator' | 'administrator' | 'member' | 'restricted' | 'left' | 'kicked';
@@ -29,4 +28,4 @@ export interface ChatMember {
     can_send_media_messages?: boolean;
     can_send_other_messages?: boolean;
     can_add_web_page_previews?: boolean;
-} 
+}

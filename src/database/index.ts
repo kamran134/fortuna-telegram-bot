@@ -5,7 +5,7 @@ import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlay
 import { adminGroupAdd, getGroups } from './adminGroup.js';
 import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes.js';
 import { User } from '../models/User.js';
-import { JokeTypes } from '../common/jokeTypes.js';
+import { JokeTypes, JokeTypesValues } from '../common/jokeTypes.js';
 import { pool } from './config.js';
 
 interface ChatAndUser {
@@ -14,8 +14,12 @@ interface ChatAndUser {
 }
 
 interface GameOptions {
+    date: string;
+    start: string;
+    end: string;
+    users_limit: number;
+    location: string;
     label: string;
-    limit: number;
 }
 
 interface GuestOptions {
@@ -36,7 +40,7 @@ interface GamePlayerOptions {
     gameId: number;
     chatId: number;
     userId: number;
-    confirmed_attendance?: boolean;
+    confirmed_attendance: boolean;
 }
 
 interface UserEditOptions {
@@ -146,24 +150,29 @@ export async function checkGameStatusFromDatabase(gameId: number): Promise<boole
     return checkGameStatus(pool, gameId);
 }
 
-export async function getJokeFromDataBase(jokeType: JokeTypes): Promise<string> {
-    return getJoke(pool, jokeType);
+export async function getJokeFromDataBase(jokeType: JokeTypesValues): Promise<string> {
+    const result = await getJoke(pool, jokeType);
+    return result || '';
 }
 
-export async function addJokeToDataBase(joke: string, jokeType: JokeTypes): Promise<string> {
-    return addJoke(pool, joke, jokeType);
+export async function addJokeToDataBase(joke: string, jokeType: JokeTypesValues): Promise<string> {
+    await addJoke(pool, joke, jokeType);
+    return 'Joke added successfully';
 }
 
 export async function deleteJokeFromDataBase(jokeId: number): Promise<string> {
-    return deleteJoke(pool, jokeId);
+    await deleteJoke(pool, jokeId);
+    return 'Joke deleted successfully';
 }
 
-export async function getJokesFromDataBase(jokeType: JokeTypes): Promise<any[]> {
-    return getJokes(pool, jokeType);
+export async function getJokesFromDataBase(jokeType: JokeTypesValues): Promise<any[]> {
+    const result = await getJokes(pool, jokeType);
+    return result || [];
 }
 
-export async function updateJokeInDataBase(jokeId: number, joke: string, jokeType: JokeTypes): Promise<string> {
-    return updateJoke(pool, jokeId, joke, jokeType);
+export async function updateJokeInDataBase(jokeId: number, joke: string, jokeType: JokeTypesValues): Promise<string> {
+    await updateJoke(pool, jokeId, joke, jokeType);
+    return 'Joke updated successfully';
 }
 
 export async function removeUserFromDatabase(chatId: number, userId: number): Promise<string> {
