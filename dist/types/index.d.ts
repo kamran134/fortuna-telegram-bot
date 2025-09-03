@@ -5,3 +5,4 @@ export interface BotContext {
 export type MessageHandler = (msg: Message, bot: any) => Promise<void>;
 export type CallbackQueryHandler = (query: CallbackQuery, bot: any) => Promise<void>;
 export type InlineQueryHandler = (query: InlineQuery, bot: any) => Promise<void>;
+//# sourceMappingURL=index.d.ts.map

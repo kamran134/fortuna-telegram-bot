@@ -11,6 +11,13 @@ services:
     volumes:
       - ~/pg_data:/var/lib/postgresql/data #- db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/redis_data:/data
 #    networks:
 #      - postgres_network
   web:
@@ -20,6 +27,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
 #      - db-fortuna
 #    networks:
 #      - postgres_network

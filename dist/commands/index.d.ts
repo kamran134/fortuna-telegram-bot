@@ -1,5 +1,5 @@
-export { register, getRegistered, unregister } from './registration.js';
-export { showMenu, tagUsers, listUsers, tagUsersByCommas } from './common.js';
+export { register, getRegistered, unregister } from './registration';
+export { showMenu, tagUsers, listUsers, tagUsersByCommas } from './common';
 export declare const startGame: (msg: any, bot: any) => Promise<void>;
 export declare const showGames: (chatId: number, bot: any, deleteMode?: boolean) => Promise<void>;
 export declare const deactiveGames: (msg: any, bot: any, isAdmin: boolean) => Promise<void>;
@@ -21,3 +21,4 @@ export declare const editJoke: (msg: any, bot: any) => Promise<void>;
 export declare const listJokes: (msg: any, bot: any) => Promise<void>;
 export declare const deleteJoke: (msg: any, bot: any) => Promise<void>;
 export declare const sayPrivate: (msg: any, bot: any) => Promise<void>;
+//# sourceMappingURL=index.d.ts.map

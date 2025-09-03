@@ -1,5 +1,8 @@
-import { register } from "../commands/index.js";
-export const newChatMembers = async (msg, bot) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.newChatMembers = void 0;
+const commands_1 = require("../commands");
+const newChatMembers = async (msg, bot) => {
     const chatId = msg.chat.id;
     const newMembers = msg.new_chat_members;
     if (!newMembers)
@@ -12,14 +15,14 @@ export const newChatMembers = async (msg, bot) => {
             const firstName = member.first_name;
             const lastName = member.last_name;
             // Вызываем функцию register, передавая объект message, имитирующий сообщение от нового пользователя
-            register({
+            (0, commands_1.register)({
                 chatId,
                 user: {
                     id: userId,
                     user_id: userId,
-                    username: username,
+                    username: username || undefined,
                     first_name: firstName,
-                    last_name: lastName
+                    last_name: lastName || undefined,
                 }
             }, bot);
             // Опционально: Можно отправить приветственное сообщение новому пользователю
@@ -31,4 +34,5 @@ export const newChatMembers = async (msg, bot) => {
         }
     }
 };
+exports.newChatMembers = newChatMembers;
 //# sourceMappingURL=newChatMembers.js.map

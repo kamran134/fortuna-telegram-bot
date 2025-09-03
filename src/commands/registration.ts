@@ -1,8 +1,8 @@
 import { Message } from 'node-telegram-bot-api';
-import { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } from '../database/index.js';
-import { tagUsers, listUsers } from './common.js';
-import { JokeTypes } from '../common/jokeTypes.js';
-import { User } from '../models/User.js';
+import { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } from '../database';
+import { tagUsers, listUsers } from './common';
+import { JokeTypes } from '../common/jokeTypes';
+import { User } from '../models/User';
 
 interface ChatAndUser {
     chatId: number;

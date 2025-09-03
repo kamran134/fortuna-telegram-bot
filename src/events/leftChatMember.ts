@@ -1,5 +1,5 @@
 import { Message } from 'node-telegram-bot-api';
-import { unregister } from "../commands/registration.js";
+import { unregister } from "../commands/registration";
 
 export const leftChatMember = async (msg: Message, bot: any): Promise<void> => {
     const chatId = msg.chat.id;

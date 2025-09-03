@@ -1,5 +1,11 @@
-import { getUsersFromDatabase, getLastUserFromDatabase, searchUserInDatabase } from "../database/index.js";
-export async function sendMessage(bot, chatId, message) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendMessage = sendMessage;
+exports.showUsersInSelectedGroup = showUsersInSelectedGroup;
+exports.showLastUserInSelectedGroup = showLastUserInSelectedGroup;
+exports.searchUserInSelectedGroup = searchUserInSelectedGroup;
+const database_1 = require("../database");
+async function sendMessage(bot, chatId, message) {
     try {
         const maxLength = 4096;
         const messageLength = message.length;
@@ -16,7 +22,7 @@ export async function sendMessage(bot, chatId, message) {
         throw error;
     }
 }
-export async function showUsersInSelectedGroup(query, bot) {
+async function showUsersInSelectedGroup(query, bot) {
     const adminChatId = query.message?.chat.id;
     const selectedGroupChatIdStr = query.data?.split('_')[1];
     if (!adminChatId || !selectedGroupChatIdStr)
@@ -25,7 +31,7 @@ export async function showUsersInSelectedGroup(query, bot) {
     if (isNaN(selectedGroupChatId))
         return;
     try {
-        const users = await getUsersFromDatabase(selectedGroupChatId);
+        const users = await (0, database_1.getUsersFromDatabase)(selectedGroupChatId);
         if (users && users.length > 0) {
             const usersString = users.map((user) => `ID: ${user.id} | Имя: ${user.first_name} | Фамилия: ${user.last_name} | username: ${user.username} |\n` +
                 `На азербайджанском: ${user.fullname_az}`).join('\n----------------------------------\n');
@@ -39,7 +45,7 @@ export async function showUsersInSelectedGroup(query, bot) {
         console.error('SHOW USERS ERROR: ', error);
     }
 }
-export async function showLastUserInSelectedGroup(query, bot) {
+async function showLastUserInSelectedGroup(query, bot) {
     const adminChatId = query.message?.chat.id;
     const selectedGroupChatIdStr = query.data?.split('_')[1];
     if (!adminChatId || !selectedGroupChatIdStr)
@@ -48,7 +54,7 @@ export async function showLastUserInSelectedGroup(query, bot) {
     if (isNaN(selectedGroupChatId))
         return;
     try {
-        const user = await getLastUserFromDatabase(selectedGroupChatId);
+        const user = await (0, database_1.getLastUserFromDatabase)(selectedGroupChatId);
         if (user) {
             await bot.sendMessage(adminChatId, `ID: ${user.id}\nИмя: ${user.first_name}\nФамилия: ${user.last_name}\nНа азербайджанском: ${user.fullname_az}`);
         }
@@ -57,7 +63,7 @@ export async function showLastUserInSelectedGroup(query, bot) {
         console.error('SHOW LAST USER ERROR: ', error);
     }
 }
-export async function searchUserInSelectedGroup(query, bot) {
+async function searchUserInSelectedGroup(query, bot) {
     const adminChatId = query.message?.chat.id;
     const selectedGroupChatIdStr = query.data?.split('_')[1];
     if (!adminChatId || !selectedGroupChatIdStr)
@@ -78,7 +84,7 @@ export async function searchUserInSelectedGroup(query, bot) {
         }
         else if (msg.chat.id === adminChatId) {
             try {
-                const users = await searchUserInDatabase(selectedGroupChatId, msg.text);
+                const users = await (0, database_1.searchUserInDatabase)(selectedGroupChatId, msg.text);
                 if (users && users.length > 0) {
                     const usersString = users.map((user) => `ID: ${user.id} | Имя: ${user.first_name} | Фамилия: ${user.last_name} | username: ${user.username} |\n` +
                         `На азербайджанском: ${user.fullname_az}`).join('\n----------------------------------\n');

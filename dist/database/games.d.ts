@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { Game } from '../models/Game.js';
+import { Game } from '../models/Game';
 interface GameOptions {
     date: string;
     start: string;
@@ -23,3 +23,4 @@ export declare function deleteGame(pool: Pool, gameId: number): Promise<string>;
 export declare function changeGameLimit(pool: Pool, chatId: number, { label, limit }: GameLimitOptions): Promise<string>;
 export declare function checkGameStatus(pool: Pool, gameId: number): Promise<boolean>;
 export {};
+//# sourceMappingURL=games.d.ts.map

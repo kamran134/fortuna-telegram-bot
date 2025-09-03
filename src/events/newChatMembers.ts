@@ -1,5 +1,6 @@
 import { Message } from 'node-telegram-bot-api';
-import { register } from "../commands/index.js";
+import { register } from "../commands";
+import { User } from '../models/User';
 
 export const newChatMembers = async (msg: Message, bot: any): Promise<void> => {
     const chatId = msg.chat.id;
@@ -21,10 +22,10 @@ export const newChatMembers = async (msg: Message, bot: any): Promise<void> => {
                 user: {
                     id: userId,
                     user_id: userId,
-                    username: username,
+                    username: username || undefined,
                     first_name: firstName,
-                    last_name: lastName
-                }
+                    last_name: lastName || undefined,
+                } as User
             }, bot);
 
             // Опционально: Можно отправить приветственное сообщение новому пользователю

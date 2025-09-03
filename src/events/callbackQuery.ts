@@ -3,9 +3,10 @@ import {
     appointmentToTheGame, deactiveGame, declineAppointment, notConfirmedAttendance, privateAppointmentToTheGame, 
     privateDeclineAppointment, privateNotConfirmedAttendance, searchUserInSelectedGroup, showGamesInSelectedGroup, 
     showLastUserInSelectedGroup, showUsersInSelectedGroup, startGameInSelectedGroup, tagGamePlayersInSelectedGroup, sayPrivateButton 
-} from "../callbacks/index.js";
-import { getGamePlayers, showGames, register, agilliOl } from "../commands/index.js";
-import { CallbackQueryHandler } from '../types/index.js';
+} from "../callbacks";
+import { getGamePlayers, showGames, register, agilliOl } from "../commands";
+import { CallbackQueryHandler } from '../types';
+import { User } from '../models/User';
 
 export const callbackQuery: CallbackQueryHandler = async (query: CallbackQuery, bot) => {
     const chatId = ((query.message || {}).chat || {}).id;
@@ -37,7 +38,18 @@ export const callbackQuery: CallbackQueryHandler = async (query: CallbackQuery, 
     else if (query.data?.startsWith('selectedGroupForPayList_') && isAdmin) {}
     else if (query.data === 'showgames') showGames(chatId, bot);
     else if (query.data === 'list') getGamePlayers(chatId, bot);
-    else if (query.data === 'register') register({ chatId, user }, bot);
+    else if (query.data === 'register') {
+        const ourUser: User = {
+            id: user.id,
+            user_id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name || undefined,
+            username: user.username || undefined,
+            language_code: user.language_code || undefined,
+            is_bot: user.is_bot
+        };
+        register({ chatId, user: ourUser }, bot);
+    }
     else if (query.data === 'agilliol') agilliOl(chatId, bot);
     else if (query.data?.startsWith('showPrivate_')) sayPrivateButton(query, bot);
 };

@@ -1,6 +1,6 @@
 import { CallbackQuery } from 'node-telegram-bot-api';
-// import { privateMessage } from "../events/inlineQuery.js";
-import { getPrivateMessage } from "../redis/sayPrivateRedis.js";
+// import { privateMessage } from "../events/inlineQuery";
+import { getPrivateMessage } from "../redis/sayPrivateRedis";
 
 export async function sayPrivateButton(query: CallbackQuery, bot: any): Promise<void> {
     // const [fromId, toId, rawMsg] = query.data.split('_').slice(1);

@@ -1,5 +1,15 @@
-import moment from "moment";
-export async function getGames(pool, chatId) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getGames = getGames;
+exports.getGamesTimes = getGamesTimes;
+exports.addGame = addGame;
+exports.deactiveGame = deactiveGame;
+exports.deleteGame = deleteGame;
+exports.changeGameLimit = changeGameLimit;
+exports.checkGameStatus = checkGameStatus;
+const tslib_1 = require("tslib");
+const moment_1 = tslib_1.__importDefault(require("moment"));
+async function getGames(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
         if (result && result.rows) {
@@ -15,7 +25,7 @@ export async function getGames(pool, chatId) {
         throw error;
     }
 }
-export async function getGamesTimes(pool, chatId) {
+async function getGamesTimes(pool, chatId) {
     try {
         const result = await pool.query(`SELECT game_starts, label FROM games WHERE chat_id = $1 AND status = TRUE;`, [chatId]);
         if (result && result.rows && Array.isArray(result.rows)) {
@@ -31,10 +41,10 @@ export async function getGamesTimes(pool, chatId) {
         throw error;
     }
 }
-export async function addGame(pool, chatId, { date, start, end, users_limit, location, label }) {
+async function addGame(pool, chatId, { date, start, end, users_limit, location, label }) {
     try {
         const result = await pool.query(`INSERT INTO games (game_date, game_starts, game_ends, users_limit, place, chat_id, status, ` +
-            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, game_starts, game_ends, place) DO NOTHING RETURNING id;`, [moment(date, 'DD.MM.YYYY').toISOString(), start, end, users_limit, location, chatId, label]);
+            `label) VALUES ($1, $2, $3, $4, $5, $6, TRUE, $7) ON CONFLICT(chat_id, game_date, game_starts, game_ends, place) DO NOTHING RETURNING id;`, [(0, moment_1.default)(date, 'DD.MM.YYYY').toISOString(), start, end, users_limit, location, chatId, label]);
         if (result && result.rows && result.rows.length > 0) {
             return result.rows[0].id;
         }
@@ -47,7 +57,7 @@ export async function addGame(pool, chatId, { date, start, end, users_limit, loc
         throw error;
     }
 }
-export async function deactiveGame(pool, gameId) {
+async function deactiveGame(pool, gameId) {
     const client = await pool.connect();
     try {
         const result = await client.query(`UPDATE games SET status = FALSE WHERE id = $1 RETURNING label;`, [gameId]);
@@ -67,7 +77,7 @@ export async function deactiveGame(pool, gameId) {
         client.release();
     }
 }
-export async function deleteGame(pool, gameId) {
+async function deleteGame(pool, gameId) {
     const client = await pool.connect();
     try {
         // Удаляем связанные строки в таблице game_users
@@ -90,7 +100,7 @@ export async function deleteGame(pool, gameId) {
         client.release();
     }
 }
-export async function changeGameLimit(pool, chatId, { label, limit }) {
+async function changeGameLimit(pool, chatId, { label, limit }) {
     const client = await pool.connect();
     try {
         const result = await client.query(`UPDATE games SET users_limit = $1 WHERE chat_id = $2 AND label = $3 RETURNING label;`, [limit, chatId, label]);
@@ -110,7 +120,7 @@ export async function changeGameLimit(pool, chatId, { label, limit }) {
         client.release();
     }
 }
-export async function checkGameStatus(pool, gameId) {
+async function checkGameStatus(pool, gameId) {
     const client = await pool.connect();
     try {
         const result = await client.query(`SELECT status FROM games WHERE id = $1;`, [gameId]);

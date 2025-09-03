@@ -1,4 +1,7 @@
-export const JokeTypes = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.JokeTypes = void 0;
+exports.JokeTypes = {
     LEFT_GAME: 1,
     TAG_REGISTERED: 2,
     START_GAME: 3,

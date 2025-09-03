@@ -1,4 +1,20 @@
-export async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addUser = addUser;
+exports.getUsers = getUsers;
+exports.getLastUser = getLastUser;
+exports.getUserByUsername = getUserByUsername;
+exports.searchUser = searchUser;
+exports.getAllUsers = getAllUsers;
+exports.getUserChat = getUserChat;
+exports.addGuest_old = addGuest_old;
+exports.addGuest = addGuest;
+exports.getRandomUser = getRandomUser;
+exports.getInactiveUsers = getInactiveUsers;
+exports.getAzList = getAzList;
+exports.editUser = editUser;
+exports.removeUser = removeUser;
+async function addUser(pool, { user: { first_name, last_name, id: userId, username }, chatId }) {
     try {
         // check if user already exists
         const checkUser = await pool.query('SELECT * FROM users WHERE user_id = $1', [userId]);
@@ -29,7 +45,7 @@ export async function addUser(pool, { user: { first_name, last_name, id: userId,
         throw error;
     }
 }
-export async function getUsers(pool, chatId) {
+async function getUsers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM group_users gu 
             LEFT JOIN users u ON gu.user_id = u.id 
@@ -50,7 +66,7 @@ export async function getUsers(pool, chatId) {
         throw error;
     }
 }
-export async function getLastUser(pool, chatId) {
+async function getLastUser(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active ORDER BY id DESC LIMIT 1;', [chatId]);
         if (result) {
@@ -66,7 +82,7 @@ export async function getLastUser(pool, chatId) {
         return null;
     }
 }
-export async function getUserByUsername(pool, username) {
+async function getUserByUsername(pool, username) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE username = $1;', [username]);
         if (result) {
@@ -82,7 +98,7 @@ export async function getUserByUsername(pool, username) {
         return null;
     }
 }
-export async function searchUser(pool, chatId, searchString) {
+async function searchUser(pool, chatId, searchString) {
     try {
         const query = `
             SELECT * 
@@ -108,7 +124,7 @@ export async function searchUser(pool, chatId, searchString) {
         return [];
     }
 }
-export async function getAllUsers(pool, chatId) {
+async function getAllUsers(pool, chatId) {
     try {
         const result = await pool.query('SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE;', [chatId]);
         if (result) {
@@ -127,7 +143,7 @@ export async function getAllUsers(pool, chatId) {
         throw error;
     }
 }
-export async function getUserChat(pool, userId) {
+async function getUserChat(pool, userId) {
     try {
         const result = await pool.query('SELECT chat_id FROM users WHERE id = $1', [userId]);
         if (result) {
@@ -146,7 +162,7 @@ export async function getUserChat(pool, userId) {
         throw error;
     }
 }
-export async function addGuest_old(pool, { chatId, first_name, last_name }) {
+async function addGuest_old(pool, { chatId, first_name, last_name }) {
     try {
         const result = await pool.query(`INSERT INTO users (user_id, chat_id, is_guest, first_name, last_name, active) VALUES ((SELECT MAX(id) FROM users) + 1, $1, TRUE, $2, $3, TRUE) RETURNING id`, [chatId, first_name, last_name]);
         if (result && result.rows && Array.isArray(result.rows)) {
@@ -162,7 +178,7 @@ export async function addGuest_old(pool, { chatId, first_name, last_name }) {
         return null;
     }
 }
-export async function addGuest(pool, { game_id, first_name, last_name }) {
+async function addGuest(pool, { game_id, first_name, last_name }) {
     try {
         const result = await pool.query(`INSERT INTO guests (first_name, last_name, game_id) VALUES ($1, $2, $3) RETURNING id`, [first_name, last_name, game_id]);
         if (result && result.rows && Array.isArray(result.rows)) {
@@ -178,7 +194,7 @@ export async function addGuest(pool, { game_id, first_name, last_name }) {
         return null;
     }
 }
-export async function getRandomUser(pool, chatId) {
+async function getRandomUser(pool, chatId) {
     try {
         const result = await pool.query(`SELECT * FROM users WHERE chat_id = $1 AND is_guest = FALSE AND active = TRUE ORDER BY RANDOM() LIMIT 1;`, [chatId]);
         if (result && result.rows) {
@@ -194,7 +210,7 @@ export async function getRandomUser(pool, chatId) {
         throw error;
     }
 }
-export async function getInactiveUsers(pool, chatId) {
+async function getInactiveUsers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT u.user_id, u.first_name, u.last_name, u.username, COUNT(gu.game_id) AS game_count 
         FROM users u 
@@ -215,7 +231,7 @@ export async function getInactiveUsers(pool, chatId) {
         throw error;
     }
 }
-export async function getAzList(pool, chatId, gameLabel) {
+async function getAzList(pool, chatId, gameLabel) {
     try {
         const result = await pool.query(`SELECT u.fullname_az FROM users u ` +
             `LEFT JOIN game_users gu ON gu.user_id = u.id ` +
@@ -233,7 +249,7 @@ export async function getAzList(pool, chatId, gameLabel) {
         throw error;
     }
 }
-export async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
+async function editUser(pool, { userId, firstName, lastName, fullnameAz }) {
     try {
         const updateFields = [];
         const values = [];
@@ -264,7 +280,7 @@ export async function editUser(pool, { userId, firstName, lastName, fullnameAz }
         throw error;
     }
 }
-export async function removeUser(pool, chatId, userId) {
+async function removeUser(pool, chatId, userId) {
     try {
         const result = await pool.query('UPDATE users SET active = FALSE WHERE chat_id = $1 AND user_id = $2 RETURNING *', [chatId, userId]);
         if (result && result.rows && result.rows.length > 0) {

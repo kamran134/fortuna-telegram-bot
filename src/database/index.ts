@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
-import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser, getUserByUsername } from './users.js';
-import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games.js';
-import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
-import { adminGroupAdd, getGroups } from './adminGroup.js';
-import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes.js';
-import { User } from '../models/User.js';
-import { JokeTypes, JokeTypesValues } from '../common/jokeTypes.js';
-import { pool } from './config.js';
+import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser, getUserByUsername } from './users';
+import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games';
+import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers, GamePlayerRemovalOptions } from './gamePlayers';
+import { adminGroupAdd, getGroups } from './adminGroup';
+import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes';
+import { User } from '../models/User';
+import { JokeTypes, JokeTypesValues } from '../common/jokeTypes';
+import { pool } from './config';
 
 interface ChatAndUser {
     chatId: number;
@@ -24,10 +24,8 @@ interface GameOptions {
 
 interface GuestOptions {
     chatId: number;
-    userId: number;
-    firstName: string;
-    lastName: string;
-    username?: string;
+    first_name: string;
+    last_name: string;
 }
 
 interface GroupAdminOptions {
@@ -75,7 +73,8 @@ export async function getUserChatFromDatabase(userId: number): Promise<number | 
 }
 
 export async function addGameToDatabase(chatId: number, gameOptions: GameOptions): Promise<string> {
-    return addGame(pool, chatId, gameOptions);
+    const result = await addGame(pool, chatId, gameOptions);
+    return result ? `Game created with ID: ${result}` : 'Failed to create game';
 }
 
 export async function getGamesFromDatabase(chatId: number): Promise<any[]> {
@@ -91,11 +90,13 @@ export async function getUndecidedPlayersFromDataBase(chatId: number): Promise<a
 }
 
 export async function addGuestToDatabase(guestOptions: GuestOptions): Promise<string> {
-    return addGuest_old(pool, guestOptions);
+    const result = await addGuest_old(pool, guestOptions);
+    return result ? `Guest added with ID: ${result}` : 'Failed to add guest';
 }
 
 export async function addGuestToGame(gameOptions: GamePlayerOptions): Promise<string> {
-    return addGamePlayerByLabel(pool, gameOptions);
+    addGamePlayerByLabel(pool, gameOptions);
+    return 'Guest added successfully';
 }
 
 export async function getGamesTimesFromDatabase(chatId: number): Promise<any[]> {
@@ -111,7 +112,8 @@ export async function getAzListFromDatabase(chatId: number, gameLabel: string): 
 }
 
 export async function addGroupAdminToDatabase(options: GroupAdminOptions): Promise<string> {
-    return adminGroupAdd(pool, options);
+    adminGroupAdd(pool, options);
+    return 'Group admin added successfully';
 }
 
 export async function getGroupsFromDataBase(adminChatId: number): Promise<any[]> {
@@ -119,7 +121,8 @@ export async function getGroupsFromDataBase(adminChatId: number): Promise<any[]>
 }
 
 export async function addGamePlayerByIdToDatabase(options: GamePlayerOptions): Promise<string> {
-    return addGamePlayerById(pool, options);
+    const result = await addGamePlayerById(pool, options);
+    return result || '';
 }
 
 export async function deactiveGameInDatabase(gameId: number): Promise<string> {
@@ -134,15 +137,21 @@ export async function editUserInDatabase(options: UserEditOptions): Promise<stri
     return editUser(pool, options);
 }
 
-export async function removeGamePlayerByIdFromDatabase(options: GamePlayerOptions): Promise<string> {
-    return removeGamePlayerById(pool, options);
+export async function removeGamePlayerByIdFromDatabase(options: GamePlayerRemovalOptions): Promise<string> {
+    const result = await removeGamePlayerById(pool, options);
+    return result || '';
 }
 
 export async function getInactiveUsersFromDatabase(chatId: number): Promise<User[]> {
     return getInactiveUsers(pool, chatId);
 }
 
-export async function changeGameLimitFromDataBase(chatId: number, options: GameOptions): Promise<string> {
+interface GameLimitOptions {
+    label: string;
+    limit: number;
+}
+
+export async function changeGameLimitFromDataBase(chatId: number, options: GameLimitOptions): Promise<string> {
     return changeGameLimit(pool, chatId, options);
 }
 

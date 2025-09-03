@@ -3,3 +3,4 @@ export declare function sendMessage(bot: any, chatId: number, message: string): 
 export declare function showUsersInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
 export declare function showLastUserInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
 export declare function searchUserInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
+//# sourceMappingURL=users.d.ts.map

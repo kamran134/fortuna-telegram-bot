@@ -13,3 +13,4 @@ interface AdminGroupOptions {
 export declare function adminGroupAdd(pool: Pool, { chatId, adminChatId, groupName }: AdminGroupOptions): Promise<void>;
 export declare function getGroups(pool: Pool, adminChatId: number): Promise<AdminGroup[]>;
 export {};
+//# sourceMappingURL=adminGroup.d.ts.map

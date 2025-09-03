@@ -1,5 +1,5 @@
-export { register, getRegistered, unregister } from './registration.js';
-export { showMenu, tagUsers, listUsers, tagUsersByCommas } from './common.js';
+export { register, getRegistered, unregister } from './registration';
+export { showMenu, tagUsers, listUsers, tagUsersByCommas } from './common';
 
 // Temporary exports - these will be created later
 export const startGame = async (msg: any, bot: any): Promise<void> => {
@@ -80,8 +80,4 @@ export const listJokes = async (msg: any, bot: any): Promise<void> => {
 
 export const deleteJoke = async (msg: any, bot: any): Promise<void> => {
     console.log('deleteJoke not implemented yet');
-};
-
-export const sayPrivate = async (msg: any, bot: any): Promise<void> => {
-    console.log('sayPrivate not implemented yet');
 };

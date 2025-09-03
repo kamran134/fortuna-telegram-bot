@@ -1,5 +1,5 @@
 import { CallbackQuery } from 'node-telegram-bot-api';
-import { getUsersFromDatabase, getLastUserFromDatabase, searchUserInDatabase } from "../database/index.js";
+import { getUsersFromDatabase, getLastUserFromDatabase, searchUserInDatabase } from "../database";
 
 export async function sendMessage(bot: any, chatId: number, message: string): Promise<void> {
     try {

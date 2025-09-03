@@ -108,7 +108,13 @@ export async function addGamePlayerById(pool: Pool, { gameId, chatId, userId, co
     }
 }
 
-export async function removeGamePlayerById(pool: Pool, { gameId, chatId, userId }: GamePlayerOptions): Promise<string | undefined> {
+export interface GamePlayerRemovalOptions {
+    gameId: number;
+    chatId: number;
+    userId: number;
+}
+
+export async function removeGamePlayerById(pool: Pool, { gameId, chatId, userId }: GamePlayerRemovalOptions): Promise<string | undefined> {
     try {
         const result = await pool.query(`DELETE FROM game_users WHERE ` +
             `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +

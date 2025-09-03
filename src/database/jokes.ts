@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { JokeTypes, JokeTypesValues } from '../common/jokeTypes.js';
+import { JokeTypes, JokeTypesValues } from '../common/jokeTypes';
 
 interface Joke {
     id: number;

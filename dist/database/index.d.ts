@@ -1,18 +1,22 @@
-import { User } from '../models/User.js';
+import { GamePlayerRemovalOptions } from './gamePlayers';
+import { User } from '../models/User';
+import { JokeTypesValues } from '../common/jokeTypes';
 interface ChatAndUser {
     chatId: number;
     user: User;
 }
 interface GameOptions {
+    date: string;
+    start: string;
+    end: string;
+    users_limit: number;
+    location: string;
     label: string;
-    limit: number;
 }
 interface GuestOptions {
     chatId: number;
-    userId: number;
-    firstName: string;
-    lastName: string;
-    username?: string;
+    first_name: string;
+    last_name: string;
 }
 interface GroupAdminOptions {
     chatId: number;
@@ -23,7 +27,7 @@ interface GamePlayerOptions {
     gameId: number;
     chatId: number;
     userId: number;
-    confirmed_attendance?: boolean;
+    confirmed_attendance: boolean;
 }
 interface UserEditOptions {
     userId: number;
@@ -52,14 +56,19 @@ export declare function addGamePlayerByIdToDatabase(options: GamePlayerOptions):
 export declare function deactiveGameInDatabase(gameId: number): Promise<string>;
 export declare function deleteGameFromDatabase(gameId: number): Promise<string>;
 export declare function editUserInDatabase(options: UserEditOptions): Promise<string>;
-export declare function removeGamePlayerByIdFromDatabase(options: GamePlayerOptions): Promise<string>;
+export declare function removeGamePlayerByIdFromDatabase(options: GamePlayerRemovalOptions): Promise<string>;
 export declare function getInactiveUsersFromDatabase(chatId: number): Promise<User[]>;
-export declare function changeGameLimitFromDataBase(chatId: number, options: GameOptions): Promise<string>;
+interface GameLimitOptions {
+    label: string;
+    limit: number;
+}
+export declare function changeGameLimitFromDataBase(chatId: number, options: GameLimitOptions): Promise<string>;
 export declare function checkGameStatusFromDatabase(gameId: number): Promise<boolean>;
-export declare function getJokeFromDataBase(jokeType: JokeTypes): Promise<string>;
-export declare function addJokeToDataBase(joke: string, jokeType: JokeTypes): Promise<string>;
+export declare function getJokeFromDataBase(jokeType: JokeTypesValues): Promise<string>;
+export declare function addJokeToDataBase(joke: string, jokeType: JokeTypesValues): Promise<string>;
 export declare function deleteJokeFromDataBase(jokeId: number): Promise<string>;
-export declare function getJokesFromDataBase(jokeType: JokeTypes): Promise<any[]>;
-export declare function updateJokeInDataBase(jokeId: number, joke: string, jokeType: JokeTypes): Promise<string>;
+export declare function getJokesFromDataBase(jokeType: JokeTypesValues): Promise<any[]>;
+export declare function updateJokeInDataBase(jokeId: number, joke: string, jokeType: JokeTypesValues): Promise<string>;
 export declare function removeUserFromDatabase(chatId: number, userId: number): Promise<string>;
 export {};
+//# sourceMappingURL=index.d.ts.map

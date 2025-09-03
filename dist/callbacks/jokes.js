@@ -1,12 +1,15 @@
-// import { privateMessage } from "../events/inlineQuery.js";
-import { getPrivateMessage } from "../redis/sayPrivateRedis.js";
-export async function sayPrivateButton(query, bot) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sayPrivateButton = sayPrivateButton;
+// import { privateMessage } from "../events/inlineQuery";
+const sayPrivateRedis_1 = require("../redis/sayPrivateRedis");
+async function sayPrivateButton(query, bot) {
     // const [fromId, toId, rawMsg] = query.data.split('_').slice(1);
     // const fromUserId = query.from.id;
     const hash = query.data?.split('_')[1];
     if (!hash)
         return;
-    const data = await getPrivateMessage(hash);
+    const data = await (0, sayPrivateRedis_1.getPrivateMessage)(hash);
     //const msgData = privateMessage[hash];
     if (!data) {
         return bot.answerCallbackQuery({

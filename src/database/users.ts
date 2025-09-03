@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { User } from '../models/User.js';
+import { User } from '../models/User';
 
 interface ChatAndUser {
     user: User;

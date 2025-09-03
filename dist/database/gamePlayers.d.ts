@@ -36,5 +36,11 @@ export declare function getGamePlayers(pool: Pool, chatId: number): Promise<Game
 export declare function getUndecidedPlayers(pool: Pool, chatId: number): Promise<UndecidedPlayer[]>;
 export declare function addGamePlayerByLabel(pool: Pool, { gameLabel, chatId, userId, confirmed_attendance }: GamePlayerOptions): Promise<void>;
 export declare function addGamePlayerById(pool: Pool, { gameId, chatId, userId, confirmed_attendance }: GamePlayerOptions): Promise<string | undefined>;
-export declare function removeGamePlayerById(pool: Pool, { gameId, chatId, userId }: GamePlayerOptions): Promise<string | undefined>;
+export interface GamePlayerRemovalOptions {
+    gameId: number;
+    chatId: number;
+    userId: number;
+}
+export declare function removeGamePlayerById(pool: Pool, { gameId, chatId, userId }: GamePlayerRemovalOptions): Promise<string | undefined>;
 export {};
+//# sourceMappingURL=gamePlayers.d.ts.map

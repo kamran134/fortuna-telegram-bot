@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { User } from '../models/User.js';
+import { User } from '../models/User';
 interface ChatAndUser {
     user: User;
     chatId: number;
@@ -35,3 +35,4 @@ export declare function getAzList(pool: Pool, chatId: number, gameLabel: string)
 export declare function editUser(pool: Pool, { userId, firstName, lastName, fullnameAz }: UserEditOptions): Promise<string>;
 export declare function removeUser(pool: Pool, chatId: number, userId: number): Promise<string>;
 export {};
+//# sourceMappingURL=users.d.ts.map

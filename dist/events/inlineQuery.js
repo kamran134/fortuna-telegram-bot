@@ -1,10 +1,13 @@
-import { getUserByUsernameFromDatabase } from "../database/index.js";
-import { storePrivateMessage } from "../redis/sayPrivateRedis.js";
-export const inlineQuery = async (query, bot) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.inlineQuery = void 0;
+const database_1 = require("../database");
+const sayPrivateRedis_1 = require("../redis/sayPrivateRedis");
+const inlineQuery = async (query, bot) => {
     const fromUser = query.from;
     const queryText = query.query;
     const parts = queryText.trim().split(' ');
-    if (parts.length < 3 || parts[0].toLowerCase() !== 'sayprivate') {
+    if (parts.length < 3 || !parts[0] || parts[0].toLowerCase() !== 'sayprivate') {
         return bot.answerInlineQuery(query.id, [{
                 type: 'article',
                 id: 'help',
@@ -16,10 +19,21 @@ export const inlineQuery = async (query, bot) => {
             }]);
     }
     const target = parts[1];
+    if (!target) {
+        return bot.answerInlineQuery(query.id, [{
+                type: 'article',
+                id: 'notarget',
+                title: '❌ Цель не указана',
+                input_message_content: {
+                    message_text: '❌ Ошибка: Не указан получатель сообщения.'
+                },
+                description: 'Укажите @username получателя',
+            }]);
+    }
     const privateMsg = parts.slice(2).join(' ');
     let targetId = null;
     try {
-        const targetUser = await getUserByUsernameFromDatabase(target.slice(1));
+        const targetUser = await (0, database_1.getUserByUsernameFromDatabase)(target.slice(1));
         if (targetUser) {
             targetId = targetUser.user_id;
         }
@@ -46,7 +60,7 @@ export const inlineQuery = async (query, bot) => {
                 description: 'Убедитесь, что @username указан правильно',
             }]);
     }
-    const hash = await storePrivateMessage(fromUser.id, targetId, privateMsg);
+    const hash = await (0, sayPrivateRedis_1.storePrivateMessage)(fromUser.id, targetId, privateMsg);
     const callbackData = `showPrivate_${hash}`;
     const result = {
         type: 'article',
@@ -64,4 +78,5 @@ export const inlineQuery = async (query, bot) => {
     };
     bot.answerInlineQuery(query.id, [result], { cache_time: 0 });
 };
+exports.inlineQuery = inlineQuery;
 //# sourceMappingURL=inlineQuery.js.map

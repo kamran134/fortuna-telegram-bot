@@ -4,3 +4,4 @@ export declare function startGameInSelectedGroup(query: CallbackQuery, bot: any)
 export declare function showGamesInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
 export declare function tagGamePlayersInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
 export declare function showPayListInSelectedGroup(query: CallbackQuery, bot: any): Promise<void>;
+//# sourceMappingURL=gameOptions.d.ts.map

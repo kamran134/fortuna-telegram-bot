@@ -1,4 +1,11 @@
-export async function getJoke(pool, jokeType) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getJoke = getJoke;
+exports.addJoke = addJoke;
+exports.deleteJoke = deleteJoke;
+exports.getJokes = getJokes;
+exports.updateJoke = updateJoke;
+async function getJoke(pool, jokeType) {
     try {
         const result = await pool.query(`SELECT * FROM jokes WHERE type = $1 ORDER BY RANDOM() LIMIT 1;`, [jokeType]);
         if (result && result.rows) {
@@ -14,7 +21,7 @@ export async function getJoke(pool, jokeType) {
         throw error;
     }
 }
-export async function addJoke(pool, joke, jokeType) {
+async function addJoke(pool, joke, jokeType) {
     try {
         await pool.query(`INSERT INTO jokes (joke, type) VALUES ($1, $2);`, [joke, jokeType]);
     }
@@ -23,7 +30,7 @@ export async function addJoke(pool, joke, jokeType) {
         throw error;
     }
 }
-export async function deleteJoke(pool, jokeId) {
+async function deleteJoke(pool, jokeId) {
     try {
         await pool.query(`DELETE FROM jokes WHERE id = $1;`, [jokeId]);
     }
@@ -32,7 +39,7 @@ export async function deleteJoke(pool, jokeId) {
         throw error;
     }
 }
-export async function getJokes(pool, jokeType) {
+async function getJokes(pool, jokeType) {
     try {
         let queryString = `SELECT * FROM jokes`;
         let args = [];
@@ -56,7 +63,7 @@ export async function getJokes(pool, jokeType) {
         throw error;
     }
 }
-export async function updateJoke(pool, jokeId, joke, jokeType) {
+async function updateJoke(pool, jokeId, joke, jokeType) {
     try {
         if (jokeType) {
             await pool.query(`UPDATE jokes SET joke = $1, type = $2 WHERE id = $3;`, [joke, jokeType, jokeId]);

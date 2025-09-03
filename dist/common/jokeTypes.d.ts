@@ -8,3 +8,5 @@ export declare const JokeTypes: {
     readonly DELETE_PLAYER: 7;
     readonly TAG_UNDECIDED: 8;
 };
+export type JokeTypesValues = typeof JokeTypes[keyof typeof JokeTypes];
+//# sourceMappingURL=jokeTypes.d.ts.map

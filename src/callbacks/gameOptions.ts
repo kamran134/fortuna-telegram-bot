@@ -1,10 +1,10 @@
 import { CallbackQuery } from 'node-telegram-bot-api';
 import moment from "moment";
-import { startGame } from "../commands/index.js";
-import { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase, getJokeFromDataBase } from "../database/index.js";
-import { tagUsersByCommas } from "../commands/common.js";
-import { skloneniye } from "../common/skloneniye.js";
-import { JokeTypes } from "../common/jokeTypes.js";
+import { startGame } from "../commands";
+import { deactiveGameInDatabase, getGamesFromDatabase, getGamePlayersFromDataBase, getJokeFromDataBase } from "../database";
+import { tagUsersByCommas } from "../commands/common";
+import { skloneniye } from "../common/skloneniye";
+import { JokeTypes } from "../common/jokeTypes";
 
 export async function deactiveGame(query: CallbackQuery, bot: any, isAdmin: boolean): Promise<void> {
     const gameIdStr = query.data?.split('_')[1];

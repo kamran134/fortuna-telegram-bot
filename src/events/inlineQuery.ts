@@ -1,6 +1,6 @@
 import { InlineQuery } from 'node-telegram-bot-api';
-import { getUserByUsernameFromDatabase } from "../database/index.js";
-import { storePrivateMessage } from "../redis/sayPrivateRedis.js";
+import { getUserByUsernameFromDatabase } from "../database";
+import { storePrivateMessage } from "../redis/sayPrivateRedis";
 
 export const inlineQuery = async (query: InlineQuery, bot: any): Promise<void> => {
     const fromUser = query.from;
@@ -8,7 +8,7 @@ export const inlineQuery = async (query: InlineQuery, bot: any): Promise<void> =
 
     const parts = queryText.trim().split(' ');
 
-    if (parts.length < 3 || parts[0].toLowerCase() !== 'sayprivate') {
+    if (parts.length < 3 || !parts[0] || parts[0].toLowerCase() !== 'sayprivate') {
         return bot.answerInlineQuery(query.id, [{
             type: 'article',
             id: 'help',
@@ -21,6 +21,17 @@ export const inlineQuery = async (query: InlineQuery, bot: any): Promise<void> =
     }
 
     const target = parts[1];
+    if (!target) {
+        return bot.answerInlineQuery(query.id, [{
+            type: 'article',
+            id: 'notarget',
+            title: '❌ Цель не указана',
+            input_message_content: {
+                message_text: '❌ Ошибка: Не указан получатель сообщения.'
+            },
+            description: 'Укажите @username получателя',
+        }]);
+    }
     const privateMsg = parts.slice(2).join(' ');
 
     let targetId: number | null = null;

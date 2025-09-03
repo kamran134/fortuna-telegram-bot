@@ -25,3 +25,4 @@ export interface Group {
     created_at: Date;
     updated_at: Date;
 }
+//# sourceMappingURL=Game.d.ts.map

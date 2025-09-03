@@ -2,14 +2,14 @@ import { Message } from 'node-telegram-bot-api';
 import { 
     register, showMenu, getRegistered, startGame, showGames, deactiveGames, getGamePlayers, 
     addGuest, whatTime, agilliOl, getAzList, tagGamePlayers, 
-    changeGameLimit, connectTo, showGroups, showYourGroups, addJoke 
-} from "../commands/index.js";
-import { editUser } from "../commands/adminCommands.js";
-import { saySomethingToInactive, tagUndecidedPlayers } from "../commands/gamePlayers.js";
-import { editJoke, listJokes, deleteJoke, sayPrivate } from "../commands/jokes.js";
+    changeGameLimit, connectTo, showGroups, showYourGroups, addJoke,
+    editUser, saySomethingToInactive, tagUndecidedPlayers,
+    editJoke, listJokes, deleteJoke
+} from "../commands";
 import { MessageHandler } from '../types';
+import { User } from '../models/User';
 
-export const onMessage: MessageHandler = async (msg: Message, bot) => {
+export const onMessage: MessageHandler = async (msg: Message, bot: any) => {
     const chatId = msg.chat.id;
     const userId = msg.from?.id;
     const user = msg.from;
@@ -19,12 +19,23 @@ export const onMessage: MessageHandler = async (msg: Message, bot) => {
             ? msg.text.toLowerCase() 
             : '';
     
-    if (!userId) return;
+    if (!userId || !user) return;
     
     const chatMember = await bot.getChatMember(chatId, userId);
     const isAdmin = chatMember.status === 'administrator' || chatMember.status === 'creator';
 
-    if (messageText === '/register') register({ chatId, user }, bot);
+    // Convert Telegram user to our User interface
+    const ourUser: User = {
+        id: user.id,
+        user_id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name || undefined,
+        username: user.username || undefined,
+        language_code: user.language_code || undefined,
+        is_bot: user.is_bot
+    };
+
+    if (messageText === '/register') register({ chatId, user: ourUser }, bot);
     else if (messageText === '/menu') showMenu(msg, bot);
     else if (messageText === '/tagregistered') getRegistered(msg, bot, 'tag', isAdmin);
     else if (messageText === '/showregistered') getRegistered(msg, bot, 'show', isAdmin);
@@ -33,16 +44,16 @@ export const onMessage: MessageHandler = async (msg: Message, bot) => {
     else if (messageText === '/showgames') showGames(chatId, bot);
     else if (messageText === '/deletegame') {}
     else if (messageText === '/deactivegame') deactiveGames(msg, bot, isAdmin);
-    else if (messageText === 'приффки') bot.sendMessage(chatId, 'ПрИфФкИ, ' + msg.from.first_name + '. КаК дЕлИфФкИ. (Что за ванилька из начала нулевых?)');
-    else if (messageText === 'привет') bot.sendMessage(chatId, 'Привет, ' + msg.from.first_name + '. Играть будем?');
+    else if (messageText === 'приффки') bot.sendMessage(chatId, 'ПрИфФкИ, ' + user.first_name + '. КаК дЕлИфФкИ. (Что за ванилька из начала нулевых?)');
+    else if (messageText === 'привет') bot.sendMessage(chatId, 'Привет, ' + user.first_name + '. Играть будем?');
     else if (messageText === '/list') getGamePlayers(chatId, bot);
-    else if (messageText === 'Пока') bot.sendMessage(chatId, 'До свидания, ' + msg.from.first_name);
+    else if (messageText === 'Пока') bot.sendMessage(chatId, 'До свидания, ' + user.first_name);
     else if (messageText.startsWith('/addguest') && isAdmin) addGuest(msg, bot);
     else if (messageText.startsWith('/addguest') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может добавлять гостя в игру. Обратитесь к одмэну.');
     else if (messageText.includes('во ск')) whatTime(msg, bot);
     else if (messageText === '/getgroupid' && isAdmin) bot.sendMessage(userId, `ID вашей группы ${chatId}`);
     else if (messageText === '/getgroupid' && !isAdmin) bot.sendMessage(chatId, 'Эта информация не для маглов!');
-    else if (messageText === '/алохамора') bot.sendMessage(chatId, `Нет, ${msg.from.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
+    else if (messageText === '/алохамора') bot.sendMessage(chatId, `Нет, ${user.first_name}. Это заклинание не откроет тебе двери в админ-панель...`, {reply_to_message_id: msg.message_id});
     else if (messageText.includes('авада кедавра') || messageText.includes('авадакедавра')) bot.sendMessage(chatId, `De "sən öl"`, {reply_to_message_id: msg.message_id});
     else if (messageText === '/agilliol' || messageText === '/ağıllı ol') agilliOl(chatId, bot);
     else if (messageText.startsWith('а вы рыбов продоете') || messageText.startsWith('а вы рыбов продоёте')) bot.sendMessage(chatId, 'Нет, показываем.', {reply_to_message_id: msg.message_id});
@@ -56,7 +67,6 @@ export const onMessage: MessageHandler = async (msg: Message, bot) => {
     else if (messageText.startsWith('/changelimit') && isAdmin) changeGameLimit(msg, bot);
     else if (messageText.startsWith('/changelimit') && !isAdmin) bot.sendMessage(chatId, 'Я, конечно, всё понимаю, ну кроме квантовой физики и степени твоей наглости 🤨');
     else if (messageText.includes('заткнись')) bot.sendMessage(chatId, 'Не понял! Что за телячьи нежности? 🤨');
-    else if (messageText.startsWith('/sayprivate')) sayPrivate(msg, bot);
     else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && isAdmin) tagUndecidedPlayers(chatId, bot);
     else if ((messageText === 'Бот, растормоши неопределившихся' || messageText === '/tagundecided') && !isAdmin) bot.sendMessage(chatId, 'Только одмэн может пошевелить всех!');
 

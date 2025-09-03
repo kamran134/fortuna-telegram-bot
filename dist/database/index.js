@@ -1,100 +1,144 @@
-import { addUser, getUsers, getLastUser, searchUser, addGuest_old, getRandomUser, getAzList, editUser, getUserChat, getInactiveUsers, removeUser, getUserByUsername } from './users.js';
-import { addGame, getGames, getGamesTimes, deactiveGame, deleteGame, changeGameLimit, checkGameStatus } from './games.js';
-import { getGamePlayers, addGamePlayerByLabel, addGamePlayerById, removeGamePlayerById, getUndecidedPlayers } from './gamePlayers.js';
-import { adminGroupAdd, getGroups } from './adminGroup.js';
-import { getJoke, addJoke, deleteJoke, getJokes, updateJoke } from './jokes.js';
-import { pool } from './config.js';
-export async function addUserToDatabase(chatAndUser) {
-    return addUser(pool, chatAndUser);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addUserToDatabase = addUserToDatabase;
+exports.getUsersFromDatabase = getUsersFromDatabase;
+exports.getUserByUsernameFromDatabase = getUserByUsernameFromDatabase;
+exports.getLastUserFromDatabase = getLastUserFromDatabase;
+exports.searchUserInDatabase = searchUserInDatabase;
+exports.getUserChatFromDatabase = getUserChatFromDatabase;
+exports.addGameToDatabase = addGameToDatabase;
+exports.getGamesFromDatabase = getGamesFromDatabase;
+exports.getGamePlayersFromDataBase = getGamePlayersFromDataBase;
+exports.getUndecidedPlayersFromDataBase = getUndecidedPlayersFromDataBase;
+exports.addGuestToDatabase = addGuestToDatabase;
+exports.addGuestToGame = addGuestToGame;
+exports.getGamesTimesFromDatabase = getGamesTimesFromDatabase;
+exports.getRandomUserFromDatabase = getRandomUserFromDatabase;
+exports.getAzListFromDatabase = getAzListFromDatabase;
+exports.addGroupAdminToDatabase = addGroupAdminToDatabase;
+exports.getGroupsFromDataBase = getGroupsFromDataBase;
+exports.addGamePlayerByIdToDatabase = addGamePlayerByIdToDatabase;
+exports.deactiveGameInDatabase = deactiveGameInDatabase;
+exports.deleteGameFromDatabase = deleteGameFromDatabase;
+exports.editUserInDatabase = editUserInDatabase;
+exports.removeGamePlayerByIdFromDatabase = removeGamePlayerByIdFromDatabase;
+exports.getInactiveUsersFromDatabase = getInactiveUsersFromDatabase;
+exports.changeGameLimitFromDataBase = changeGameLimitFromDataBase;
+exports.checkGameStatusFromDatabase = checkGameStatusFromDatabase;
+exports.getJokeFromDataBase = getJokeFromDataBase;
+exports.addJokeToDataBase = addJokeToDataBase;
+exports.deleteJokeFromDataBase = deleteJokeFromDataBase;
+exports.getJokesFromDataBase = getJokesFromDataBase;
+exports.updateJokeInDataBase = updateJokeInDataBase;
+exports.removeUserFromDatabase = removeUserFromDatabase;
+const users_1 = require("./users");
+const games_1 = require("./games");
+const gamePlayers_1 = require("./gamePlayers");
+const adminGroup_1 = require("./adminGroup");
+const jokes_1 = require("./jokes");
+const config_1 = require("./config");
+async function addUserToDatabase(chatAndUser) {
+    return (0, users_1.addUser)(config_1.pool, chatAndUser);
 }
-export async function getUsersFromDatabase(chatId) {
-    return getUsers(pool, chatId);
+async function getUsersFromDatabase(chatId) {
+    return (0, users_1.getUsers)(config_1.pool, chatId);
 }
-export async function getUserByUsernameFromDatabase(username) {
-    return getUserByUsername(pool, username);
+async function getUserByUsernameFromDatabase(username) {
+    return (0, users_1.getUserByUsername)(config_1.pool, username);
 }
-export async function getLastUserFromDatabase(chatId) {
-    return getLastUser(pool, chatId);
+async function getLastUserFromDatabase(chatId) {
+    return (0, users_1.getLastUser)(config_1.pool, chatId);
 }
-export async function searchUserInDatabase(chatId, searchString) {
-    return searchUser(pool, chatId, searchString);
+async function searchUserInDatabase(chatId, searchString) {
+    return (0, users_1.searchUser)(config_1.pool, chatId, searchString);
 }
-export async function getUserChatFromDatabase(userId) {
-    return getUserChat(pool, userId);
+async function getUserChatFromDatabase(userId) {
+    return (0, users_1.getUserChat)(config_1.pool, userId);
 }
-export async function addGameToDatabase(chatId, gameOptions) {
-    return addGame(pool, chatId, gameOptions);
+async function addGameToDatabase(chatId, gameOptions) {
+    const result = await (0, games_1.addGame)(config_1.pool, chatId, gameOptions);
+    return result ? `Game created with ID: ${result}` : 'Failed to create game';
 }
-export async function getGamesFromDatabase(chatId) {
-    return getGames(pool, chatId);
+async function getGamesFromDatabase(chatId) {
+    return (0, games_1.getGames)(config_1.pool, chatId);
 }
-export async function getGamePlayersFromDataBase(chatId) {
-    return getGamePlayers(pool, chatId);
+async function getGamePlayersFromDataBase(chatId) {
+    return (0, gamePlayers_1.getGamePlayers)(config_1.pool, chatId);
 }
-export async function getUndecidedPlayersFromDataBase(chatId) {
-    return getUndecidedPlayers(pool, chatId);
+async function getUndecidedPlayersFromDataBase(chatId) {
+    return (0, gamePlayers_1.getUndecidedPlayers)(config_1.pool, chatId);
 }
-export async function addGuestToDatabase(guestOptions) {
-    return addGuest_old(pool, guestOptions);
+async function addGuestToDatabase(guestOptions) {
+    const result = await (0, users_1.addGuest_old)(config_1.pool, guestOptions);
+    return result ? `Guest added with ID: ${result}` : 'Failed to add guest';
 }
-export async function addGuestToGame(gameOptions) {
-    return addGamePlayerByLabel(pool, gameOptions);
+async function addGuestToGame(gameOptions) {
+    (0, gamePlayers_1.addGamePlayerByLabel)(config_1.pool, gameOptions);
+    return 'Guest added successfully';
 }
-export async function getGamesTimesFromDatabase(chatId) {
-    return getGamesTimes(pool, chatId);
+async function getGamesTimesFromDatabase(chatId) {
+    return (0, games_1.getGamesTimes)(config_1.pool, chatId);
 }
-export async function getRandomUserFromDatabase(chatId) {
-    return getRandomUser(pool, chatId);
+async function getRandomUserFromDatabase(chatId) {
+    return (0, users_1.getRandomUser)(config_1.pool, chatId);
 }
-export async function getAzListFromDatabase(chatId, gameLabel) {
-    return getAzList(pool, chatId, gameLabel);
+async function getAzListFromDatabase(chatId, gameLabel) {
+    return (0, users_1.getAzList)(config_1.pool, chatId, gameLabel);
 }
-export async function addGroupAdminToDatabase(options) {
-    return adminGroupAdd(pool, options);
+async function addGroupAdminToDatabase(options) {
+    (0, adminGroup_1.adminGroupAdd)(config_1.pool, options);
+    return 'Group admin added successfully';
 }
-export async function getGroupsFromDataBase(adminChatId) {
-    return getGroups(pool, adminChatId);
+async function getGroupsFromDataBase(adminChatId) {
+    return (0, adminGroup_1.getGroups)(config_1.pool, adminChatId);
 }
-export async function addGamePlayerByIdToDatabase(options) {
-    return addGamePlayerById(pool, options);
+async function addGamePlayerByIdToDatabase(options) {
+    const result = await (0, gamePlayers_1.addGamePlayerById)(config_1.pool, options);
+    return result || '';
 }
-export async function deactiveGameInDatabase(gameId) {
-    return deactiveGame(pool, gameId);
+async function deactiveGameInDatabase(gameId) {
+    return (0, games_1.deactiveGame)(config_1.pool, gameId);
 }
-export async function deleteGameFromDatabase(gameId) {
-    return deleteGame(pool, gameId);
+async function deleteGameFromDatabase(gameId) {
+    return (0, games_1.deleteGame)(config_1.pool, gameId);
 }
-export async function editUserInDatabase(options) {
-    return editUser(pool, options);
+async function editUserInDatabase(options) {
+    return (0, users_1.editUser)(config_1.pool, options);
 }
-export async function removeGamePlayerByIdFromDatabase(options) {
-    return removeGamePlayerById(pool, options);
+async function removeGamePlayerByIdFromDatabase(options) {
+    const result = await (0, gamePlayers_1.removeGamePlayerById)(config_1.pool, options);
+    return result || '';
 }
-export async function getInactiveUsersFromDatabase(chatId) {
-    return getInactiveUsers(pool, chatId);
+async function getInactiveUsersFromDatabase(chatId) {
+    return (0, users_1.getInactiveUsers)(config_1.pool, chatId);
 }
-export async function changeGameLimitFromDataBase(chatId, options) {
-    return changeGameLimit(pool, chatId, options);
+async function changeGameLimitFromDataBase(chatId, options) {
+    return (0, games_1.changeGameLimit)(config_1.pool, chatId, options);
 }
-export async function checkGameStatusFromDatabase(gameId) {
-    return checkGameStatus(pool, gameId);
+async function checkGameStatusFromDatabase(gameId) {
+    return (0, games_1.checkGameStatus)(config_1.pool, gameId);
 }
-export async function getJokeFromDataBase(jokeType) {
-    return getJoke(pool, jokeType);
+async function getJokeFromDataBase(jokeType) {
+    const result = await (0, jokes_1.getJoke)(config_1.pool, jokeType);
+    return result || '';
 }
-export async function addJokeToDataBase(joke, jokeType) {
-    return addJoke(pool, joke, jokeType);
+async function addJokeToDataBase(joke, jokeType) {
+    await (0, jokes_1.addJoke)(config_1.pool, joke, jokeType);
+    return 'Joke added successfully';
 }
-export async function deleteJokeFromDataBase(jokeId) {
-    return deleteJoke(pool, jokeId);
+async function deleteJokeFromDataBase(jokeId) {
+    await (0, jokes_1.deleteJoke)(config_1.pool, jokeId);
+    return 'Joke deleted successfully';
 }
-export async function getJokesFromDataBase(jokeType) {
-    return getJokes(pool, jokeType);
+async function getJokesFromDataBase(jokeType) {
+    const result = await (0, jokes_1.getJokes)(config_1.pool, jokeType);
+    return result || [];
 }
-export async function updateJokeInDataBase(jokeId, joke, jokeType) {
-    return updateJoke(pool, jokeId, joke, jokeType);
+async function updateJokeInDataBase(jokeId, joke, jokeType) {
+    await (0, jokes_1.updateJoke)(config_1.pool, jokeId, joke, jokeType);
+    return 'Joke updated successfully';
 }
-export async function removeUserFromDatabase(chatId, userId) {
-    return removeUser(pool, chatId, userId);
+async function removeUserFromDatabase(chatId, userId) {
+    return (0, users_1.removeUser)(config_1.pool, chatId, userId);
 }
 //# sourceMappingURL=index.js.map

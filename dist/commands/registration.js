@@ -1,24 +1,29 @@
-import { addUserToDatabase, getUsersFromDatabase, getJokeFromDataBase, removeUserFromDatabase } from '../database/index.js';
-import { tagUsers, listUsers } from './common.js';
-import { JokeTypes } from '../common/jokeTypes.js';
-export async function register(chatAndUser, bot) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.register = register;
+exports.getRegistered = getRegistered;
+exports.unregister = unregister;
+const database_1 = require("../database");
+const common_1 = require("./common");
+const jokeTypes_1 = require("../common/jokeTypes");
+async function register(chatAndUser, bot) {
     const { chatId } = chatAndUser;
     try {
-        const result = await addUserToDatabase(chatAndUser);
+        const result = await (0, database_1.addUserToDatabase)(chatAndUser);
         bot.sendMessage(chatId, result);
     }
     catch (error) {
         console.error('REGISTRATION ERROR: ', error);
     }
 }
-export async function getRegistered(msg, bot, command, isAdmin) {
+async function getRegistered(msg, bot, command, isAdmin) {
     const chatId = msg.chat.id;
     const userId = msg.from?.id;
     if (!userId)
         return;
     if (isAdmin) {
         try {
-            const users = await getUsersFromDatabase(chatId);
+            const users = await (0, database_1.getUsersFromDatabase)(chatId);
             if (!users) {
                 bot.sendMessage(userId, 'Произошла ошибка. Читай логи!');
             }
@@ -26,7 +31,7 @@ export async function getRegistered(msg, bot, command, isAdmin) {
                 bot.sendMessage(chatId, 'Нет зарегистрированных пользователей. Капец!');
             }
             else {
-                const usersString = command === 'tag' ? tagUsers(users) : listUsers(users);
+                const usersString = command === 'tag' ? (0, common_1.tagUsers)(users) : (0, common_1.listUsers)(users);
                 bot.sendMessage(chatId, 'Qeydiyyatdan keçmiş iştirakçılar\nЗарегистрированные участники:\n\n' + usersString, { parse_mode: 'HTML' });
             }
         }
@@ -36,7 +41,7 @@ export async function getRegistered(msg, bot, command, isAdmin) {
     }
     else {
         try {
-            const joke = await getJokeFromDataBase(JokeTypes.TAG_REGISTERED);
+            const joke = await (0, database_1.getJokeFromDataBase)(jokeTypes_1.JokeTypes.TAG_REGISTERED);
             bot.sendMessage(chatId, `Только одмэн может массово беспокоить всех! ${joke}`);
         }
         catch (error) {
@@ -44,13 +49,13 @@ export async function getRegistered(msg, bot, command, isAdmin) {
         }
     }
 }
-export async function unregister(msg, bot) {
+async function unregister(msg, bot) {
     const chatId = msg.chat.id;
     const userId = msg.from?.id;
     if (!userId)
         return;
     try {
-        await removeUserFromDatabase(chatId, userId);
+        await (0, database_1.removeUserFromDatabase)(chatId, userId);
         bot.sendMessage(chatId, "✅ Siz uğurla sistemdən qeydiyyatdan çıxardınız / Вы успешно удалены из системы");
     }
     catch (error) {

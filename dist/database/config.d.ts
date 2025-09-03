@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
 export interface DatabaseConfig {
     host: string;
     port: number;
@@ -6,4 +6,5 @@ export interface DatabaseConfig {
     user: string;
     password: string;
 }
-export declare const pool: Pool;
+export declare const pool: pkg.Pool;
+//# sourceMappingURL=config.d.ts.map

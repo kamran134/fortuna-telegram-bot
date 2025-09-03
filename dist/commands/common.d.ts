@@ -1,6 +1,7 @@
 import { Message } from 'node-telegram-bot-api';
-import { User } from '../models/User.js';
+import { User } from '../models/User';
 export declare function tagUsers(users: User[]): string;
 export declare function listUsers(users: User[]): string;
 export declare function tagUsersByCommas(users: User[]): string;
 export declare function showMenu(msg: Message, bot: any): void;
+//# sourceMappingURL=common.d.ts.map

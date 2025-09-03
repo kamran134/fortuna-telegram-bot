@@ -1,7 +1,7 @@
 import { CallbackQuery } from 'node-telegram-bot-api';
-import { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase, getJokeFromDataBase } from '../database/index.js';
-import { JokeTypes } from '../common/jokeTypes.js';
-import { skloneniye } from '../common/skloneniye.js';
+import { addGamePlayerByIdToDatabase, removeGamePlayerByIdFromDatabase, checkGameStatusFromDatabase, getJokeFromDataBase } from '../database';
+import { JokeTypes } from '../common/jokeTypes';
+import { skloneniye } from '../common/skloneniye';
 
 export async function appointmentToTheGame(query: CallbackQuery, bot: any): Promise<void> {
     const chatId = query.message?.chat.id;

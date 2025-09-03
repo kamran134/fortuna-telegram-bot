@@ -1,5 +1,13 @@
-import moment from "moment";
-export async function getGamePlayers(pool, chatId) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getGamePlayers = getGamePlayers;
+exports.getUndecidedPlayers = getUndecidedPlayers;
+exports.addGamePlayerByLabel = addGamePlayerByLabel;
+exports.addGamePlayerById = addGamePlayerById;
+exports.removeGamePlayerById = removeGamePlayerById;
+const tslib_1 = require("tslib");
+const moment_1 = tslib_1.__importDefault(require("moment"));
+async function getGamePlayers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, users.is_guest, ` +
             `games.label, games.game_date, games.game_starts, games.game_ends, games.place, game_users.game_id, game_users.confirmed_attendance, games.users_limit, game_users.payed FROM game_users ` +
@@ -20,7 +28,7 @@ export async function getGamePlayers(pool, chatId) {
         throw error;
     }
 }
-export async function getUndecidedPlayers(pool, chatId) {
+async function getUndecidedPlayers(pool, chatId) {
     try {
         const result = await pool.query(`SELECT users.last_name, users.first_name, users.username, users.user_id, games.game_date, ` +
             `game_users.game_id, game_users.confirmed_attendance, games.users_limit FROM game_users ` +
@@ -41,21 +49,21 @@ export async function getUndecidedPlayers(pool, chatId) {
         return [];
     }
 }
-export async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
+async function addGamePlayerByLabel(pool, { gameLabel, chatId, userId, confirmed_attendance }) {
     try {
         await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) ` +
             `VALUES ((SELECT MAX(id) FROM games g WHERE LOWER(g.label) = LOWER($1) AND g.chat_id = $2 AND g.status = TRUE), $3, $4, $5) ` +
-            `ON CONFLICT (user_id, game_id) DO NOTHING;`, [gameLabel, chatId, userId, moment(new Date()).toISOString(), confirmed_attendance]);
+            `ON CONFLICT (user_id, game_id) DO NOTHING;`, [gameLabel, chatId, userId, (0, moment_1.default)(new Date()).toISOString(), confirmed_attendance]);
     }
     catch (error) {
         console.error('ADD GAME PLAYER BY LABEL ERROR: ', error);
         throw error;
     }
 }
-export async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance }) {
+async function addGamePlayerById(pool, { gameId, chatId, userId, confirmed_attendance }) {
     try {
         const result = await pool.query(`INSERT INTO game_users (game_id, user_id, participate_time, confirmed_attendance) VALUES ($1, (SELECT id FROM users u WHERE u.chat_id = $2 AND u.user_id = $3), $4, $5) ` +
-            `ON CONFLICT (user_id, game_id) DO UPDATE SET confirmed_attendance = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, [gameId, chatId, userId, moment(new Date()).toISOString(), confirmed_attendance]);
+            `ON CONFLICT (user_id, game_id) DO UPDATE SET confirmed_attendance = $5, participate_time = $4 RETURNING (SELECT g.label FROM games g WHERE g.id = $1);`, [gameId, chatId, userId, (0, moment_1.default)(new Date()).toISOString(), confirmed_attendance]);
         if (result && result.rows && Array.isArray(result.rows))
             return result.rows[0].label;
         else {
@@ -68,7 +76,7 @@ export async function addGamePlayerById(pool, { gameId, chatId, userId, confirme
         throw error;
     }
 }
-export async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
+async function removeGamePlayerById(pool, { gameId, chatId, userId }) {
     try {
         const result = await pool.query(`DELETE FROM game_users WHERE ` +
             `user_id = (SELECT u.id FROM users u WHERE u.user_id = $1 AND u.chat_id = $2) AND game_id = $3 ` +

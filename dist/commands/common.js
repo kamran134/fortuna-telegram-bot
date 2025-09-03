@@ -1,15 +1,21 @@
-export function tagUsers(users) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tagUsers = tagUsers;
+exports.listUsers = listUsers;
+exports.tagUsersByCommas = tagUsersByCommas;
+exports.showMenu = showMenu;
+function tagUsers(users) {
     return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
         `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name || ''}</a>`).join(', ') : '';
 }
-export function listUsers(users) {
+function listUsers(users) {
     return users.map((user, index) => `${(index + 1)}. ${user.username || ''} — ${user.first_name} ${user.last_name || ''}`).join('\n');
 }
-export function tagUsersByCommas(users) {
+function tagUsersByCommas(users) {
     return Array.isArray(users) ? users.map(user => user.username ? `@${user.username}` :
         `<a href="tg://user?id=${user.user_id}">${user.first_name} ${user.last_name || ''}</a>`).join(', ') : '';
 }
-export function showMenu(msg, bot) {
+function showMenu(msg, bot) {
     const keyboard = {
         inline_keyboard: [
             [

@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 import moment from "moment";
-import { Game } from '../models/Game.js';
+import { Game } from '../models/Game';
 
 interface GameOptions {
     date: string;

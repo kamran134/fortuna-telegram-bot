@@ -2,14 +2,14 @@ export interface User {
     id: number;
     user_id: number;
     first_name: string;
-    last_name?: string;
-    username?: string;
-    language_code?: string;
-    is_bot?: boolean;
-    fullname_az?: string;
-    chat_id?: number;
-    confirmed_attendance?: boolean;
-    payed?: boolean;
+    last_name?: string | undefined;
+    username?: string | undefined;
+    language_code?: string | undefined;
+    is_bot?: boolean | undefined;
+    fullname_az?: string | undefined;
+    chat_id?: number | undefined;
+    confirmed_attendance?: boolean | undefined;
+    payed?: boolean | undefined;
 }
 
 export interface ChatMember {

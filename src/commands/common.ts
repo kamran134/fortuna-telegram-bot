@@ -1,5 +1,5 @@
 import { Message } from 'node-telegram-bot-api';
-import { User } from '../models/User.js';
+import { User } from '../models/User';
 
 export function tagUsers(users: User[]): string {
     return Array.isArray(users) ? users.map(user =>
