@@ -15,37 +15,37 @@ const token = process.env.TELEGRAM_TOKEN;
 const webhookUrl = 'https://42n.space:8443/bot' + token;
 
 // Создаем экземпляр бота
-//const bot = new TelegramBot(token, { polling: true });
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token, { polling: true });
+//const bot = new TelegramBot(token, { polling: false });
 
-bot.setWebHook(webhookUrl, {
-    certificate: fs.readFileSync('/root/cert.pem'),
-}).then(() => {
-    console.log('Webhook set successfully:', webhookUrl);
-}).catch(error => {
-    console.error('Failed to set webhook:', error);
-});
+// bot.setWebHook(webhookUrl, {
+//     certificate: '/root/cert.pem'
+// }).then(() => {
+//     console.log('Webhook установлен успешно:', webhookUrl);
+// }).catch(error => {
+//     console.error('Ошибка установки вебхука:', error);
+// });
 
-const server = https.createServer({
-    key: fs.readFileSync('/root/key.pem'),
-    cert: fs.readFileSync('/root/cert.pem'),
-}, (req, res) => {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-        try {
-            bot.processUpdate(JSON.parse(body));
-            res.writeHead(200);
-            res.end();
-        } catch (error) {
-            console.error('Error processing webhook update:', error);
-            res.writeHead(500);
-            res.end();
-        }
-    });
-});
+// const server = https.createServer({
+//     key: fs.readFileSync('/root/key.pem'),
+//     cert: fs.readFileSync('/root/cert.pem'),
+// }, (req, res) => {
+//     let body = '';
+//     req.on('data', chunk => body += chunk);
+//     req.on('end', () => {
+//         try {
+//             bot.processUpdate(JSON.parse(body));
+//             res.writeHead(200);
+//             res.end();
+//         } catch (error) {
+//             console.error('Error processing webhook update:', error);
+//             res.writeHead(500);
+//             res.end();
+//         }
+//     });
+// });
 
-server.listen(8443);
+// server.listen(8443);
 
 setInterval(async () => {
     try {
