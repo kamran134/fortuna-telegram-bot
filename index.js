@@ -72,8 +72,8 @@ bot.on('left_chat_member', async (msg) => {
 
 // Слушаем сообщения
 bot.on('message', async (msg) => {
+    console.log('message', msg);
     await onMessage(msg, bot);
-
 });
 
 bot.on('callback_query', async (query) => {
