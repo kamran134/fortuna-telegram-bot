@@ -5,62 +5,62 @@ import { newChatMembers } from './events/newChatMembers.js';
 import { leftChatMember } from './events/leftChatMember.js';
 import { inlineQuery } from './events/inlineQuery.js';
 import dotenv from 'dotenv';
-import https from 'https';
-import fs from 'fs';
+// import https from 'https';
+// import fs from 'fs';
 
 dotenv.config();
 
 // Устанавливаем токен, который вы получили от BotFather
 const token = process.env.TELEGRAM_TOKEN;
-const webhookUrl = 'https://42n.space:8443/bot' + token;
+// const webhookUrl = 'https://42n.space:8443/bot' + token;
 
 // Создаем экземпляр бота
 //const bot = new TelegramBot(token, { polling: true });
 const bot = new TelegramBot(token);
 
-bot.setWebHook(webhookUrl, {
-    certificate: fs.readFileSync('/root/cert.pem'),
-}).then(() => {
-    console.log('Webhook set successfully:', webhookUrl);
-}).catch(error => {
-    console.error('Failed to set webhook:', error);
-});
+// bot.setWebHook(webhookUrl, {
+//     certificate: fs.readFileSync('/root/cert.pem'),
+// }).then(() => {
+//     console.log('Webhook set successfully:', webhookUrl);
+// }).catch(error => {
+//     console.error('Failed to set webhook:', error);
+// });
 
-const server = https.createServer({
-    key: fs.readFileSync('/root/key.pem'),
-    cert: fs.readFileSync('/root/cert.pem'),
-}, (req, res) => {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-        try {
-            bot.processUpdate(JSON.parse(body));
-            res.writeHead(200);
-            res.end();
-        } catch (error) {
-            console.error('Error processing webhook update:', error);
-            res.writeHead(500);
-            res.end();
-        }
-    });
-});
+// const server = https.createServer({
+//     key: fs.readFileSync('/root/key.pem'),
+//     cert: fs.readFileSync('/root/cert.pem'),
+// }, (req, res) => {
+//     let body = '';
+//     req.on('data', chunk => body += chunk);
+//     req.on('end', () => {
+//         try {
+//             bot.processUpdate(JSON.parse(body));
+//             res.writeHead(200);
+//             res.end();
+//         } catch (error) {
+//             console.error('Error processing webhook update:', error);
+//             res.writeHead(500);
+//             res.end();
+//         }
+//     });
+// });
 
-server.listen(8443);
+// server.listen(8443);
 
-setInterval(async () => {
-    try {
-        const webhookInfo = await bot.getWebhookInfo();
-        console.log('Webhook status:', webhookInfo);
-        if (!webhookInfo.url) {
-            console.log('Webhook not set, registering...');
-            await bot.setWebHook('https://42n.space:8443/bot' + token, {
-                certificate: fs.readFileSync('/root/cert.pem'),
-            });
-        }
-    } catch (error) {
-        console.error('Webhook check failed:', error);
-    }
-}, 300000); // Проверять каждые 5 минут
+// setInterval(async () => {
+//     try {
+//         const webhookInfo = await bot.getWebhookInfo();
+//         console.log('Webhook status:', webhookInfo);
+//         if (!webhookInfo.url) {
+//             console.log('Webhook not set, registering...');
+//             await bot.setWebHook('https://42n.space:8443/bot' + token, {
+//                 certificate: fs.readFileSync('/root/cert.pem'),
+//             });
+//         }
+//     } catch (error) {
+//         console.error('Webhook check failed:', error);
+//     }
+// }, 300000); // Проверять каждые 5 минут
 
 bot.on('new_chat_members', async (msg) => {
     await newChatMembers(msg, bot);
