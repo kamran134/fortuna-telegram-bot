@@ -2,7 +2,6 @@ import moment from 'moment';
 import { getUsersFromDatabase, addGameToDatabase, getGamesFromDatabase, changeGameLimitFromDataBase, getJokeFromDataBase } from '../database/index.js';
 import { JokeTypes } from '../common/jokeTypes.js';
 import { tagUsersByCommas } from './common.js';
-import { Markup } from 'telegraf';
 import { skloneniye, skloneniyeAzFull } from '../common/skloneniye.js';
 
 export async function startGame(msg, bot) {
